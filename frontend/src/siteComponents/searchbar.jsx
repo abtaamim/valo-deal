@@ -16,6 +16,7 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 export default function SearchBar() {
   const [isFocused, setIsFocused] = useState(false);
 
+
   const [inputValue, setInputValue] = useState(''); //typing inside searchbar
 
   const handleInputChange = (event) => {
@@ -29,8 +30,9 @@ export default function SearchBar() {
     console.log('hoina'); 
   };
   const theme = useTheme();
+
   const lessThan850px = useMediaQuery('(max-width:1000px)'); 
-  
+
 
   return (
     <Paper

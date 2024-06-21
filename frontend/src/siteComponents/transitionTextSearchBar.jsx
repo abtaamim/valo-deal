@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+
 import './TextTransition.css'; 
 
 const strings = [
@@ -16,8 +17,10 @@ const strings = [
 ];
 
 const transition = {
+
   duration: 1.5, 
   ease: "easeInOut" 
+
 };
 
 const TextTransition = () => {
@@ -26,6 +29,7 @@ const TextTransition = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % strings.length);
+
     }, 4500); 
 
     return () => clearInterval(intervalId);

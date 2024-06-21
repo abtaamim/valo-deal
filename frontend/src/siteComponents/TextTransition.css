@@ -1,0 +1,19 @@
+
+
+
+.sequential-text-transition-container {
+  position: absolute;
+  top: 2.5%;
+ 
+  left: 140px; 
+  color: #10b341;
+}
+
+.text-content {
+
+  display: inline-block;
+  background-color: transparent; 
+  padding: 0 px;
+  pointer-events: none; 
+  margin-left: 5px;
+}
