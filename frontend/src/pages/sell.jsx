@@ -27,12 +27,50 @@ const Sell = () => {
   };
 
   return (
+<<<<<<< HEAD
     <div>
       {/* <Button variant="outlined" onClick={handleClickOpen}>
         Open Sell Dialog
       </Button> */}
       <Dialog open={handleClickOpen} onClose={handleClose} fullWidth maxWidth="md">
         {/* <DialogTitle>Select a Category</DialogTitle> */}
+=======
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        minHeight: '60vh',
+        bgcolor: 'transparent',
+        position: 'relative',
+        top: '-10px' // Adjust this value to move the card higher or lower
+      }}
+    >
+      <Card variant="outlined" sx={{ width: '900px', backgroundColor: 'white', color: 'rgb(0, 7, 20)' ,borderColor:'transparent' }}>
+        <CardContent>
+          <Typography variant='h8' fontWeight="bold">
+            Welcome Tamim! Let's post an ad. 
+          </Typography>
+          <Typography sx={{mb:'40px'}}>
+            choose any option below
+          </Typography>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={4}>
+              <Card variant="outlined" sx={{ mb: 2, height:'218px' }}>
+                <CardContent>
+                  <List sx={{ width: '100%', bgcolor: 'background.paper', flexDirection: 'column' }}>
+                    <ListItem alignItems="center">
+                      <ListItemText primary={<Typography variant="h6" fontWeight="bold">Sell something</Typography>} />
+                    </ListItem>
+                    <Divider sx={{ width: '100%' }} />
+                    {customListButton('Sell an item', handleOpenCategoryDialog)}
+                    <Divider sx={{ width: '100%' }} />
+                    {customListButton('Offer a property for rent', handleOpenCategoryDialog)}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+>>>>>>> tamim
 
         <DialogContent>
 
