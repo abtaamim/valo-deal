@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 
-mongoose.connect('mongodb+srv://valo:valo123@valodealapp.mxkj6eb.mongodb.net/?retryWrites=true&w=majority&appName=valodealapp')
+mongoose.connect('mongodb+srv://tahsintajware12345:tahsin123@valodeal.pbu4q9o.mongodb.net/')
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('Failed to connect to MongoDB:', error));
 
