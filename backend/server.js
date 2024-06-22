@@ -8,7 +8,7 @@ const app = express();
 
 app.use(cors(
     {
-        origin: ["https://valo-deal.vercel.app"],
+        origin: ["https://valo-deal-frontend.vercel.app"],
         methods: ["POST", "GET"],
         credentials: true
     }
