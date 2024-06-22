@@ -5,12 +5,9 @@ import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-<<<<<<< HEAD
-=======
   server: {
     port: 4000
   },
->>>>>>> tamim
   resolve: {
     alias: {
       '@mui/material': path.resolve(__dirname, 'node_modules/@mui/material'),
