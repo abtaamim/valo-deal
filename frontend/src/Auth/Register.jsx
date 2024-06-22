@@ -97,7 +97,7 @@ const Register = () => {
             </Form.Item>
 
             <Form.Item>
-                <Link to="/login">
+                <Link to="/signin">
                 <Button size="large" className="btn">
                     Sign In
                 </Button>
