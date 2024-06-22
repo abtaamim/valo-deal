@@ -72,7 +72,7 @@ const Login = () => {
             </Form.Item>
 
             <Form.Item>
-              <Link to="/">
+              <Link to="/signup">
                 <Button size="large" className="btn">
                   Create an account
                 </Button>
