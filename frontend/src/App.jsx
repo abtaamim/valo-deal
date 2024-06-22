@@ -28,16 +28,18 @@ const App = () => {
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/about" element={<About />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/signin" element={<SignIn />} />
             <Route path="/sell" element={<Sell />} />
+            {/* <Route path="/signin" element={<Login />} />
             
+            <Route path="/signup" element={<Register />} /> */}
+
             {/* Conditional routes based on authentication */}
             <Route
-              path="/"
+              path="/signUp"
               element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" replace />}
             />
             <Route
-              path="/login"
+              path="/signin"
               element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace />}
             />
             <Route
