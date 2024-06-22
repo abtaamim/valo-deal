@@ -1,16 +1,12 @@
-// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
 export default defineConfig({
   plugins: [react()],
-<<<<<<< HEAD
-=======
-  server: {
-    port: 4000
-  },
->>>>>>> tamim
+  // server: {
+  //   port: 4000 // Set to 4000 or your preferred port
+  // },
   resolve: {
     alias: {
       '@mui/material': path.resolve(__dirname, 'node_modules/@mui/material'),
