@@ -1,40 +1,54 @@
-import React, { useState } from 'react';
-import { Button, Divider, Dialog, DialogTitle, DialogContent, List, ListItem, ListItemText, ListItemIcon, ListItemButton, Typography, Box } from '@mui/material';
+import * as React from 'react';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import { ListItemIcon, ListItemButton, ListItemText, ListItem, List, Divider, Grid, Typography } from '@mui/material';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
+import CategorySelection from './categorySelection';
+import { useState } from 'react';
+function customListButton(string,onClick) {
+  return (
+    <ListItemButton onClick={onClick} sx={{ justifyContent: 'space-between', width: '100%' }}>
+      <ListItemText
+        primary={
+          <Typography variant="h8" >
+            {string}
+          </Typography>
+        }
+      />
+      <ListItemIcon>
+        <ArrowForwardIosOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }} />
+      </ListItemIcon>
+    </ListItemButton>
+  );
+}
 
-const Sell = () => {
-  const [open, setOpen] = useState(false);
+const Sell = () => {   
+  const [openCategoryDialog, setOpenCategoryDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+
   const items = {
     Mobiles: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
-    Electronics: ['Desktop Computres', 'Laptops', 'Computer & Laptop Accessories', 'TVs', 'Cameras',
-      'ACs & Home Appliances', 'Photocopies', 'Other Electronics'],
+    Electronics: ['Desktop Computers', 'Laptops', 'Computer & Laptop Accessories', 'TVs', 'Cameras', 'ACs & Home Appliances', 'Photocopies', 'Other Electronics'],
     Vehicles: ['Car', 'Motorbikes', 'Bicycles', 'Auto Parts & Accessories'],
     'Home & Living': [],
-    "Men's Fashion & Grooming ": [],
-  }
-  const handleClickOpen = () => {
-    setOpen(true);
+    "Men's Fashion & Grooming": [],
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleOpenCategoryDialog = () => {
+    setOpenCategoryDialog(true);
+  };
+
+  const handleCloseCategoryDialog = () => {
+    setOpenCategoryDialog(false);
     setSelectedCategory(null);
   };
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
+   // setOpenCategoryDialog(false); // Close dialog after selecting category
   };
-
   return (
-<<<<<<< HEAD
-    <div>
-      {/* <Button variant="outlined" onClick={handleClickOpen}>
-        Open Sell Dialog
-      </Button> */}
-      <Dialog open={handleClickOpen} onClose={handleClose} fullWidth maxWidth="md">
-        {/* <DialogTitle>Select a Category</DialogTitle> */}
-=======
     <Box
       sx={{
         display: 'flex',
@@ -56,7 +70,7 @@ const Sell = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
-              <Card variant="outlined" sx={{ mb: 2, height:'218px' }}>
+              <Card variant="outlined" sx={{ mb: 2 }}>
                 <CardContent>
                   <List sx={{ width: '100%', bgcolor: 'background.paper', flexDirection: 'column' }}>
                     <ListItem alignItems="center">
@@ -70,80 +84,50 @@ const Sell = () => {
                 </CardContent>
               </Card>
             </Grid>
->>>>>>> tamim
 
-        <DialogContent>
-
-          <Box display="flex" sx={{ flexDirection: 'row', height: '700px' }}>
-            <div width='350px'>
-              <Typography variant="h6" sx={{ fontWeight: "bold", width: '100%', marginTop: '10px', paddingTop: '10px', paddingLeft: '21px' }}>
-                Select a category
-              </Typography>
-              <List sx={{ height: '100%', width: '350px', borderRight: '1px solid', color: 'rgb(0, 7, 20)' }}>
-                {Object.keys(items).map((category, index) => (
-                  <React.Fragment key={category}>
-                    <ListItemButton
-                      onClick={() => handleCategorySelect(category)}
-                      sx={{
-                        width: '100%', backgroundColor: selectedCategory === category ? 'rgb(0, 7, 20)' : 'transparent',
-                        '&:hover': {
-                          backgroundColor: 'white',
-                          color: 'black'
-                        }
-                      }}
-                    >
-                      <ListItem disablePadding key={category} >
-                        <ListItemText primary={category} sx={{'&:hover': {
-                          //backgroundColor: 'white',
-                          color: 'black'
-                        }, color: selectedCategory === category ? 'white' : 'rgb(0, 7, 20)' }} />
-                        <ListItemIcon>
-                          <ArrowForwardIosOutlinedIcon sx={{ color: selectedCategory === category ? 'white' : 'rgb(0, 7, 20)' }} />
-                        </ListItemIcon>
-
-                      </ListItem>
-
-                    </ListItemButton>
-                    {index < Object.keys(items).length - 1 && <Divider sx={{ color: 'rgb(0, 7, 20)' }} />}
-                  </React.Fragment>
-                )
-
-                )}
-              </List>
-            </div>
-            <Box sx={{ height: '100%', width: '50%', padding: '0 1rem' }}>
-              {selectedCategory ? (
-                <>
-                  <Typography variant="h6" sx={{ fontWeight: "bold", marginTop: '10px', paddingTop: '10px', paddingLeft: '15px' }}>
-                    Select a Sub category
-                  </Typography>
-                  <List>
-
-                    {items[selectedCategory].map((subCategory, index) => (
-                      <React.Fragment key={subCategory}>
-                        <ListItemButton >
-                          <ListItem disablePadding>
-                            <ListItemText primary={subCategory} />
-                          </ListItem>
-                        </ListItemButton>
-                        {index < items[selectedCategory].length - 1 && <Divider />}
-                      </React.Fragment>
-                    ))}
-
+            <Grid item xs={12} md={4}>
+              <Card variant="outlined" sx={{ mb: 2 }}>
+                <CardContent>
+                  <List sx={{ width: '100%', bgcolor: 'background.paper', flexDirection: 'column' }}>
+                    <ListItem alignItems="center">
+                      <ListItemText primary={<Typography variant="h6" fontWeight="bold">Post a job vacancy</Typography>} />
+                    </ListItem>
+                    <Divider sx={{ width: '100%' }} />
+                    {customListButton ('Post a job in Bangladesh' )}
+                    <Divider sx={{ width: '100%' }} />
+                    {customListButton('Post a job overseas')}
                   </List>
-                </>
-              ) : (
-                <Typography variant="h6" sx={{ marginTop: '0px', paddingTop: '0px' }}>
+                </CardContent>
+              </Card>
+            </Grid>
 
-                </Typography>
-              )}
-            </Box>
-          </Box>
-        </DialogContent>
-
-      </Dialog>
-    </div>
+            <Grid item xs={12} md={4}>
+              <Card variant="outlined" sx={{ mb: 2 }}>
+                <CardContent>
+                  <List sx={{ width: '100%', bgcolor: 'background.paper', flexDirection: 'column' }}>
+                    <ListItem alignItems="center">
+                      <ListItemText primary={<Typography variant="h6" fontWeight="bold">Look for something</Typography>} />
+                    </ListItem>
+                    <Divider sx={{ width: '100%' }} />
+                    {customListButton('Look for property')}
+                    <Divider sx={{ width: '100%' }} />
+                    {customListButton('Look for something to buy')}
+                  </List>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
+      <CategorySelection
+        open={openCategoryDialog}
+        handleClose={handleCloseCategoryDialog}
+        handleCategorySelect={handleCategorySelect}
+        selectedCategory={selectedCategory}
+        items={items}
+      />
+    </Box>
   );
-};
+}
 
 export default Sell;
