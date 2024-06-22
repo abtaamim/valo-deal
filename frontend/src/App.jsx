@@ -1,7 +1,7 @@
 // App.jsx
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import './App.css';
+// import './App.css';
 import { useAuth } from './contexts/AuthContext';
 import Navbar from './siteComponents/navbar';
 import SecondNavbar from './siteComponents/second_navbar';

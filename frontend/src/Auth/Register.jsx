@@ -11,7 +11,13 @@ const Register = () => {
     registerUser(values);
   };
   return (
-    <Card className="form-contianer">
+    <Card       style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "60vh",
+
+          }}>
       <Flex gap="large" align="center">
         {/* form */}
         <Flex vertical flex={1}>
@@ -111,7 +117,7 @@ const Register = () => {
 
         {/* Image */}
         <Flex flex={1}>
-            <img src={registerImage} className='auth-image' />
+            {/* <img src={registerImage} className='auth-image' /> */}
 
         </Flex>
       </Flex>

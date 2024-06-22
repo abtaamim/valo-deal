@@ -1,23 +1,33 @@
 import React from "react";
-import { Card, Flex, Form, Input, Typography, Button, Alert, Spin } from "antd";
+import { Card, Form, Input, Typography, Button, Alert, Spin } from "antd";
 import { Link } from "react-router-dom";
 import registerImage from "../assets/loginpage.webp";
 import userLogin from "../hooks/userLogin";
 
 const Login = () => {
-  const {error,loading,loginUser} = userLogin();
+  const { error, loading, loginUser } = userLogin();
+
   const handleLogin = async (values) => {
     await loginUser(values);
   };
+
   return (
-    <Card className="form-contianer2">
-      <Flex gap="large" align="center">
+    <Card
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "60vh",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: "2rem" }}>
         {/* Image */}
-        <Flex flex={1}>
-          <img src={registerImage} className="auth-image" />
-        </Flex>
-        {/* form */}
-        <Flex vertical flex={1}>
+        {/* <div style={{ flex: 1 }}>
+          <img src={registerImage} className="auth-image" alt="Register" />
+        </div> */}
+
+        {/* Form */}
+        <div style={{ width:'400px' }}>
           <Typography.Title level={3} strong className="title">
             Sign In
           </Typography.Title>
@@ -32,11 +42,11 @@ const Login = () => {
               rules={[
                 {
                   required: true,
-                  message: "please input your Email!",
+                  message: "Please input your email!",
                 },
                 {
                   type: "email",
-                  message: "The input is not valid Email!",
+                  message: "The input is not a valid email!",
                 },
               ]}
             >
@@ -48,26 +58,31 @@ const Login = () => {
               rules={[
                 {
                   required: true,
-                  message: "please input your password!",
+                  message: "Please input your password!",
                 },
               ]}
             >
               <Input.Password size="large" placeholder="Enter your password" />
             </Form.Item>
 
-             {
-                    error && <Alert description={error} type='error' showIcon closable className='alert' />
-                }   
+            {error && (
+              <Alert
+                description={error}
+                type="error"
+                showIcon
+                closable
+                className="alert"
+              />
+            )}
 
             <Form.Item>
               <Button
-                type={`${loading ? '' : 'primary'}`}
+                type={`${loading ? "" : "primary"}`}
                 htmlType="submit"
                 size="large"
                 className="btn"
               >
-                {loading ? <Spin /> : 'Sign In'}
-                
+                {loading ? <Spin /> : "Sign In"}
               </Button>
             </Form.Item>
 
@@ -79,8 +94,8 @@ const Login = () => {
               </Link>
             </Form.Item>
           </Form>
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     </Card>
   );
 };

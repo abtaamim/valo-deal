@@ -8,9 +8,9 @@ body {
 }
 
 .form-container,
-.form-container2,
+
 .profile-card {
-  width: 90%; /* Default to a percentage width for better responsiveness */
+  width: 20%; /* Default to a percentage width for better responsiveness */
   max-width: 1300px; /* Limit the maximum width */
 }
 
