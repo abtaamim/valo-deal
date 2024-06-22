@@ -29,12 +29,12 @@ export default function Navbar() {
           </div>
       <SearchBar/>
 
-      <ul className='hideOnMobile'>
+      <ul >
       
-        <div className="hideOnMobile"> <CustomLink to="/pricing" id='price' className='hideOnMobile'>Pricing</CustomLink>
+        <div className="hideOnMobile navhover"> <CustomLink to="/pricing" >Pricing</CustomLink>
         </div>
         
-        <div className="hideOnMobile">  <CustomLink to="/about" >About</CustomLink>
+        <div className="hideOnMobile navhover">  <CustomLink to="/about" >About</CustomLink>
         </div>
         <CustomLink to="/cart" id='cart' className='hideOnMobile'>
           {({ isActive }) => (
