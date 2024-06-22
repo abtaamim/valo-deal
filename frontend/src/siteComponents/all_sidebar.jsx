@@ -32,7 +32,7 @@ export default function AllDrawer() {
 
   const handleSubDrawerClose = () => {
     setOpenSubDrawer(false);
-    //setOpenMainDrawer(true); // Reopen the main drawer when closing the sub drawer
+   
   };
 
   const handleMainMenuClick = () => {
@@ -93,7 +93,23 @@ export default function AllDrawer() {
       </List>
       <Divider sx={{ color: 'rgb(0, 7, 20)' }} />
       <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+      <ListItem>
+          <ListItemText
+            primary="Help & Settings"
+            primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
+          />
+        </ListItem>
+        <ListItemButton>
+        <ListItem>
+
+          <ListItemText
+            primary="Your Account"
+            primaryTypographyProps={{  fontSize: 'h7.fontSize' }}
+          />
+        </ListItem>
+        </ListItemButton>
+
+        {/* {['All mail', 'Trash', 'Spam'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
               <ListItemText primary={text} />
@@ -102,7 +118,7 @@ export default function AllDrawer() {
               </ListItemIcon>
             </ListItemButton>
           </ListItem>
-        ))}
+        ))} */}
       </List>
     </Box>
   );

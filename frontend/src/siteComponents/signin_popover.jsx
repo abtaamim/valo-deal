@@ -39,9 +39,9 @@ const SignInPopover = () => {
         }}
       >
         <Box p={2}>
-          <Typography variant="h6">Account Information</Typography>
+          {/* <Typography variant="h6">Account Information</Typography>
           <Typography variant="body2">Name: John Doe</Typography>
-          <Typography variant="body2">Email: john.doe@example.com</Typography>
+          <Typography variant="body2">Email: john.doe@example.com</Typography> */}
           <Box mt={2}>
             <Link component={RouterLink} to="/signin" underline="hover" onClick={popupState.close}>
               Sign In

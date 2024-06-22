@@ -65,8 +65,11 @@ body {
 }
 
 .nav-links a:hover {
-  text-decoration: none;
-  border-color: lightblue; 
+  text-decoration-color: lightblue; 
+  text-decoration-thickness: 2px; 
+
+  /* border: 2px solid lightblue;
+  border-radius: 10px;   */
 }
 
 
@@ -83,21 +86,23 @@ body {
  
   /* text-decoration-thickness: 2px;  */
 
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px; 
   border: 2px solid transparent; 
   border-radius: 10px; 
-  
 }
 
-.nav li:hover {
+/* .nav li:hover {
 
  
   text-decoration-color: lightblue; 
-  /* text-decoration-thickness: 2px;  */
+  text-decoration-thickness: 2px; 
 
   border: 2px solid lightblue;
   border-radius: 10px; 
   
-}
+  
+} */
 .cart-icon svg{
   color: aliceblue;
 }
@@ -140,7 +145,12 @@ body {
   text-decoration-thickness: 2px; 
   text-underline-offset: 6px; 
 }
-
+.secondNav li{
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px; 
+  border: 2px solid transparent; 
+  border-radius: 10px; 
+}
 .secondNav li:hover {
 
  
@@ -148,11 +158,31 @@ body {
   text-decoration-thickness: 2px; 
   border: 2px solid lightblue; 
   border-radius: 10px; 
-  padding: 0.15rem 0.35rem;
+  
 }
  .hideOnMobile{
   padding-top: 20px;
   
+  
+ 
+  text-underline-offset: 6px; 
+  
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px; 
+  border: 2px solid transparent; 
+  border-radius: 10px; 
+  
+}
+.hideOnMobile:hover{
+  
+  
+ 
+  text-underline-offset: 6px; 
+  
+  text-decoration-color: lightblue;
+  text-decoration-thickness: 2px; 
+  border: 2px solid lightblue; 
+  border-radius: 10px; 
 }
 /* 
  @media(min-width: 801px){
@@ -186,7 +216,9 @@ body {
   justify-self: unset;
 }
 .sequential-text-transition-container .text-content {
-  color: rgb(196, 99, 21); /* Set your desired color here */
+  color: rgb(121, 117, 114); /* Set your desired color here */
+  font-weight: bold;
+  font-size: large;
 }
 /* @media (max-width: 850px) {
   .placeholder-text {

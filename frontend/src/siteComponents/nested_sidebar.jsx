@@ -71,7 +71,7 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
         </ListItem>
         {items[category]?.map((item) => (
           <ListItem key={item} disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={onClose}>
               <ListItemText primary={item} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
               <ListItemIcon>
                 <ArrowForwardIosOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }} />
@@ -81,7 +81,7 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
         ))}
       </List>
       <Divider sx={{ color: 'rgb(0, 7, 20)' }} />
-      <List>
+      {/* <List>
         {['All mail', 'Trash', 'Spam'].map((text) => (
           <ListItem key={text} disablePadding>
             <ListItemButton>
@@ -92,7 +92,7 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
             </ListItemButton>
           </ListItem>
         ))}
-      </List>
+      </List> */}
     </Box>
   );
 
