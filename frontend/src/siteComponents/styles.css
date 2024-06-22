@@ -94,7 +94,7 @@ body {
   text-decoration-color: lightblue; 
   /* text-decoration-thickness: 2px;  */
 
-  border: 2px solid lightblue;
+  border: 2px solid rgb(227, 242, 247);
   border-radius: 10px; 
   
 }
@@ -133,7 +133,10 @@ body {
   padding: 0.15rem 0.30rem;
   
 }
-
+.secondNav li{
+  border: 2px solid transparent; 
+  border-radius: 10px; 
+}
 .secondNav li.active {
   
   text-decoration: underline ;
@@ -149,7 +152,7 @@ body {
   text-decoration-thickness: 2px; 
   border: 2px solid lightblue; 
   border-radius: 10px; 
-  padding: 0.15rem 0.35rem;
+  
 }
  .hideOnMobile{
   padding-top: 20px;
