@@ -3,16 +3,11 @@ import { motion } from 'framer-motion';
 import './TextTransition.css';
 
 const strings = [
-  "First string",
-  "Second string",
-  "Third string",
-  "Fourth string",
-  "Fifth string",
-  "Sixth string",
-  "Seventh string",
-  "Eighth string",
-  "Ninth string",
-  "Tenth string"
+'Computer',
+'Mobbile',
+'TV',
+'Laptop',
+'Smart Watch'
 ];
 
 const TextTransition = () => {
