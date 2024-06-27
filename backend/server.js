@@ -1,32 +1,39 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const authRouter = require('./routes/authRoutes');
-const AppError = require('./utils/appError');
+import express from "express";
+import colors from "colors";  // Ensure this is correctly imported
+import dotenv from "dotenv";
+import morgan from "morgan";
+import connectDB from "./confiq/db.js";
+import authRoutes from "./routes/authRoute.js";
+import cors from "cors";
 
+// Configure environment variables
+dotenv.config();
+
+// Database configuration
+connectDB();
+
+// Create an express app
 const app = express();
 
+// Middlewares
 app.use(cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
-app.use('/api/auth', authRouter);
+// Routes
+app.use("/api/v1/auth", authRoutes);
 
-mongoose.connect('mongodb+srv://tahsintajware12345:tahsin123@valodeal.pbu4q9o.mongodb.net/')
-    .then(() => console.log('Connected to MongoDB'))
-    .catch((error) => console.error('Failed to connect to MongoDB:', error));
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-    err.statusCode = err.statusCode || 500;
-    err.status = err.status || 'error';
-
-    res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
-    });
+// Default route
+app.get("/", (req, res) => {
+  res.send("<h1>Welcome to ecommerce app</h1>");
 });
 
-const PORT = 3000;
+// Port configuration
+const PORT = process.env.PORT || 8080;
+
+// Start server
 app.listen(PORT, () => {
-    console.log(`App running on port ${PORT}`);
+  console.log(
+    `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`.bgCyan.white
+  );
 });
