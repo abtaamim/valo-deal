@@ -17,7 +17,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRouter);
 
-mongoose.connect('mongodb+srv://tahsintajware12345:tahsin123@valodeal.pbu4q9o.mongodb.net/')
+mongoose.connect('mongodb+srv://tamim:tamim@cluster0.vvlgy8v.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
     .then(() => console.log('Connected to MongoDB'))
     .catch((error) => console.error('Failed to connect to MongoDB:', error));
 

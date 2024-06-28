@@ -28,7 +28,8 @@ const Sell = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   const items = {
-    Mobiles: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
+    Mobiles:['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
+    Computers: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
     Electronics: ['Desktop Computers', 'Laptops', 'Computer & Laptop Accessories', 'TVs', 'Cameras', 'ACs & Home Appliances', 'Photocopies', 'Other Electronics'],
     Vehicles: ['Car', 'Motorbikes', 'Bicycles', 'Auto Parts & Accessories'],
     'Home & Living': [],

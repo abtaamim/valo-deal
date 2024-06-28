@@ -13,7 +13,7 @@ import Register from './Auth/Register';
 import Login from './Auth/Login';
 import Dashboard from './pages/Dashboard';
 import Sell from './pages/sell';
-
+import MobileSellDetailsPage from './pages/mobileSellDetailsPage';
 const App = () => {
   const { isAuthenticated } = useAuth();
 
@@ -28,6 +28,7 @@ const App = () => {
           <Route path="/about" element={<About />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/sell" element={<Sell />} />
+          <Route path="/sell/mobile" element={<MobileSellDetailsPage />} />
           <Route path="/signup" element={!isAuthenticated ? <Register /> : <Navigate to="/dashboard" replace />} />
           <Route path="/signin" element={!isAuthenticated ? <Login /> : <Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={isAuthenticated ? <Dashboard /> : <Navigate to="/signin" replace />} />
