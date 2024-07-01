@@ -18,5 +18,10 @@ export default defineConfig({
       'material-ui-popup-state': path.resolve(__dirname, 'node_modules/material-ui-popup-state'),
       'framer-motion': path.resolve(__dirname, 'node_modules/framer-motion')
     }
+  },
+  // Ensure Vite handles JSX correctly
+  esbuild: {
+    jsxFactory: 'React.createElement',
+    //jsxInject: `import React from 'react';`
   }
 });
