@@ -25,7 +25,8 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, '..', 'frontend', 'build')));
+const buildPath = path.join(__dirname, '..', 'frontend', 'dist'); // Change 'build' to 'dist' if using 'dist'
+app.use(express.static(buildPath));
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
@@ -35,9 +36,9 @@ app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");
 });
 
-// Catch all route to serve React's index.html
+// Catch-all route to serve React's index.html for any other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'build', 'index.html'));
+  res.sendFile(path.join(buildPath, 'index.html'));
 });
 
 // Error handling middleware
@@ -52,6 +53,6 @@ const PORT = process.env.PORT || 8080;
 // Start server
 app.listen(PORT, () => {
   console.log(
-    `Server Running on ${process.env.DEV_MODE} mode on port ${PORT}`
+    `Server Running in ${process.env.DEV_MODE} mode on port ${PORT}`
   );
 });
