@@ -17,7 +17,7 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("https://valo-deal-backend.vercel.app/register", {
+      const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/register", {
         name,
         email,
         password,
