@@ -47,6 +47,11 @@ const SignInPopover = () => {
               Sign In
             </Link>
           </Box>
+          <Box mt={2}>
+            <Link component={RouterLink} to="/register" underline="hover" onClick={popupState.close}>
+              Sign Up
+            </Link>
+          </Box>
           <Box mt={1}>
             <Link component={RouterLink} to="/orders" underline="hover" onClick={popupState.close}>
               Previous Orders
