@@ -24,7 +24,7 @@ app.use("/api/v1/auth", authRoutes);
 
 // Default route
 app.get("/", (req, res) => {
-  res.send("<h1>Welcome to ecommerce app</h1>");
+  res.json("<h1>Welcome to ecommerce app</h1>");
 });
 
 // Error handling middleware
