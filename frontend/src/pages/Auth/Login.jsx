@@ -10,13 +10,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
   //https://valo-deal-backend.vercel.app/
+  //http://valo-deal-backend.vercel.app/api/v1/auth/login
+
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://valo-deal-backend.vercel.app/api/v1/auth/login", {
+      const res = await axios.post("http://valo-deal-backend.vercel.app/login", {
         email,
         password,
       });
