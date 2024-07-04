@@ -27,6 +27,8 @@ const Login = () => {
           user: res.data.user,
           token: res.data.token,
         });
+
+        //save user to local storage
         localStorage.setItem("auth", JSON.stringify(res.data));
         navigate(location.state?.from || "/");
       } else {
