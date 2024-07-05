@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 import { useAuth } from "../../context/auth";
+import logo from "../../assests/logo.png"; // Adjust the path as necessary
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
-  //https://valo-deal-backend.vercel.app/
-  //http://valo-deal-backend.vercel.app/api/v1/auth/login
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -30,7 +29,7 @@ const Login = () => {
           token: res.data.token,
         });
 
-        //save user to local storage
+        // Save user to local storage
         localStorage.setItem("auth", JSON.stringify(res.data));
         navigate(location.state?.from || "/");
       } else {
@@ -42,8 +41,16 @@ const Login = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="form-container">
+      <div className="form-overlay"></div>
+      <div className="logo-container" onClick={handleLogoClick}>
+        <img src={logo} alt="Logo" />
+      </div>
       <form onSubmit={handleSubmit} className="auth-form">
         <h2 className="auth-title">Sign In</h2>
         <div className="form-group">
@@ -73,6 +80,24 @@ const Login = () => {
         <button type="submit" className="btn btn-primary">
           Submit
         </button>
+        <div style={{ marginTop: "10px" }}>
+          {/* Haven't an account?{" "} */}
+          <Link
+            to="/forgot-password"
+            style={{ color: "#eb3902", fontSize: "18px", fontWeight: "bold" }}
+          >
+            Forgot password ?
+          </Link>
+        </div>
+        <div style={{ marginTop: "10px" }}>
+          Haven't an account?{" "}
+          <Link
+            to="/register"
+            style={{ color: "#007bff", fontSize: "18px", fontWeight: "bold" }}
+          >
+            Signup
+          </Link>
+        </div>
       </form>
     </div>
   );
