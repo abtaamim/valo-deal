@@ -18,10 +18,10 @@ const app = express();
 
 // Middlewares
 app.use(cors(
-  {
+   {
     origin: ["https://valo-deal-frontend.vercel.app"],
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    headers: ['Content-Type', 'multipart/form-data'],
     credentials: true
   }
 ));
