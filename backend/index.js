@@ -3,7 +3,9 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./confiq/db.js');
 const authRoutes = require('./routes/authRoute.js');
+const mobileRoutes =require('./routes/sellMobileRoute.js')
 const cors = require('cors');
+const path = require('path');
 
 // Configure environment variables
 dotenv.config();
@@ -18,9 +20,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
-
+// Serve static files from the 'uploads' directory
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/sell", mobileRoutes);
 
 // Default route
 app.get("/", (req, res) => {

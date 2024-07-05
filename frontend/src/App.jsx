@@ -10,7 +10,8 @@ import Pricing from './pages/pricing';
 import Cart from './pages/cart';
 import Sell from './pages/sell';
 import MobileSellDetailsPage from './pages/mobileSellDetailsPage';
-
+import MobileAccessoriesSellDetailsPage from './pages/mobileAccessoriesSellDetails';
+import AddedMobileList from './pages/showAddedItem';
 //tahsin
 import Contact from "./pages/Contact";
 import Policy from "./pages/Policy";
@@ -37,7 +38,10 @@ const App = () => {
           <Route path="/cart" element={<Cart />} />
           <Route path="/sell" element={<Sell />} />
           <Route path="/sell/mobile" element={<MobileSellDetailsPage />} />
-
+          <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />
+          
+          <Route path="/added-items" element={<AddedMobileList/>}/>
+          
           <Route path="/dashboard" element={<PrivateRoute />}>
             {/* <Route path="user" element={<Dashboard />} />
           <Route path="user/orders" element={<Orders />} />

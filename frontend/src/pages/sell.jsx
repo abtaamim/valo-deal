@@ -71,7 +71,7 @@ const Sell = () => {
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12} md={4}>
-              <Card variant="outlined" sx={{ mb: 2 }}>
+              <Card variant="outlined" sx={{ mb: 2, height:'218px' }}>
                 <CardContent>
                   <List sx={{ width: '100%', bgcolor: 'background.paper', flexDirection: 'column' }}>
                     <ListItem alignItems="center">

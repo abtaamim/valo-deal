@@ -1,24 +1,28 @@
 import React from 'react';
-import { Link, useMatch, useResolvedPath } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import AllDrawer from './all_sidebar';
 import CustomLink from './CustomLink';
-export default function SecondNavbar(){
+import { useAuth } from '../context/auth';
 
-  return(
+export default function SecondNavbar() {
+  const [auth] = useAuth();
+  const navigate = useNavigate();
+
+  const handleLoginRedirect = () => {
+    navigate('/login');
+  };
+
+  return (
     <nav className="secondNav">
       <ul>
-        
-          <AllDrawer/>
-          <CustomLink to="/sell" >Sell</CustomLink>
+        <AllDrawer />
+        {auth.user ? (
+          <CustomLink to="/sell">Sell</CustomLink>
+        ) : (
+          <CustomLink to="/login" >Sell</CustomLink>
+        )}
         <li></li>
-
       </ul>
-
-
     </nav>
-  )
-
-
+  );
 }
-
-
