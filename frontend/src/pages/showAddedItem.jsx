@@ -9,7 +9,7 @@ const AddedMobileList = () => {
   // Define fetchMobiles outside of useEffect for reusability
   const fetchMobiles = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/sell/mobiles');
+      const response = await axios.get('https://valo-deal-backend.vercel.app/api/v1/sell/mobiles');
       setMobiles(response.data.mobiles);
     } catch (error) {
       console.error('Error fetching mobiles:', error);
@@ -18,11 +18,11 @@ const AddedMobileList = () => {
 
   useEffect(() => {
     fetchMobiles(); // Fetch mobiles on initial render
-  }, []); // Empty dependency array means it runs only once after mount
+  }, []); // Empty dependency array means it runs only once after mount  http://localhost:8080/
 
   const handleDelete = async (mobileId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/sell/mobiles/${mobileId}`);
+      await axios.delete(`https://valo-deal-backend.vercel.app/api/v1/sell/mobiles/${mobileId}`);
       fetchMobiles(); // Fetch mobiles again after successful deletion
     } catch (error) {
       console.error('Error deleting mobile:', error);
@@ -41,7 +41,7 @@ const AddedMobileList = () => {
               <CardMedia
                 component="img"
                 height="240"
-                image={`http://localhost:8080${mobile.images[0]}`}
+                image={`https://valo-deal-backend.vercel.app/${mobile.images[0]}`}
                 alt={`${mobile.brand} ${mobile.model}`}
               />
               <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
