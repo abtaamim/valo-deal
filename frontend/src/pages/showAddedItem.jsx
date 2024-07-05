@@ -22,7 +22,7 @@ const AddedMobileList = () => {
 
   const handleDelete = async (mobileId) => {
     try {
-      await axios.delete(`https://valo-deal-backend.vercel.app/api/v1/sell/mobiles${mobileId}`);
+      await axios.delete(`https://valo-deal-backend.vercel.app/api/v1/sell/mobiles/${mobileId}`);
       fetchMobiles(); // Fetch mobiles again after successful deletion
     } catch (error) {
       console.error('Error deleting mobile:', error);
@@ -41,7 +41,7 @@ const AddedMobileList = () => {
               <CardMedia
                 component="img"
                 height="240"
-                image={`https://valo-deal-backend.vercel.app/${mobile.images[0]}`}
+                image={`https://valo-deal-backend.vercel.app${mobile.images[0]}`}
                 alt={`${mobile.brand} ${mobile.model}`}
               />
               <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
