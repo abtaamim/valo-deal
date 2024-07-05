@@ -77,9 +77,13 @@ const MobileSellDetailsPage = () => {
       });
 
       try {
-        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobile", formData);
-        console.log('Response:', res);  // Log the response
-        if (res.status === 200) {
+        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobile", formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        if (res.status===200) {
+          console.log('yayayay')
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
         } else {
@@ -121,7 +125,6 @@ const MobileSellDetailsPage = () => {
   const handleClose = () => {
     setSubmissionSuccess(false)
   };
-
   return (
     <>
       {alertMessage && (
