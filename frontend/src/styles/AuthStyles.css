@@ -14,7 +14,23 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  position: relative;
 }
+
+.loading-container {
+  position: relative;
+  margin-top: 20px; /* Adjust as needed */
+  text-align: center;
+}
+
+.loading-indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  /* Add styles for your loading indicator (e.g., spinner, animated icon) */
+}
+
 
 .form-overlay {
   position: absolute;
