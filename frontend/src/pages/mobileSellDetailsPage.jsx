@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/auth';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import toast from "react-hot-toast";
 
 const MobileSellDetailsPage = () => {
   const [brand, setBrand] = useState('');
