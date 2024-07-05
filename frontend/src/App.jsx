@@ -20,7 +20,7 @@ import Login from "./pages/Auth/Login";
 import Dashboard from "./pages/user/Dashboard";
 import PrivateRoute from "./components/Routes/Private";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
-
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   
@@ -54,6 +54,7 @@ const App = () => {
           <Route path="*" element={<Pagenotfound />} />
         </Routes>
       </div>
+      <Toaster />
     </>
   );
 };
