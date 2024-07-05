@@ -77,7 +77,7 @@ const MobileSellDetailsPage = () => {
       });
 
       try {
-        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobiles", formData, {
+        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobile", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
