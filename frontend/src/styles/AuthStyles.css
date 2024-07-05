@@ -1,20 +1,54 @@
 /* ===================================
 ========= register page  */
 .form-container {
-  min-height: 90vh;
-  max-width: 600px;
-  margin: 0 auto;
+  position: relative;
+  min-height: 70vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-image: url('../assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.form-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  z-index: 0;
+}
+
+.logo-container {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 20px;
+  z-index: 1;
+}
+
+.logo-container img {
+  max-width: 90px;
+  cursor: pointer;
 }
 
 .auth-form {
+  position: relative;
   width: 100%;
+  max-width: 400px;
   padding: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   background-color: white;
+  z-index: 1;
+  text-align: left; /* Ensures the form content is left-aligned */
 }
 
 .auth-title {
@@ -39,7 +73,7 @@
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: #179740;
   color: white;
   border: none;
   border-radius: 5px;
@@ -47,124 +81,99 @@
 }
 
 .btn-primary:hover {
-  background-color: #0056b3;
+  background-color: #22fd3c;
+   color: rgb(24, 23, 23);
+   
 }
-
 
 /* login page */
-
 .form-container1 {
- 
-display: flex;
-align-items: center;
-justify-content: center;
-min-height: 70vh;
-flex-direction: column;
-max-width: 1600px;
-/* background-image: url('../assests/signin1.png'); */
-
-background-size: cover; 
-background-position: center; 
-background-repeat: no-repeat;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  flex-direction: column;
+  max-width: 1600px;
+  
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat;
 }
 
-
 .form-container1 form {
-box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-padding: 20px;
-background-color: #fff;
-margin-left: 100px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 100px;
 }
 
 .form-container1 form .title {
-text-align: center;
-margin-bottom: 15px;
-font-weight: bold;
-font-family: "Playfair Display", serif;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-family: "Playfair Display", serif;
 }
 
 .form-container1 form input {
-border: none;
-border-bottom: 1px solid #000;
-border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
 }
 
 .form-container1 form button {
-border: 1px solid black;
-border-radius: 0;
-background-color: #ff5757;
-color: white;
-width: 250px;
+  border: 1px solid black;
+  border-radius: 0;
+  background-color: #ff5757;
+  color: white;
+  width: 250px;
 }
 
 .form-container1 form button:hover {
-border: 1px solid black;
-background-color: #FF3131; 
-
-
+  border: 1px solid black;
+  background-color: #FF3131;
 }
 
 /* forgot-password */
-
 .form-container2 {
- 
-display: flex;
-align-items: center;
-justify-content: center;
-min-height: 70vh;
-flex-direction: column;
-
-/* background-image: url('../assests/forgetpassword.png'); */
-
-background-size: cover; 
-background-position: center; 
-background-repeat: no-repeat; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 70vh;
+  flex-direction: column;
+  background-size: cover; 
+  background-position: center; 
+  background-repeat: no-repeat; 
 }
 
-
 .form-container2 form {
-box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-padding: 20px;
-background-color: #fff;
-margin-left: 100px;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 100px;
 }
 
 .form-container2 form .title {
-text-align: center;
-margin-bottom: 15px;
-font-weight: bold;
-font-family: "Playfair Display", serif;
+  text-align: center;
+  margin-bottom: 15px;
+  font-weight: bold;
+  font-family: "Playfair Display", serif;
 }
 
 .form-container2 form input {
-border: none;
-border-bottom: 1px solid #000;
-border-radius: 0;
+  border: none;
+  border-bottom: 1px solid #000;
+  border-radius: 0;
 }
 
 .form-container2 form button {
-border: 1px solid black;
-border-radius: 0;
-background-color: #ff5757;
-color: white;
-width: 250px;
+  border: 1px solid black;
+  border-radius: 0;
+  background-color: #ff5757;
+  color: white;
+  width: 250px;
 }
 
 .form-container2 form button:hover {
-border: 1px solid black;
-background-color: #FF3131; /* fallback for old browsers */
-
-
+  border: 1px solid black;
+  background-color: #FF3131;
 }
-
-
-
-
-/* .forgot-btn {
-  background-color: #434343a4 !important;
-  border: 0 !important;
-}
-
-.forgot-btn:hover {
-  color: white !important;
-} */

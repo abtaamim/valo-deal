@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
+import logo from '../../assests/logo.png'; 
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -13,7 +14,6 @@ const Register = () => {
   const [answer, setAnswer] = useState("");
   const navigate = useNavigate();
 
-  // Form submission handler
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -37,10 +37,18 @@ const Register = () => {
     }
   };
 
+  const handleLogoClick = () => {
+    navigate("/");
+  };
+
   return (
     <div className="form-container">
-      <form onSubmit={handleSubmit}>
-        <h2 className="title">Sign Up</h2>
+      <div className="form-overlay"></div>
+      <div className="logo-container" onClick={handleLogoClick}>
+        <img src={logo} alt="Logo" />
+      </div>
+      <form onSubmit={handleSubmit} className="auth-form">
+        <h2 className="auth-title">Sign Up</h2>
         <div className="form-group">
           <label htmlFor="name">Name</label>
           <input
@@ -114,9 +122,12 @@ const Register = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary" style={{ width: "100%" }}>
+        <button type="submit" className="btn btn-primary">
           REGISTER
         </button>
+        <div style={{ marginTop: "10px" }}>
+          Already have an account? <Link to="/login" style={{color: "#007bff", fontSize: "18px", fontWeight: "bold" }}>Sign In</Link>
+        </div>
       </form>
     </div>
   );
