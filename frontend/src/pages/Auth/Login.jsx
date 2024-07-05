@@ -10,12 +10,14 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
     try {
       const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/login", {
         email,
@@ -38,6 +40,8 @@ const Login = () => {
     } catch (error) {
       console.error("Login Error:", error);
       toast.error("Something went wrong");
+    } finally {
+      setLoading(false); // Set loading to false when request is complete
     }
   };
 
@@ -77,11 +81,10 @@ const Login = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">
-          Submit
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Loading..." : "Submit"}
         </button>
         <div style={{ marginTop: "10px" }}>
-          {/* Haven't an account?{" "} */}
           <Link
             to="/forgot-password"
             style={{ color: "#eb3902", fontSize: "18px", fontWeight: "bold" }}

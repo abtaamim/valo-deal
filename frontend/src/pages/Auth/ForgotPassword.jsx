@@ -3,16 +3,18 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
-import logo from "../../assests/logo.png"; // Adjust the path as necessary
+import logo from "../../assests/logo.png";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [answer, setAnswer] = useState("");
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true); // Set loading to true when form is submitted
     try {
       const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/forgot-password", {
         email,
@@ -28,6 +30,8 @@ const ForgotPassword = () => {
     } catch (error) {
       console.error("Forgot Password Error:", error);
       toast.error("Something went wrong");
+    } finally {
+      setLoading(false); // Set loading to false when request is complete
     }
   };
 
@@ -79,8 +83,8 @@ const ForgotPassword = () => {
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary">
-          Reset
+        <button type="submit" className="btn btn-primary" disabled={loading}>
+          {loading ? "Loading..." : "Reset"}
         </button>
         <div style={{ marginTop: "10px" }}>
           Remember your password?{" "}
