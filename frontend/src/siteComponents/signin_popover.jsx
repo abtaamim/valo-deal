@@ -48,31 +48,6 @@ const SignInPopover = () => {
         }}
       >
         <Box p={2}>
-<<<<<<< HEAD
-          {/* <Typography variant="h6">Account Information</Typography>
-          <Typography variant="body2">Name: John Doe</Typography>
-          <Typography variant="body2">Email: john.doe@example.com</Typography> */}
-          <Box mt={2}>
-            <Link component={RouterLink} to="/login" underline="hover" onClick={popupState.close}>
-              Sign In
-            </Link>
-          </Box>
-          <Box mt={2}>
-            <Link component={RouterLink} to="/register" underline="hover" onClick={popupState.close}>
-              Sign Up
-            </Link>
-          </Box>
-          <Box mt={1}>
-            <Link component={RouterLink} to="/orders" underline="hover" onClick={popupState.close}>
-              Previous Orders
-            </Link>
-          </Box>
-          <Box mt={1}>
-            <Link component={RouterLink} to="/history" underline="hover" onClick={popupState.close}>
-              Browsing History
-            </Link>
-          </Box>
-=======
           {!auth.user ? (
             <Box mt={2}>
               <Link component={RouterLink} to="/login" underline="hover" onClick={popupState.close}>
@@ -106,7 +81,6 @@ const SignInPopover = () => {
               </Box>
             </>
           )}
->>>>>>> tamim
         </Box>
       </Popper>
     </div>
