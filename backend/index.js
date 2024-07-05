@@ -21,7 +21,6 @@ app.use(cors(
    {
     origin: ["https://valo-deal-frontend.vercel.app"],
     methods: ['POST', 'GET', 'PUT', 'DELETE'],
-    headers: ['Content-Type', 'multipart/form-data'],
     credentials: true
   }
 ));
