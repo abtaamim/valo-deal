@@ -54,15 +54,24 @@ const getUserAddedMobilesController = async (req, res) => {
   }
 };
 
-const deleteMobileController = async (req, res) => {
-  const { mobileId } = req.params; // Get mobileId from request params
+const deleteMobileController = async (mobileId) => {
   try {
+    // Assuming mobileModel.findByIdAndDelete is used to delete the mobile listing
     await mobileModel.findByIdAndDelete(mobileId);
-    res.status(200).json({ success: true, message: 'Mobile listing deleted successfully' });
   } catch (error) {
-    console.error('Error deleting mobile:', error);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
+    throw error; // Propagate the error to handle it in the calling route
   }
 };
+
+// const deleteMobileController = async (req, res) => {
+//   const { mobileId } = req.params; // Get mobileId from request params
+//   try {
+//     await mobileModel.findByIdAndDelete(mobileId);
+//     res.status(200).json({ success: true, message: 'Mobile listing deleted successfully' });
+//   } catch (error) {
+//     console.error('Error deleting mobile:', error);
+//     res.status(500).json({ success: false, message: 'Internal Server Error' });
+//   }
+// };
 
 module.exports = { sellMobileController, getUserAddedMobilesController, deleteMobileController };
