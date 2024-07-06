@@ -76,7 +76,7 @@ const MobileSellDetailsPage = () => {
       });
 
       try {
-        const res = await axios.post("http://localhost:8080/api/v1/sell/mobile", formData, {
+        const res = await axios.post("http://localhost:8080/sell/mobile", formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

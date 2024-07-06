@@ -9,7 +9,7 @@ const AddedMobileList = () => {
   // Define fetchMobiles outside of useEffect for reusability
   const fetchMobiles = async () => {
     try {
-      const response = await axios.get('http://localhost:8080/api/v1/sell/mobiles');
+      const response = await axios.get('http://localhost:8080/sell/mobiles'); //  api/v1/
       setMobiles(response.data.mobiles);
     } catch (error) {
       console.error('Error fetching mobiles:', error);
@@ -22,7 +22,7 @@ const AddedMobileList = () => {
 
   const handleDelete = async (mobileId) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/sell/mobiles/${mobileId}`);
+      await axios.delete(`http://localhost:8080/sell/mobiles/${mobileId}`);
       fetchMobiles(); // Fetch mobiles again after successful deletion
     } catch (error) {
       console.error('Error deleting mobile:', error);

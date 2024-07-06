@@ -24,7 +24,7 @@ app.use(morgan("dev"));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/sell", mobileRoutes);
+app.use("/sell", mobileRoutes); // "/api/v1/sell"
 
 // Default route
 app.get("/", (req, res) => {
