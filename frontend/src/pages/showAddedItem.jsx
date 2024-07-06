@@ -3,8 +3,20 @@ import axios from 'axios';
 import { Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, CircularProgress } from '@mui/material';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import { formatDistanceToNow } from 'date-fns';
-
+import phn1 from '/public/assets/images/phn1.jpg'
+import phn2 from '/public/assets/images/phn2.jpg'
+import phn3 from '/public/assets/images/phn3.jpg';
 const AddedMobileList = () => {
+
+  const images = [phn1, phn2, phn3];
+  // Function to get a random image
+  function getRandomImage() {
+      const randomIndex = Math.floor(Math.random() * images.length);
+      return images[randomIndex];
+  }
+  // Get a random image
+  const randomImage = getRandomImage();
+
   const [mobiles, setMobiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -56,7 +68,7 @@ const AddedMobileList = () => {
                 <CardMedia
                   component="img"
                   height="240"
-                  image={mobile.images[0]}
+                  image={ randomImage} //mobile.images[0]
                   alt={`${mobile.brand} ${mobile.model}`}
                   onError={(e) => (e.target.src = '/placeholder-image.jpg')} // Fallback image
                 />
