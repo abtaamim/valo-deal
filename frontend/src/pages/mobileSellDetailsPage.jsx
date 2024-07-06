@@ -21,7 +21,8 @@ const MobileSellDetailsPage = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
-  const predefinedImages = [phn1, phn2, phn3];
+   const predefinedImages = [phn1, phn2, phn3];
+  //const predefinedImages =['/public/assets/images/phn1.jpg','/public/assets/images/phn3.jpg','/public/assets/images/phn3.jpg']
   const [selectedImage, setSelectedImage] = useState(predefinedImages[Math.floor(Math.random() * predefinedImages.length)]);
 
   const handleBrand = (event) => {
