@@ -15,7 +15,7 @@ const sellMobileController = async (req, res) => {
     const { sellerId, brand, model, condition, authenticity, description, price } = req.body;
     
     if (!sellerId || !brand || !model || !condition || !authenticity || !description || !price) {
-      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price });
+      console.log('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price });
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
