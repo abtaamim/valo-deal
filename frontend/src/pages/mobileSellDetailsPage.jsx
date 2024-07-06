@@ -170,7 +170,9 @@ const MobileSellDetailsPage = () => {
               {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
             </FormControl>
 
-            <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
+              {/* BRAND DROPDOWN */}
+
+              <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
               <InputLabel id="brand-select-label">Brand</InputLabel>
               <Select
                 labelId="brand-select-label"
@@ -196,55 +198,67 @@ const MobileSellDetailsPage = () => {
               {errors.brand && <Typography variant="caption" color="error">{errors.brand}</Typography>}
             </FormControl>
 
-            {brand && (
-              <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.model}>
-                <InputLabel id="model-select-label">Model</InputLabel>
-                <Select
-                  labelId="model-select-label"
-                  value={model}
-                  onChange={handleModel}
-                  label="Model"
-                  endAdornment={
-                    model ? (
-                      <InputAdornment position='end'>
-                        <IconButton onClick={clearModel} sx={{ mr: '18px' }}>
-                          <CancelIcon />
-                        </IconButton>
-                      </InputAdornment>
-                    ) : null
-                  }
-                >
-                  {brands_models[brand].map((modelName) => (
-                    <MenuItem key={modelName} value={modelName}>
-                      {modelName}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
-              </FormControl>
-            )}
+            {/* MODEL DROPDOWN */}
 
-            <TextField
-              id="description"
-              label="Description"
-              multiline
-              rows={4}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              error={!!errors.description}
-              helperText={errors.description}
-              sx={{ mt: 2 }}
-            />
+            <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.model}>
+              <InputLabel id="model-select-label">Model</InputLabel>
+              <Select
+                labelId="model-select-label"
+                value={model}
+                onChange={handleModel}
+                label="Model"
+                endAdornment={
+                  model ? (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={clearModel} sx={{ mr: '18px' }}>
+                        <CancelIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ) : null
+                }
+              >
+                {brand && brands_models[brand].map((modelName) => (
+                  <MenuItem key={modelName} value={modelName}>
+                    {modelName}
+                  </MenuItem>
+                ))}
+              </Select>
+              {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
+            </FormControl>
 
-            <TextField
-              id="price"
-              label="Price"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-              error={!!errors.price}
-              helperText={errors.price}
-              sx={{ mt: 2 }}
-            />
+            {/* DESCRIPTION field */}
+            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+              Description
+            </Typography>
+            <FormControl sx={{ mb: 6 }} error={!!errors.description}>
+              <TextField
+                id="description-field"
+                multiline
+                rows={4}
+                placeholder="More details= more interested buyers"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              {errors.description && <Typography variant="caption" color="error">{errors.description}</Typography>}
+            </FormControl>
+
+            {/* PRICE field */}
+
+            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+              Price(Tk)
+            </Typography>
+            <FormControl sx={{ mb: 4 }} error={!!errors.price}>
+              <TextField
+                type='number'
+                inputProps={{ min: 0, step: "1", max: 200000 }}
+                id="price-field"
+                placeholder="Pick a good price"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+              />
+              {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
+            </FormControl>
+            <Divider sx={{ mb: 2, width: '100%', height: '1px', bgcolor: 'black' }} />
 
             <Button variant='contained' color="success" onClick={handleSubmit} sx={{ mt: 2 }}>
               Upload
