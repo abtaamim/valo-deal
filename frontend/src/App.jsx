@@ -12,7 +12,7 @@ import Sell from './pages/sell';
 import MobileSellDetailsPage from './pages/mobileSellDetailsPage';
 import MobileAccessoriesSellDetailsPage from './pages/mobileAccessoriesSellDetails';
 import AddedMobileList from './pages/showAddedItem';
-import myAccount from './pages/myAccountPage';
+// import myAccount from './pages/myAccountPage';
 
 //tahsin
 import Contact from "./pages/Contact";
@@ -36,7 +36,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pricing" element={<Pricing />} />
-          <Route path="/account" element={<myAccount/>} />
+          {/* <Route path="/account" element={<myAccount />} /> */}
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/sell" element={<Sell />} />
