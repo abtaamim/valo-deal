@@ -1,6 +1,3 @@
-function myAccount(){
-  return(
-    <div></div>
-  );
+export default function myAccount(){
+  return <h1 >MyAccount</h1>
 }
-export default myAccount
