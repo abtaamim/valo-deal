@@ -84,6 +84,7 @@ const MobileSellDetailsPage = () => {
           toast.error(res.data.message);
         }
       } catch (error) {
+        console.log( auth.user._id, brand, model, condition, authenticity, description, price );
         console.error("Registration Error:", error.response ? error.response.data : error.message);
         toast.error("Something went wrong");
       }
