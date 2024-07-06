@@ -9,7 +9,7 @@ const sellMobileSchema = new Schema({
   authenticity: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
-  images: [{ type: String, required: true }],
+  images: [{ type: String, required: false }],
 }, { timestamps: true });
 
 const SellMobile = mongoose.model('SellMobile', sellMobileSchema);
