@@ -87,6 +87,7 @@ const MobileSellDetailsPage = () => {
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
         } else {
+          console.log(res.status)
           toast.error(res.data.message);
         }
       } catch (error) {
