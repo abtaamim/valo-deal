@@ -17,7 +17,7 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Sell product route
-router.post('/mobile', requireSignIn, upload.array('images', 5), (req, res, next) => {
+router.post('/mobiles', requireSignIn, upload.array('images', 5), (req, res, next) => {
   console.log('Received request:');
   console.log('Body:', req.body);
   console.log('Files:', req.files);
