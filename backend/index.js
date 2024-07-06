@@ -6,7 +6,7 @@ const authRoutes = require('./routes/authRoute.js');
 const mobileRoutes =require('./routes/sellMobileRoute.js')
 const cors = require('cors');
 const path = require('path');
-
+const uploadMobilePhotosHandler = require('./routes/uploadMobilePhotosHandler');
 // Configure environment variables
 dotenv.config();
 
@@ -31,10 +31,14 @@ app.use(cors(
 app.use(express.json());
 app.use(morgan("dev"));
 // Serve static files from the 'uploads' directory
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+//app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/sell", mobileRoutes);
+
+//route for blob
+app.post('/api/upload-mobile-photos', uploadMobilePhotosHandler);
 
 // Default route
 app.get("/", (req, res) => {

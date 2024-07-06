@@ -3,12 +3,13 @@ import { Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, F
 import { TextField, Typography, Divider, Select, InputLabel, MenuItem } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ImageUploadCard from './image_upload_card';
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/auth';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
-import toast from "react-hot-toast";
+import toast from 'react-hot-toast';
+import { upload } from '@vercel/blob/client';
 
 const MobileSellDetailsPage = () => {
   const [brand, setBrand] = useState('');
@@ -18,6 +19,7 @@ const MobileSellDetailsPage = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
   const [selectedImages, setSelectedImages] = useState([]);
+  const [imageUrls, setImageUrls] = useState([]);
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
@@ -40,8 +42,18 @@ const MobileSellDetailsPage = () => {
     setModel('');
   };
 
-  const handleFileChange = (file) => {
+  const handleFileChange = async (file) => {
     setSelectedImages([...selectedImages, file]);
+
+    try {
+      const newBlob = await upload(file.name, file, {
+        access: 'public',
+        handleUploadUrl: '/api/avatar/upload',
+      });
+      setImageUrls((prevUrls) => [...prevUrls, newBlob.url]);
+    } catch (error) {
+      console.error('Image upload failed:', error);
+    }
   };
 
   const validateForm = () => {
@@ -64,35 +76,30 @@ const MobileSellDetailsPage = () => {
 
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
-      const formData = new FormData();
-      formData.append('sellerId', auth.user._id);
-      formData.append('brand', brand);
-      formData.append('model', model);
-      formData.append('condition', condition);
-      formData.append('authenticity', authenticity);
-      formData.append('description', description);
-      formData.append('price', price);
-      selectedImages.forEach((image, index) => {
-        formData.append('images', image, image.name);
-      });
+      const formData = {
+        sellerId: auth.user._id,
+        brand,
+        model,
+        condition,
+        authenticity,
+        description,
+        price,
+        images: imageUrls,
+      };
 
       try {
-        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobiles", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        if (res.status===200) {
-          console.log('yayayay')
+        const res = await axios.post('https://valo-deal-backend.vercel.app/api/v1/sell/mobiles', formData);
+        if (res.status === 200) {
+          console.log('yayayay');
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
         } else {
-          console.log(res.status)
+          console.log(res.status);
           toast.error(res.data.message);
         }
       } catch (error) {
-        console.error("Registration Error:", error.response ? error.response.data : error.message);
-        toast.error("Something went wrong");
+        console.error('Registration Error:', error.response ? error.response.data : error.message);
+        toast.error('Something went wrong');
       }
     } else {
       setErrors(newErrors);
@@ -102,40 +109,41 @@ const MobileSellDetailsPage = () => {
   useEffect(() => {
     if (submissionSuccess) {
       const timer = setTimeout(() => {
-        navigate("/added-items");
-      }, 2000); 
+        navigate('/added-items');
+      }, 2000);
 
-      return () => clearTimeout(timer); 
+      return () => clearTimeout(timer);
     }
   }, [submissionSuccess, navigate]);
 
   const brands_models = {
-    samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],
-    iphone: ["iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone SE (2022)"],
-    xiaomi: ["13 Pro", "13", "12T Pro", "12T", "Redmi Note 12 Pro"],
-    realme: ["GT Neo 5", "10 Pro+", "10 Pro", "10", "Narzo 50"],
-    vivo: ["X90 Pro+", "X90 Pro", "V27 Pro", "V27", "Y56"],
-    oppo: ["Find X6 Pro", "Find X6", "Reno 9 Pro+", "Reno 9 Pro", "A98"],
-    nothingphone: ["Phone (1)"],
-    google: ["Pixel 7 Pro", "Pixel 7", "Pixel 6a"],
-    oneplus: ["11", "10 Pro", "Nord 2T"],
-    motorola: ["Edge 40 Pro", "Edge 30 Fusion", "Moto G Stylus 5G (2023)"],
-    sony: ["Xperia 1 V", "Xperia 5 IV", "Xperia 10 IV"],
-    asus: ["ROG Phone 7", "Zenfone 10", "ROG Phone 6"]
+    samsung: ['Galaxy S23 Ultra', 'Galaxy S23+', 'Galaxy A54 5G', 'Galaxy Z Fold 4', 'Galaxy Z Flip 4'],
+    iphone: ['iPhone 14 Pro Max', 'iPhone 14 Pro', 'iPhone 14 Plus', 'iPhone 14', 'iPhone SE (2022)'],
+    xiaomi: ['13 Pro', '13', '12T Pro', '12T', 'Redmi Note 12 Pro'],
+    realme: ['GT Neo 5', '10 Pro+', '10 Pro', '10', 'Narzo 50'],
+    vivo: ['X90 Pro+', 'X90 Pro', 'V27 Pro', 'V27', 'Y56'],
+    oppo: ['Find X6 Pro', 'Find X6', 'Reno 9 Pro+', 'Reno 9 Pro', 'A98'],
+    nothingphone: ['Phone (1)'],
+    google: ['Pixel 7 Pro', 'Pixel 7', 'Pixel 6a'],
+    oneplus: ['11', '10 Pro', 'Nord 2T'],
+    motorola: ['Edge 40 Pro', 'Edge 30 Fusion', 'Moto G Stylus 5G (2023)'],
+    sony: ['Xperia 1 V', 'Xperia 5 IV', 'Xperia 10 IV'],
+    asus: ['ROG Phone 7', 'Zenfone 10', 'ROG Phone 6'],
   };
+
   const handleClose = () => {
-    setSubmissionSuccess(false)
+    setSubmissionSuccess(false);
   };
+
   return (
     <>
       {alertMessage && (
         <Snackbar
-        open={submissionSuccess}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message="Product uploaded successfully"
-     
-      />
+          open={submissionSuccess}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message="Product uploaded successfully"
+        />
       )}
       <Box
         sx={{
@@ -144,9 +152,9 @@ const MobileSellDetailsPage = () => {
           maxWidth: 800,
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center', // Center the Box content horizontally
-          justifyContent: 'center', // Center the Box content vertically
-          minHeight: '100vh' // Ensure the Box takes full height of the viewport
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
         }}
       >
         <Typography variant='h6' sx={{ fontWeight: 'bold', mb: 1, p: 2, textAlign: 'left', width: '100%' }}>
@@ -256,7 +264,7 @@ const MobileSellDetailsPage = () => {
             <FormControl sx={{ mb: 4 }} error={!!errors.price}>
               <TextField
                 type='number'
-                inputProps={{ min: 0, step: "1", max: 200000 }}
+                inputProps={{ min: 0, step: '1', max: 200000 }}
                 id="price-field"
                 placeholder="Pick a good price"
                 value={price}
@@ -286,6 +294,6 @@ const MobileSellDetailsPage = () => {
       </Box>
     </>
   );
-}
+};
 
 export default MobileSellDetailsPage;

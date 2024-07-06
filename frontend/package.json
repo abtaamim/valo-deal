@@ -15,6 +15,7 @@
     "@fontsource/roboto": "^5.0.13",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
+    "@vercel/blob": "^0.23.4",
     "antd": "^5.18.3",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
