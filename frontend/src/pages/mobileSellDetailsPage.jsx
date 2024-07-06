@@ -73,9 +73,9 @@ const MobileSellDetailsPage = () => {
 
       try {
         const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobiles", formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+          // headers: {
+          //   'Content-Type': 'multipart/form-data',
+          // },
         });
         if (res.status === 200) {
           setAlertMessage('Product uploaded successfully');
