@@ -68,7 +68,7 @@ const AddedMobileList = () => {
                 <CardMedia
                   component="img"
                   height="240"
-                  image={` ${mobile.images}`} //mobile.images[0]
+                  image={randomImage} //mobile.images[0]
                   alt={`${mobile.brand} ${mobile.model}`}
                   onError={(e) => (e.target.src = '/placeholder-image.jpg')} // Fallback image
                 />
