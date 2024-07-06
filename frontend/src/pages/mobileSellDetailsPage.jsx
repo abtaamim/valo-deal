@@ -60,31 +60,27 @@ const MobileSellDetailsPage = () => {
     e.preventDefault();
 
     const newErrors = validateForm();
-    if (1) {   //Object.keys(newErrors).length === 0
-      const formData = new FormData();
-      formData.append('sellerId', auth.user._id);
-      formData.append('brand', brand);
-      formData.append('model', model);
-      formData.append('condition', condition);
-      formData.append('authenticity', authenticity);
-      formData.append('description', description);
-      formData.append('price', price);
-      formData.append('images', selectedImage);
-
+    if (Object.keys(newErrors).length === 0) {
       try {
-        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobiles", formData, {
-          // headers: {
-          //   'Content-Type': 'multipart/form-data',
-          // },
+        const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobiles", {
+          sellerId: auth.user._id,
+          brand,
+          model,
+          condition,
+          authenticity,
+          description,
+          price,
+          images: selectedImage
         });
+
         if (res.status === 200) {
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
         } else {
+          console.log(res.status)
           toast.error(res.data.message);
         }
       } catch (error) {
-        console.log( auth.user._id, brand, model, condition, authenticity, description, price );
         console.error("Registration Error:", error.response ? error.response.data : error.message);
         toast.error("Something went wrong");
       }
