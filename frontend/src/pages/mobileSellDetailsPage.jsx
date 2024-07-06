@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import phn1 from '/public/assets/images/phn1.jpg'
 import phn2 from '/public/assets/images/phn2.jpg'
 import phn3 from '/public/assets/images/phn3.jpg';
-
+import axios from "axios";
 const MobileSellDetailsPage = () => {
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
