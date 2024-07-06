@@ -15,6 +15,10 @@ connectDB();
 
 // Create an express app
 const app = express();
+//new add
+const whitelist =[
+   '*'
+];
 
 // Middlewares
 app.use(cors(
