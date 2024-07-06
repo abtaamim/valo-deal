@@ -61,7 +61,7 @@ const AddedMobileList = () => {
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+        <Grid container spacing={2} sx={{  gap: 2 }}>
           {mobiles.map((mobile) => (
             <Grid item key={mobile._id} xs={12} sm={6} md={4}>
               <Card sx={{ width: '300px' }}>
