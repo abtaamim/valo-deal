@@ -60,7 +60,7 @@ const MobileSellDetailsPage = () => {
     e.preventDefault();
 
     const newErrors = validateForm();
-    if (Object.keys(newErrors).length === 0) {
+    if (1) {   //Object.keys(newErrors).length === 0
       const formData = new FormData();
       formData.append('sellerId', auth.user._id);
       formData.append('brand', brand);
