@@ -1,15 +1,15 @@
-const mobileModel=require('../models/sellMobileModel')
+const mobileModel = require('../models/sellMobileModel');
 
 const sellMobileController = async (req, res) => {
   try {
     const { sellerId, brand, model, condition, authenticity, description, price } = req.body;
-    const files = req.files;
-    const imagePaths = files.map(file => `/uploads/${file.filename}`);
-
-    if (!sellerId || !brand || !model || !condition || !authenticity || !description || !price || imagePaths.length === 0) {
-      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price, images });
+    
+    if (!sellerId || !brand || !model || !condition || !authenticity || !description || !price) {
+      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price });
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
+
+    const selectedImage = predefinedImages[Math.floor(Math.random() * predefinedImages.length)];
 
     const newMobile = new mobileModel({
       sellerId,
@@ -19,11 +19,11 @@ const sellMobileController = async (req, res) => {
       authenticity,
       description,
       price,
-      images: imagePaths,
+      images: [selectedImage],
     });
 
     await newMobile.save();
-    console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, images:imagePaths });
+    console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, images: [selectedImage] });
 
     res.status(200).send('Product listed successfully');
   } catch (error) {
@@ -43,14 +43,16 @@ const getUserAddedMobilesController = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
-const deleteMobileController = async (mobileId) => {
+
+const deleteMobileController = async (req, res) => {
+  const { mobileId } = req.params; // Get mobileId from request params
   try {
-    // Assuming mobileModel.findByIdAndDelete is used to delete the mobile listing
     await mobileModel.findByIdAndDelete(mobileId);
+    res.status(200).json({ success: true, message: 'Mobile listing deleted successfully' });
   } catch (error) {
-    throw error; // Propagate the error to handle it in the calling route
+    console.error('Error deleting mobile:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
 module.exports = { sellMobileController, getUserAddedMobilesController, deleteMobileController };
-
-

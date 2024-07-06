@@ -25,12 +25,14 @@ const router = express.Router();
 //   sellMobileController(req, res, next);
 // });
 
-router.post('/mobiles', requireSignIn, (req, res, next) => {
-  console.log('Received request:');
-  console.log('Body:', req.body);
+router.post('/mobiles', requireSignIn, sellMobileController);
+
+// router.post('/mobiles', requireSignIn, (req, res, next) => {
+//   console.log('Received request:');
+//   console.log('Body:', req.body);
   
-  sellMobileController(req, res, next);
-});
+//   sellMobileController(req, res, next);
+// });
 
 
 // Route to get user-specific mobiles
