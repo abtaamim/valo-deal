@@ -1,3 +1,13 @@
+const path = require('path');
+
+// Define predefined images (you may need to adjust the path based on your project structure)
+const predefinedImages = [
+  path.join(__dirname, '..', 'public', 'assets', 'images', 'phn1.jpg'),
+  path.join(__dirname, '..', 'public', 'assets', 'images', 'phn2.jpg'),
+  path.join(__dirname, '..', 'public', 'assets', 'images', 'phn3.jpg'),
+];
+
+
 const mobileModel = require('../models/sellMobileModel');
 
 const sellMobileController = async (req, res) => {
