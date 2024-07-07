@@ -1,3 +1,16 @@
-// export default function myAccount(){
-//   return <h1 >MyAccount</h1>
-// }
+import React from 'react'
+//import Layout from '../components/Layout/Layout'
+import { useAuth } from '../context/auth'
+const myAccount = () => {
+    const [auth,setAuth]=useAuth()
+  return (
+    <div  title={"Best Offers"}>
+    <h1>HomePage</h1>
+    <pre>{JSON.stringify(auth,null,4)}</pre>
+    </div>
+      
+    
+  )
+}
+
+export default myAccount
