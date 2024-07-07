@@ -93,6 +93,7 @@ const MobileSellDetailsPage = () => {
         };
         const res = await axios.post(
           "https://valo-deal-backend.vercel.app/api/v1/sell/mobiles",
+        
           {
             sellerId: auth.user._id,
             brand,
@@ -102,7 +103,8 @@ const MobileSellDetailsPage = () => {
             description,
             price,
             images: selectedImage,
-          }
+          },
+          { headers }
         );
 
         if (res.status === 200) {
