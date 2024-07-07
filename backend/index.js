@@ -22,11 +22,11 @@ const whitelist =[
 
 // Middlewares
 app.use(cors(
-   {
-    origin: ["https://valo-deal-frontend.vercel.app"],
-    methods: ['POST', 'GET', 'PUT', 'DELETE'],
-    credentials: true
-  }
+  //  {
+  //   origin: ["https://valo-deal-frontend.vercel.app"],
+  //   methods: ['POST', 'GET', 'PUT', 'DELETE'],
+  //   credentials: true
+  // }
 ));
 app.use(express.json());
 app.use(morgan("dev"));
