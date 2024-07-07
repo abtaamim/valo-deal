@@ -63,6 +63,8 @@ const MobileSellDetailsPage = () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
       try {
+        // https://valo-deal-backend.vercel.app/api/v1/sell/mobiles
+        // http://localhost:8080/api/v1/sell/mobiles
         const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/sell/mobiles", {
           sellerId: auth.user._id,
           brand,

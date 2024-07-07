@@ -60,7 +60,7 @@ const SignInPopover = () => {
               <Typography variant="body2">Name: {auth.user.name}</Typography>
               <Typography variant="body2">Email: {auth.user.email}</Typography>
               <Box mt={2}>
-                <Link component={RouterLink} to="/account" underline="hover" onClick={popupState.close}>
+                <Link component={RouterLink} to="/Profile" underline="hover" onClick={popupState.close}>
                   My Account
                 </Link>
               </Box>

@@ -25,6 +25,9 @@ const AddedMobileList = () => {
     setLoading(true);
     setError('');
     try {
+      // https://valo-deal-backend.vercel.app/api/v1/sell/mobiles
+      // http://localhost:8080/api/v1/sell/mobiles
+
       const response = await axios.get('https://valo-deal-backend.vercel.app/api/v1/sell/mobiles');
       setMobiles(response.data.mobiles);
     } catch (err) {
