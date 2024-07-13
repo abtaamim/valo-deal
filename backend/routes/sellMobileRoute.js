@@ -3,27 +3,19 @@ const { sellMobileController, getUserAddedMobilesController, deleteMobileControl
 const { requireSignIn } = require('../middlewares/authMiddleware');
 const multer = require('multer');
 
+
 const router = express.Router();
 
 // Configure multer for file uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/');
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '-' + file.originalname);
-  }
-});
-const upload = multer({ storage: storage });
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 // Sell product route
-router.post('/mobile', requireSignIn, upload.array('images', 5), (req, res, next) => {
-  console.log('Received request:');
-  console.log('Body:', req.body);
-  console.log('Files:', req.files);
+router.post('/mobile', requireSignIn,upload.none(),sellMobileController);
+ 
   
-  sellMobileController(req, res, next);
-});
+  
+
 
 // Route to get user-specific mobiles
 router.get('/mobiles', requireSignIn, getUserAddedMobilesController);

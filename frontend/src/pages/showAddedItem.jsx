@@ -41,8 +41,9 @@ const AddedMobileList = () => {
               <CardMedia
                 component="img"
                 height="240"
-                image={`http://localhost:8080${mobile.images[0]}`}
+                image={mobile.imgUrl}
                 alt={`${mobile.brand} ${mobile.model}`}
+                src={mobile.imgUrl}
               />
               <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
                 <Typography gutterBottom variant="h5" component="div">

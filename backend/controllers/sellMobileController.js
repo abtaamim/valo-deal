@@ -2,12 +2,12 @@ const mobileModel=require('../models/sellMobileModel')
 
 const sellMobileController = async (req, res) => {
   try {
-    const { sellerId, brand, model, condition, authenticity, description, price } = req.body;
-    const files = req.files;
-    const imagePaths = files.map(file => `/uploads/${file.filename}`);
+    const { sellerId, brand, model, condition, authenticity, description, price, imgUrl } = req.body;
+    //const files = req.files;
+    //const imagePaths = files.map(file => `/uploads/${file.filename}`);
 
-    if (!sellerId || !brand || !model || !condition || !authenticity || !description || !price || imagePaths.length === 0) {
-      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price, images });
+    if (!sellerId || !brand || !model || !condition || !authenticity || !description || !price || !imgUrl) {
+      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price,imgUrl });
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
@@ -19,11 +19,11 @@ const sellMobileController = async (req, res) => {
       authenticity,
       description,
       price,
-      images: imagePaths,
+      imgUrl
     });
 
     await newMobile.save();
-    console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, images:imagePaths });
+    console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, imgUrl });
 
     res.status(200).send('Product listed successfully');
   } catch (error) {
@@ -31,6 +31,7 @@ const sellMobileController = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 
 // New controller to get mobiles for the current user
 const getUserAddedMobilesController = async (req, res) => {
