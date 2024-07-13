@@ -70,6 +70,7 @@ const MobileSellDetailsPage = () => {
           console.log(imgUrl)
           setUploadState(UploadState.UPLOADED);
       } catch (error) {
+        console.log(error)
         console.log(imgUrl)
           console.error("Error uploading file:", error);
          setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
