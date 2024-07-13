@@ -9,7 +9,7 @@ import { useAuth } from '../context/auth';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 import { CleaningServices } from '@mui/icons-material';
-import NewImageUploadCard from '../siteComponents/newImage';
+
 import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
 const UploadState = {
     IDLE: 1,
