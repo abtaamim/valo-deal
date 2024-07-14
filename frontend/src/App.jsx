@@ -13,6 +13,8 @@ import MobileSellDetailsPage from './pages/mobileSellDetailsPage';
 import MobileAccessoriesSellDetailsPage from './pages/mobileAccessoriesSellDetails';
 import AddedMobileList from './pages/showAddedItem';
 import Profile from './pages/myAccountPage';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 //tahsin
 import Contact from "./pages/Contact";
