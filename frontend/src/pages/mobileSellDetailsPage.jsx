@@ -1,9 +1,23 @@
-import React, { useState } from 'react';
-import { Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, IconButton, InputAdornment, Grid, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import {Card,CardContent, CardMedia, Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, IconButton, InputAdornment, Grid, Button } from '@mui/material';
 import { TextField, Typography, Divider, Select, InputLabel, MenuItem } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ImageUploadCard from './image_upload_card';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from '../context/auth';
+import Alert from '@mui/material/Alert';
+import Snackbar from '@mui/material/Snackbar';
+import { CleaningServices } from '@mui/icons-material';
 
+import AddPhotoAlternateIcon from '@mui/icons-material/AddPhotoAlternate';
+const UploadState = {
+    IDLE: 1,
+    UPLOADING: 2,
+    UPLOADED: 3,
+};
+
+Object.freeze(UploadState);
 const MobileSellDetailsPage = () => {
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
@@ -11,8 +25,10 @@ const MobileSellDetailsPage = () => {
   const [authenticity, setAuthenticity] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
+  //const [selectedImages, setSelectedImages] = useState([]);
   const [errors, setErrors] = useState({});
+  const [alertMessage, setAlertMessage] = useState('');
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
 
   const handleBrand = (event) => {
     setBrand(event.target.value);
@@ -36,6 +52,32 @@ const MobileSellDetailsPage = () => {
     setSelectedImages([...selectedImages, file]);
   };
 
+  const [imgUrl, setImgUrl] = useState("");
+  const [uploadState, setUploadState] = useState(UploadState.IDLE);
+  async function handleFormData(e) {
+      setUploadState(UploadState.UPLOADING);
+      const file = e.target.files[0];
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+          const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
+              method: "POST",
+              body: formData,
+          });
+          const data = await res.json();
+          setImgUrl(data.secure_url);
+          console.log(imgUrl)
+          setUploadState(UploadState.UPLOADED);
+      } catch (error) {
+        console.log(error)
+        console.log(imgUrl)
+          console.error("Error uploading file:", error);
+         setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
+      }
+  }
+
+
   const validateForm = () => {
     const newErrors = {};
     if (!condition) newErrors.condition = 'Condition is required';
@@ -44,36 +86,92 @@ const MobileSellDetailsPage = () => {
     if (!model) newErrors.model = 'Model is required';
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
-    if (selectedImages.length === 0) newErrors.images = 'At least one image is required';
+    //if (selectedImages.length === 0) newErrors.images = 'At least one image is required';
     return newErrors;
   };
 
-  const handleSubmit = () => {
+  const [auth] = useAuth();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
-      // Submit the form
-      console.log('Form submitted');
+      const formData = new FormData();
+      formData.append('sellerId', auth.user._id);
+      formData.append('brand', brand);
+      formData.append('model', model);
+      formData.append('condition', condition);
+      formData.append('authenticity', authenticity);
+      formData.append('description', description);
+      formData.append('price', price);
+      formData.append('imgUrl', imgUrl);
+      // selectedImages.forEach((image, index) => {
+      //   formData.append('images', image, image.name);
+      // });
+      console.log('Form Data:', Array.from(formData.entries()));
+      try {
+        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/mobile", formData); 
+          // headers: {
+          //   'Content-Type': 'multipart/form-data',
+          // },
+        
+        if (res.status===200) {
+          console.log('yayayay')
+          setAlertMessage('Product uploaded successfully');
+          setSubmissionSuccess(true);
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        console.error("Registration Error:", error.response ? error.response.data : error.message);
+      //  toast.error("Something went wrong");
+      }
     } else {
       setErrors(newErrors);
     }
   };
 
+  useEffect(() => {
+    if (submissionSuccess) {
+      const timer = setTimeout(() => {
+        navigate("/added-items");
+      }, 2000); 
+
+      return () => clearTimeout(timer); 
+    }
+  }, [submissionSuccess, navigate]);
+
   const brands_models = {
-      samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],
-      iphone: ["iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone SE (2022)"],
-      xiaomi: ["13 Pro", "13", "12T Pro", "12T", "Redmi Note 12 Pro"],
-      realme: ["GT Neo 5", "10 Pro+", "10 Pro", "10", "Narzo 50"],
-      vivo: ["X90 Pro+", "X90 Pro", "V27 Pro", "V27", "Y56"],
-      oppo: ["Find X6 Pro", "Find X6", "Reno 9 Pro+", "Reno 9 Pro", "A98"],
-      nothingphone: ["Phone (1)"],
-      google: ["Pixel 7 Pro", "Pixel 7", "Pixel 6a"],
-      oneplus: ["11", "10 Pro", "Nord 2T"],
-      motorola: ["Edge 40 Pro", "Edge 30 Fusion", "Moto G Stylus 5G (2023)"],
-      sony: ["Xperia 1 V", "Xperia 5 IV", "Xperia 10 IV"],
-      asus: ["ROG Phone 7", "Zenfone 10", "ROG Phone 6"]
-    };
+    samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],
+    iphone: ["iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone SE (2022)"],
+    xiaomi: ["13 Pro", "13", "12T Pro", "12T", "Redmi Note 12 Pro"],
+    realme: ["GT Neo 5", "10 Pro+", "10 Pro", "10", "Narzo 50"],
+    vivo: ["X90 Pro+", "X90 Pro", "V27 Pro", "V27", "Y56"],
+    oppo: ["Find X6 Pro", "Find X6", "Reno 9 Pro+", "Reno 9 Pro", "A98"],
+    nothingphone: ["Phone (1)"],
+    google: ["Pixel 7 Pro", "Pixel 7", "Pixel 6a"],
+    oneplus: ["11", "10 Pro", "Nord 2T"],
+    motorola: ["Edge 40 Pro", "Edge 30 Fusion", "Moto G Stylus 5G (2023)"],
+    sony: ["Xperia 1 V", "Xperia 5 IV", "Xperia 10 IV"],
+    asus: ["ROG Phone 7", "Zenfone 10", "ROG Phone 6"]
+  };
+  const handleClose = () => {
+    setSubmissionSuccess(false)
+  };
   return (
     <>
+      {alertMessage && (
+        <Snackbar
+        open={submissionSuccess}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Product uploaded successfully"
+     
+      />
+      )}
       <Box
         sx={{
           bgcolor: 'lightgrey',
@@ -193,12 +291,11 @@ const MobileSellDetailsPage = () => {
             <FormControl sx={{ mb: 4 }} error={!!errors.price}>
               <TextField
                 type='number'
-                inputProps={{ min: 0, step: "1", max:200000 }}
+                inputProps={{ min: 0, step: "1", max: 200000 }}
                 id="price-field"
                 placeholder="Pick a good price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                
               />
               {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
             </FormControl>
@@ -208,11 +305,83 @@ const MobileSellDetailsPage = () => {
             </Typography>
 
             <Grid container spacing={1}>
-              {[...Array(5)].map((_, index) => (
-                <Grid item xs={6} sm={4} md={3} key={index}>
+             {/*  {[...Array(5)].map((_, index) => ( */}
+                {/* <Grid item xs={6} sm={4} md={3} key={index}>
                   <ImageUploadCard onFileChange={handleFileChange} />
-                </Grid>
-              ))}
+                </Grid> */}
+              {/* ))} */}
+              {/* <div className="flex justify-center h-screen items-center">
+            {uploadState !== UploadState.UPLOADED ? (
+                <div className="w-32">
+                    <label
+                        htmlFor="image"
+                        className="block bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-center"
+                    >
+                        {uploadState === UploadState.UPLOADING ? (
+                            <span>Uploading...</span>
+                        ) : (
+                            <span>Upload</span>
+                        )}
+                        <input
+                            type="file"
+                            name="file"
+                            id="image"
+                            className="hidden"
+                            onChange={handleFormData}
+                        />
+                    </label>
+                </div>
+            ) : (
+                <div className="w-96 text-green-500">
+                    <span className="block py-2 px-3 text-green-500 text-center">
+                        Uploaded!
+                    </span>
+                    <img className="w-full" src={imgUrl} alt="Uploaded image" />
+                </div>
+            )}
+        </div> */}
+{/* <Typography variant='subtitle1' sx={{ fontWeight: 'bold', mb: 1 }}>
+                Upload Images
+              </Typography>
+              <NewImageUploadCard  handleImageChange={handleFormData} preview={imgUrl} />
+              {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>} */}
+               {/* <Box display="flex" justifyContent="center" alignItems="center" height="100px" bgcolor="#f5f5f5"> */}
+            <Card elevation={3} sx={{ width: 300, textAlign: 'center',height:'50' }}>
+                <CardContent>
+                    <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id="image-upload"
+                        type="file"
+                        onChange={handleFormData}
+                    />
+                    <label htmlFor="image-upload">
+                        <IconButton color="primary" aria-label="upload picture" component="span">
+                            <AddPhotoAlternateIcon sx={{ fontSize: 48 }} />
+                        </IconButton>
+                    </label>
+                    {imgUrl ? (
+                        <CardMedia
+                            component="img"
+                            height="200"
+                            image={imgUrl}
+                            alt="Uploaded image"
+                        />
+                    ) : (
+                        <Typography variant="h6" color="textSecondary">
+                            {uploadState === 'UPLOADING' ? 'Uploading...' : 'Add Image'}
+                        </Typography>
+                    )}
+                </CardContent>
+                {imgUrl && (
+                    <CardContent>
+                        {/* <Typography variant="h6" color="green">
+                            Uploaded!
+                        </Typography> */}
+                    </CardContent>
+                )}
+            </Card>
+        {/* </Box> */}
             </Grid>
             {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
 

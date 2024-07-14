@@ -10,6 +10,9 @@ import Pricing from './pages/pricing';
 import Cart from './pages/cart';
 import Sell from './pages/sell';
 import MobileSellDetailsPage from './pages/mobileSellDetailsPage';
+import MobileAccessoriesSellDetailsPage from './pages/mobileAccessoriesSellDetails';
+import AddedMobileList from './pages/showAddedItem';
+import Profile from './pages/myAccountPage';
 
 //tahsin
 import Contact from "./pages/Contact";
@@ -20,7 +23,7 @@ import Login from "./pages/Auth/Login";
 import Dashboard from "./pages/user/Dashboard";
 import PrivateRoute from "./components/Routes/Private";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
-
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   
@@ -33,11 +36,15 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/profile" element={<Profile />} />
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/sell" element={<Sell />} />
-          <Route path="/sell/mobile" element={<MobileSellDetailsPage />} />
-
+          <Route path="/sell-mobile" element={<MobileSellDetailsPage />} />
+          <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />
+          
+          <Route path="/added-items" element={<AddedMobileList/>}/>
+          
           <Route path="/dashboard" element={<PrivateRoute />}>
             {/* <Route path="user" element={<Dashboard />} />
           <Route path="user/orders" element={<Orders />} />
@@ -54,6 +61,7 @@ const App = () => {
           <Route path="*" element={<Pagenotfound />} />
         </Routes>
       </div>
+      <Toaster />
     </>
   );
 };

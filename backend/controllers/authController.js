@@ -150,3 +150,35 @@ exports.forgotPasswordController = async (req, res) => {
     });
   }
 };
+
+exports.updateProfileController = async (req, res) => {
+  try {
+    const { name, email, phone, address } = req.body;
+    const userId = req.user._id; // Assuming you have user ID in the req.user from the middleware
+
+    if (!name || !email || !phone || !address) {
+      return res.status(400).send({ message: "All fields are required" });
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    user.name = name;
+    user.email = email;
+    user.phone = phone;
+    user.address = address;
+
+    await user.save();
+
+    res.status(200).send({
+      success: true,
+      message: "Profile updated successfully",
+      user,
+    });
+  } catch (error) {
+    console.log('Update Profile Error:', error);
+    res.status(500).send({ success: false, message: "Something went wrong", error });
+  }
+};

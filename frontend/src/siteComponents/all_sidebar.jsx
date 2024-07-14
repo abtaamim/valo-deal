@@ -14,6 +14,7 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { Link as RouterLink } from 'react-router-dom';
 import NestedSidebar from './nested_sidebar';
 import { useState } from 'react';
+import { useAuth } from '../context/auth';
 
 export default function AllDrawer() {
   const [openMainDrawer, setOpenMainDrawer] = useState(false);
@@ -32,7 +33,7 @@ export default function AllDrawer() {
 
   const handleSubDrawerClose = () => {
     setOpenSubDrawer(false);
-   
+
   };
 
   const handleMainMenuClick = () => {
@@ -40,13 +41,15 @@ export default function AllDrawer() {
     setOpenMainDrawer(true);
   };
 
+  const [auth] = useAuth();
+
   const DrawerList = (
     <Box sx={{ width: 350 }} role="presentation" onClick={toggleMainDrawer(false)}>
       <List sx={{ paddingTop: 0, justifyContent: 'flex-start', color: 'rgb(27, 37, 54)' }}>
         <ListItem disablePadding>
-          <ListItemButton
+          {!auth.user ? (<ListItemButton
             component={RouterLink}
-            to="/signin"
+            to="/login"
             sx={{
               justifyContent: 'flex-start',
               color: 'white',
@@ -68,7 +71,28 @@ export default function AllDrawer() {
               primary="Hello, Sign in"
               primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
             />
-          </ListItemButton>
+          </ListItemButton>) : (
+            <ListItemButton
+              sx={{
+                justifyContent: 'flex-start',
+                color: 'white',
+                bgcolor: 'rgb(27, 37, 54)',
+                width: '250px',
+                height: '60px',
+                marginTop: '0px',
+                borderRadius: '0px',
+                '&:hover': {
+                  bgcolor: 'rgb(27, 37, 54)',
+                },
+              }}
+            >
+              <ListItemText
+                primary={`Hello, ${auth.user.name}`}
+                primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
+                sx={{ justifyContent: 'flex-start' }}
+
+              />
+            </ListItemButton>)}
         </ListItem>
 
         <ListItem>
@@ -93,20 +117,20 @@ export default function AllDrawer() {
       </List>
       <Divider sx={{ color: 'rgb(0, 7, 20)' }} />
       <List>
-      <ListItem>
+        <ListItem>
           <ListItemText
             primary="Help & Settings"
             primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
           />
         </ListItem>
-        <ListItemButton>
-        <ListItem>
+        <ListItemButton >
+          <ListItem>
 
-          <ListItemText
-            primary="Your Account"
-            primaryTypographyProps={{  fontSize: 'h7.fontSize' }}
-          />
-        </ListItem>
+            <ListItemText
+              primary="My Account"
+              primaryTypographyProps={{ fontSize: 'h7.fontSize' }}
+            />
+          </ListItem>
         </ListItemButton>
 
         {/* {['All mail', 'Trash', 'Spam'].map((text, index) => (

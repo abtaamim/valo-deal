@@ -16,6 +16,8 @@ const ForgotPassword = () => {
     e.preventDefault();
     setLoading(true); // Set loading to true when form is submitted
     try {
+      // http://localhost:8080/api/v1/auth/forgot-password
+      // https://valo-deal-backend.vercel.app/api/v1/auth/forgot-password
       const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/forgot-password", {
         email,
         newPassword,

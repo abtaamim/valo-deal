@@ -3,34 +3,62 @@ const dotenv = require('dotenv');
 const morgan = require('morgan');
 const connectDB = require('./confiq/db.js');
 const authRoutes = require('./routes/authRoute.js');
+const mobileRoutes =require('./routes/sellMobileRoute.js')
 const cors = require('cors');
+const path = require('path');
 
-// Configure environment variables
+const cloudinary = require('cloudinary').v2;
+const multer= require('multer')
+const streamifier = require('streamifier');
+
 dotenv.config();
 
-// Database configuration
 connectDB();
 
-// Create an express app
 const app = express();
 
 // Middlewares
-app.use(cors(
-  {
-    origin: ["https://valo-deal-frontend.vercel.app"],
-    methods: ['POST', 'GET'],
-    credentials: true
-  }
+app.use(cors( 
+  // {
+  //   origin: ["https://valo-deal-frontend.vercel.app"],
+  //   methods: ['POST', 'GET', 'PUT', 'DELETE'],
+  //   credentials: true
+  // }
 ));
 app.use(express.json());
 app.use(morgan("dev"));
 
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_KEY,
+    api_secret: process.env.CLOUD_KEY_SECRET,
+    secure: true,
+});
+
+app.post('/upload', upload.single('file'), (req, res) => {
+  const stream = cloudinary.uploader.upload_stream(
+      {
+          folder: 'phone_image',
+      },
+      (error, result) => {
+          if (error) {
+              console.error(error);
+              return res.status(500).json({ error: 'Upload to Cloudinary failed.' });
+          }
+          res.status(200).json(result);
+      }
+  );
+  streamifier.createReadStream(req.file.buffer).pipe(stream);
+});
 // Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/sell", mobileRoutes); // "/api/v1/sell"
 
 // Default route
 app.get("/", (req, res) => {
-  res.json("<h1>Welcome to ecommerce app</h1>");
+  res.send("<h1>Welcome to ecommerce app</h1>");
 });
 
 // Error handling middleware

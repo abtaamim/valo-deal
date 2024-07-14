@@ -6,18 +6,28 @@ import { useNavigate } from 'react-router-dom';
 
 const CategorySelection = ({ open, handleClose, handleCategorySelect, selectedCategory, items }) => {
   const [showMobileDialog, setShowMobileDialog] = useState(false);
+  const [showMobileAccessoriesDialog, setShowMobileAccessoriesDialog] = useState(false);
 const navigate= useNavigate();
   const handleSubcategory = (subCategory) => {
     if(subCategory === 'Mobile Phones'){
       setShowMobileDialog(true);
     }
+    else if(subCategory === 'Mobile Phone Accessories'){
+      setShowMobileAccessoriesDialog(true)
+    }
   }
   useEffect(() => {
     if (showMobileDialog) {
-      navigate('/sell/mobile');
+      navigate('/sell-mobile');
     }
+    
   }, [showMobileDialog, navigate]);
 
+  useEffect(()=>{
+   if(showMobileAccessoriesDialog){
+      navigate('/sell/mobile-accessories');
+    }
+  },[showMobileAccessoriesDialog, navigate]);
 
   const handleCloseMobileDialog = () => {
     setShowMobileDialog(false);
