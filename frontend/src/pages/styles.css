@@ -1,0 +1,39 @@
+/* Additional CSS for homepage */
+
+/* Custom container style */
+.container-custom {
+  width: 100%;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Ensure carousel images cover full width */
+.carousel .carousel-item img {
+  width: 100%;
+  height: auto;
+}
+
+/* Responsive design for different screen sizes */
+@media (max-width: 768px) {
+  .card {
+    margin-bottom: 20px;
+  }
+}
+
+/* Custom styles for ListGroup */
+.list-group-item img {
+  max-width: 50px;
+  margin-right: 15px;
+}
+.list-group-item h5 {
+  margin: 0;
+}
+.list-group-item p {
+  margin: 0;
+}
+
+/* Make the View Details button smaller */
+.list-group-item .btn {
+  padding: 5px 10px;
+  font-size: 0.875rem;
+}
