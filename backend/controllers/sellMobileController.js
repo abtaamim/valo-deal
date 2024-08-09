@@ -32,8 +32,25 @@ const sellMobileController = async (req, res) => {
   }
 };
 
+const getAllMobilesController = async (req, res) => {
+  try {
+    const userId = req.user._id; // Assuming user ID is available in req.user
 
-// New controller to get mobiles for the current user
+    // Fetch mobiles where sellerId is not equal to userId
+    const mobiles = await mobileModel.find({ sellerId: { $ne: userId } });
+
+    if (mobiles.length === 0) {
+      return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
+    }
+
+    res.status(200).json({ success: true, mobiles });
+  } catch (error) {
+    console.error('Error fetching user mobiles:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+
+
 const getUserAddedMobilesController = async (req, res) => {
   try {
     const userId = req.user._id; // Assuming user ID is available in req.user
@@ -44,6 +61,8 @@ const getUserAddedMobilesController = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
+
+
 const deleteMobileController = async (mobileId) => {
   try {
     // Assuming mobileModel.findByIdAndDelete is used to delete the mobile listing
@@ -52,6 +71,22 @@ const deleteMobileController = async (mobileId) => {
     throw error; // Propagate the error to handle it in the calling route
   }
 };
-module.exports = { sellMobileController, getUserAddedMobilesController, deleteMobileController };
+
+const getLatestMobile = async (req, res) => {
+  try {
+    const userId = req.user._id; 
+    const latestMobile = await mobileModel.find({ sellerId:  {$ne: userId } })
+      .sort({ createdAt: -1 }).limit(3) .exec();
+     
+    if (!latestMobile) {
+      return res.status(404).json({ success: false, message: 'No Mobiles found' });
+    }
+    res.status(200).json({ success: true,  latestMobile });
+  } catch (error) {
+    console.error('Error fetching the latest Mobile:', error);
+    res.status(500).json({ success: false, message: 'Internal Server Error' });
+  }
+};
+module.exports = { sellMobileController, getAllMobilesController, getUserAddedMobilesController, deleteMobileController, getLatestMobile };
 
 

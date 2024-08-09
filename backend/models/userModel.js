@@ -1,6 +1,7 @@
 //import mongoose from "mongoose";
 const mongoose=require('mongoose')
-const userSchema = new mongoose.Schema(
+const Schema = mongoose.Schema;
+const userSchema = new Schema(
   {
     name: {
       type: String,
@@ -32,6 +33,33 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    cartItems: [
+      {
+        itemId: { type: Schema.Types.ObjectId, required: true },
+        itemType: { 
+          type: String, 
+         // enum: ['mobile', 'computer', 'electronic', 'vehicle'], // Enum values for item types
+          required: true
+        }
+      }
+    ],
+    recentlyViewedItems: [
+      {
+        itemId: { type: Schema.Types.ObjectId, required: true },
+        itemType: { 
+          type: String, 
+          //enum: ['mobiles', 'computers', 'electronics', 'vehicles'], // Enum values for item types
+          required: true
+        },
+        viewedAt: { type: Date, default: Date.now }
+      }
+    ],
+    searchedItems:[
+      {
+        searchTerm: { type: String, required: true },
+        searchedAt: { type: Date, default: Date.now }
+      }
+    ]
   },
   { timestamps: true }
 );

@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect, } from 'react';
 import { Dialog, DialogContent, List, ListItemButton, ListItemText, ListItem, ListItemIcon, Typography, Divider } from '@mui/material';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import MobileSellDetailsPage from '../pages/mobileSellDetailsPage';
@@ -9,6 +9,15 @@ const CategorySelection = ({ open, handleClose, handleCategorySelect, selectedCa
   const [showMobileAccessoriesDialog, setShowMobileAccessoriesDialog] = useState(false);
 const navigate= useNavigate();
   const handleSubcategory = (subCategory) => {
+    if(selectedCategory === 'Computers'){
+      navigate('/sell/computers', { state: { subCategory } });
+    }
+    else if(selectedCategory === 'Electronics'){
+      navigate('/sell/electronics', { state: { subCategory } });
+    }
+    else if(selectedCategory=== 'Vehicles'){
+      navigate('/sell/vehicles', { state: { subCategory } });
+    }
     if(subCategory === 'Mobile Phones'){
       setShowMobileDialog(true);
     }
@@ -28,6 +37,9 @@ const navigate= useNavigate();
       navigate('/sell/mobile-accessories');
     }
   },[showMobileAccessoriesDialog, navigate]);
+
+  
+
 
   const handleCloseMobileDialog = () => {
     setShowMobileDialog(false);

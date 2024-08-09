@@ -16,9 +16,12 @@ import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import AllDrawer from './all_sidebar';
 const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
   const items = {
+    Mobiles:['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
     Computers: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
-    Electronics: ['TVs', 'Cameras', 'Speakers'],
-    Automotive: ['Car Audio', 'Car Care', 'GPS']
+    Electronics: ['Desktop Computers', 'Laptops', 'Computer & Laptop Accessories', 'TVs', 'Cameras', 'ACs & Home Appliances', 'Photocopies', 'Other Electronics'],
+    Vehicles: ['Car', 'Motorbikes', 'Bicycles', 'Auto Parts & Accessories'],
+    'Home & Living': [],
+    "Men's Fashion & Grooming": [],
   };
 
   const DrawerList = (
@@ -69,10 +72,13 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
             primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
           />
         </ListItem>
-        {items[category]?.map((item) => (
-          <ListItem key={item} disablePadding>
-            <ListItemButton onClick={onClose}>
-              <ListItemText primary={item} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
+        {items[category]?.map((subCat) => (
+          <ListItem key={subCat} disablePadding>
+            <ListItemButton 
+            component={RouterLink}
+            to={`/sub-category-item/${category}/${subCat}`} 
+            onClick={onClose}>
+              <ListItemText primary={subCat} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
               <ListItemIcon>
                 <ArrowForwardIosOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }} />
               </ListItemIcon>

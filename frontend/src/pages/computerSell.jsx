@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+
 import { Card, CardContent, CardMedia, Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, IconButton, InputAdornment, Grid, Button } from '@mui/material';
 import { TextField, Typography, Divider, Select, InputLabel, MenuItem } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/auth';
-import gsmarena from 'gsmarena-api';
+
 import Snackbar from '@mui/material/Snackbar';
 
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
@@ -17,51 +19,29 @@ const UploadState = {
 };
 
 Object.freeze(UploadState);
-const MobileSellDetailsPage = () => {
+const ComputerSellPage = () => {
   const [brand, setBrand] = useState('');
   const [model, setModel] = useState('');
-  const [condition, setCondition] = useState('');
-  const [authenticity, setAuthenticity] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [condition, setCondition] = useState('');
+  //const [selectedImages, setSelectedImages] = useState([]);
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-  
-  const handleBrand = (event) => {
-    setBrand(event.target.value);
-    setModel('');
+
+  const handleFileChange = (file) => {
+    setSelectedImages([...selectedImages, file]);
   };
 
-  const handleModel = (event) => {
-    setModel(event.target.value);
-  };
-
-  const clearBrand = () => {
-    setBrand('');
-    setModel('');
-  };
-
-  const clearModel = () => {
-    setModel('');
-  };
-
-  const handleFileChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      setSelectedImages([file]);
-      setImagePreviewUrl(URL.createObjectURL(file));
-    }
-  };
+  const location = useLocation();
+  const { subCategory } = location.state || {};
 
   const [imgUrl, setImgUrl] = useState("");
   const [uploadState, setUploadState] = useState(UploadState.IDLE);
-
-  async function handleFormData(file) {
+  async function handleFormData(e) {
     setUploadState(UploadState.UPLOADING);
-    // const file = e.target.files[0];
+    const file = e.target.files[0];
     const formData = new FormData();
     formData.append("file", file);
 
@@ -74,21 +54,17 @@ const MobileSellDetailsPage = () => {
       setImgUrl(data.secure_url);
       console.log(imgUrl)
       setUploadState(UploadState.UPLOADED);
-      return data.secure_url;
     } catch (error) {
       console.log(imgUrl)
       console.error("Error uploading file:", error);
       setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
     }
-    //here***
-
   }
 
 
   const validateForm = () => {
     const newErrors = {};
-    if (!condition) newErrors.condition = 'Condition is required';
-    if (!authenticity) newErrors.authenticity = 'Authenticity is required';
+
     if (!brand) newErrors.brand = 'Brand is required';
     if (!model) newErrors.model = 'Model is required';
     if (!description) newErrors.description = 'Description is required';
@@ -105,25 +81,24 @@ const MobileSellDetailsPage = () => {
 
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
-      //here*****
+      const formData = new FormData();
+      formData.append('sellerId', auth.user._id);
+      formData.append('brand', brand);
+      formData.append('model', model);
+      formData.append('description', description);
+      formData.append('price', price);
+      formData.append('imgUrl', imgUrl);
+      formData.append('subCategory', subCategory);
+      formData.append('condition', condition);
+      // selectedImages.forEach((image, index) => {
+      //   formData.append('images', image, image.name);
+      // });
+      console.log('Form Data:', Array.from(formData.entries()));
       try {
-        const imageUrl = await handleFormData(selectedImages[0]);
-
-        const formData = new FormData();
-        formData.append('sellerId', auth.user._id);
-        formData.append('brand', brand);
-        formData.append('model', model);
-        formData.append('condition', condition);
-        formData.append('authenticity', authenticity);
-        formData.append('description', description);
-        formData.append('price', price);
-        //formData.append('imgUrl', imgUrl);
-        //here********
-        formData.append('imgUrl', imageUrl);
-
-        console.log('Form Data:', Array.from(formData.entries()));
-
-        const res = await axios.post("http://localhost:8080/sell/mobile", formData);
+        const res = await axios.post("http://localhost:8080/sell/computer", formData);
+        // headers: {
+        //   'Content-Type': 'multipart/form-data',
+        // },
 
         if (res.status === 200) {
           console.log('yayayay')
@@ -152,20 +127,6 @@ const MobileSellDetailsPage = () => {
     }
   }, [submissionSuccess, navigate]);
 
-  const brands_models = {
-    samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],
-    iphone: ["iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone SE (2022)"],
-    xiaomi: ["13 Pro", "13", "12T Pro", "12T", "Redmi Note 12 Pro"],
-    realme: ["GT Neo 5", "10 Pro+", "10 Pro", "10", "Narzo 50"],
-    vivo: ["X90 Pro+", "X90 Pro", "V27 Pro", "V27", "Y56"],
-    oppo: ["Find X6 Pro", "Find X6", "Reno 9 Pro+", "Reno 9 Pro", "A98"],
-    nothingphone: ["Phone (1)"],
-    google: ["Pixel 7 Pro", "Pixel 7", "Pixel 6a"],
-    oneplus: ["11", "10 Pro", "Nord 2T"],
-    motorola: ["Edge 40 Pro", "Edge 30 Fusion", "Moto G Stylus 5G (2023)"],
-    sony: ["Xperia 1 V", "Xperia 5 IV", "Xperia 10 IV"],
-    asus: ["ROG Phone 7", "Zenfone 10", "ROG Phone 6"]
-  };
 
   const handleClose = () => {
     setSubmissionSuccess(false)
@@ -184,7 +145,7 @@ const MobileSellDetailsPage = () => {
       <Box
         sx={{
           bgcolor: 'lightgrey',
-          margin: 'auto',
+           margin: 'auto',
           maxWidth: 800,
           display: 'flex',
           flexDirection: 'column',
@@ -209,71 +170,40 @@ const MobileSellDetailsPage = () => {
               </RadioGroup>
               {errors.condition && <Typography variant="caption" color="error">{errors.condition}</Typography>}
             </FormControl>
-            <FormControl error={!!errors.authenticity}>
-              <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
-                Authenticity
-              </FormLabel>
-              <RadioGroup row value={authenticity} onChange={(e) => setAuthenticity(e.target.value)}>
-                <FormControlLabel value="Original" control={<Radio />} label="Original" />
-                <FormControlLabel sx={{ ml: '35px' }} value="Refurbished" control={<Radio />} label="Refurbished" />
-              </RadioGroup>
-              {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
-            </FormControl>
+            
 
-            {/* BRAND DROPDOWN */}
+            {/* BRAND  */}
 
-            <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
-              <InputLabel id="brand-select-label">Brand</InputLabel>
-              <Select
-                labelId="brand-select-label"
+            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+              Brand
+            </Typography>
+            <FormControl sx={{ mb: 4 }} error={!!errors.brand}>
+              <TextField
+                type='string'
+                inputProps={{ min: 0, step: "1", max: 200000 }}
+                id="brand-field"
+                placeholder="Enter brand name"
                 value={brand}
-                onChange={handleBrand}
-                label="Brand"
-                endAdornment={
-                  brand ? (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={clearBrand} sx={{ mr: '18px' }}>
-                        <CancelIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ) : null
-                }
-              >
-                {Object.keys(brands_models).map((brandName) => (
-                  <MenuItem key={brandName} value={brandName}>
-                    {brandName}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.brand && <Typography variant="caption" color="error">{errors.brand}</Typography>}
+                onChange={(e) => setBrand(e.target.value)}
+              />
+              {errors.price && <Typography variant="caption" color="error">{errors.brand}</Typography>}
             </FormControl>
 
             {/* MODEL DROPDOWN */}
 
-            <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.model}>
-              <InputLabel id="model-select-label">Model</InputLabel>
-              <Select
-                labelId="model-select-label"
+            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+              Model
+            </Typography>
+            <FormControl sx={{ mb: 4 }} error={!!errors.model}>
+              <TextField
+                type='string'
+                inputProps={{ min: 0, step: "1", max: 200000 }}
+                id="model-field"
+                placeholder="Enter model name"
                 value={model}
-                onChange={handleModel}
-                label="Model"
-                endAdornment={
-                  model ? (
-                    <InputAdornment position='end'>
-                      <IconButton onClick={clearModel} sx={{ mr: '18px' }}>
-                        <CancelIcon />
-                      </IconButton>
-                    </InputAdornment>
-                  ) : null
-                }
-              >
-                {brand && brands_models[brand].map((modelName) => (
-                  <MenuItem key={modelName} value={modelName}>
-                    {modelName}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
+                onChange={(e) => setModel(e.target.value)}
+              />
+              {errors.price && <Typography variant="caption" color="error">{errors.model}</Typography>}
             </FormControl>
 
             {/* DESCRIPTION field */}
@@ -322,33 +252,25 @@ const MobileSellDetailsPage = () => {
                     style={{ display: 'none' }}
                     id="image-upload"
                     type="file"
-                    // here****
-                    // onChange={handleFormData}
-                    onChange={handleFileChange}
+                    onChange={handleFormData}
                   />
                   <label htmlFor="image-upload">
                     <IconButton aria-label="upload picture" component="span">
                       < ImageOutlinedIcon sx={{ fontSize: 28 }} />
                     </IconButton>
                   </label>
-
-                  {/* {imgUrl ?  */}
-                  {imagePreviewUrl ?
-                    (
-                      <CardMedia
-                        component="img"
-                        height="200"
-
-                        // here****
-                        //image={imgUrl}
-                        image={imagePreviewUrl}
-                        alt="Uploaded image"
-                      />
-                    ) : (
-                      <Typography variant="h6" color="textSecondary">
-                        {uploadState === 'UPLOADING' ? 'Uploading...' : 'Add Image'}
-                      </Typography>
-                    )}
+                  {imgUrl ? (
+                    <CardMedia
+                      component="img"
+                      height="200"
+                      image={imgUrl}
+                      alt="Uploaded image"
+                    />
+                  ) : (
+                    <Typography variant="h6" color="textSecondary">
+                      {uploadState === 'UPLOADING' ? 'Uploading...' : 'Add Image'}
+                    </Typography>
+                  )}
                 </CardContent>
                 {imgUrl && (
                   <CardContent>
@@ -372,4 +294,4 @@ const MobileSellDetailsPage = () => {
   );
 }
 
-export default MobileSellDetailsPage;
+export default ComputerSellPage;

@@ -101,7 +101,7 @@ export default function AllDrawer() {
             primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
           />
         </ListItem>
-        {['Electronics', 'Computers', 'Smart home', 'Automotive'].map((text, index) => (
+        {['Electronics', 'Computers', 'Mobiles', 'Vehicles'].map((text, index) => (
           <ListItem key={text} disablePadding>
             <ListItemButton onClick={() => handleCategoryClick(text)}>
               <ListItemText

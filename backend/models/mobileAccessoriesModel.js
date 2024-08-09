@@ -1,12 +1,13 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const sellMobileSchema = new Schema({
+const mobileAccessoriesSchema = new Schema({
   
   sellerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  itemType: {type: String, default: 'mobile'},
+  itemType: {type: String, default: 'mobileaccessories'},
   brand: { type: String, required: true },
   model: { type: String, required: true },
+  accessoryType: { type: String, required: true},
   condition: { type: String, required: true },
   authenticity: { type: String, required: true },
   description: { type: String, required: true },
@@ -15,4 +16,4 @@ const sellMobileSchema = new Schema({
 }, { timestamps: true });
 
 
-module.exports = mongoose.model("SellMobile", sellMobileSchema); 
+module.exports = mongoose.model("mobileAccessories", mobileAccessoriesSchema); 

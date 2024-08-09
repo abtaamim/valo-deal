@@ -5,7 +5,7 @@ import { Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Butto
 import RemoveShoppingCartOutlinedIcon from '@mui/icons-material/RemoveShoppingCartOutlined';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
-import { useCart } from '../context/CartContext';
+//import { useCart } from '../context/CartContextContext';
 import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
 const ListingCard = ({ item, onRemove }) => (
   <Card sx={{ width: '300px' }}>
@@ -48,10 +48,10 @@ const ListingCard = ({ item, onRemove }) => (
   </Card>
 );
 
-const CartPage = () => {
-  const [cartItems, setCartItems] = useState([]);
+const RecentlyViewedItemPage = () => {
+  const [recentlyViewedItems, setrecentlyViewedItems] = useState([]);
   const [auth] = useAuth();
-  const { updateCartSize } = useCart();
+ 
 
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [open, setOpen] = useState(false);
@@ -78,8 +78,8 @@ const CartPage = () => {
         throw new Error("No token found");
       }
       // const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get('http://localhost:8080/cart/fetchitems')
-      setCartItems(response.data.cartItems);
+      const response = await axios.get('http://localhost:8080/recentlyViewed/fetchitems')
+      setrecentlyViewedItems(response.data.recentlyViewedItems);
 
 
     } catch (error) {
@@ -92,9 +92,9 @@ const CartPage = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/cart/${itemId}`);
+      await axios.delete(`http://localhost:8080/recentlyViewed/${itemId}`);
       fetchItems();
-      await updateCartSize();
+
       handleClose();
     } catch (error) {
       console.error(`Error deleting ${itemType}:`, error);
@@ -105,10 +105,10 @@ const CartPage = () => {
     <>
       <Box sx={{ p: 2 }}>
         <Typography variant="h4" gutterBottom>
-          cart
+          recentlyViewed
         </Typography>
         <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-          {cartItems.map((item) => (
+          {recentlyViewedItems.map((item) => (
             <Grid item key={item._id} xs={12} sm={6} md={3}>
               <ListingCard item={item} onRemove={(itemId) => handleClickOpen(itemId)} />
             </Grid>
@@ -128,7 +128,7 @@ const CartPage = () => {
         }}
       >
         <DialogTitle id="alert-dialog-title" sx={{ color: "rgb(194, 228, 255)" }}>
-          {"This item will be remove from your cart"}
+          {"This item will be remove from your recentlyViewed"}
         </DialogTitle>
 
         <DialogActions>
@@ -142,4 +142,4 @@ const CartPage = () => {
   );
 };
 
-export default CartPage;
+export default RecentlyViewedItemPage;

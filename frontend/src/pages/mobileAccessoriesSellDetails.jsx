@@ -1,57 +1,156 @@
-import React, { useState } from 'react';
-import { Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, IconButton, InputAdornment, Grid, Button } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { CardMedia, Card, CardContent, Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, IconButton, InputAdornment, Grid, Button } from '@mui/material';
 import { TextField, Typography, Divider, Select, InputLabel, MenuItem } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import ImageUploadCard from './image_upload_card';
-
+import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
+import { useAuth } from '../context/auth';
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+const UploadState = {
+  IDLE: 1,
+  UPLOADING: 2,
+  UPLOADED: 3,
+};
 
 const MobileAccessoriesSellDetailsPage = () => {
   const [condition, setCondition] = useState('');
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState('');
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [itemType, setItemType]=useState('');
+  const [itemType, setItemType] = useState('');
   const [errors, setErrors] = useState({});
+  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const [submissionSuccess, setSubmissionSuccess] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [brand, setBrand] = useState('');
+  const [model, setModel] = useState('');
+  const [authenticity, setAuthenticity] = useState('');
   const handleItemType = (event) => {
     setItemType(event.target.value);
-
   };
 
-  const itemTypes=[
-    'Power Banks','Chargers', 'Cables', 'Holder & Stands', 'Bags & Cases', 'Others'
+  const itemTypes = [
+    'Power Banks', 'Chargers', 'Cables', 'Holder & Stands', 'Bags & Cases', 'Others'
   ]
 
   const validateForm = () => {
     const newErrors = {};
     if (!condition) newErrors.condition = 'Condition is required';
-    if(!itemType) newErrors.itemType = 'Select an item type';
+    if (!itemType) newErrors.itemType = 'Select an item type';
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
+    if (!brand) newErrors.brand = 'Brand is required';
+    if (!model) newErrors.model = 'Model is required';
     if (selectedImages.length === 0) newErrors.images = 'At least one image is required';
-    
+    if (!authenticity) newErrors.authenticity = 'Authenticity is required';
     return newErrors;
   };
 
-  const handleFileChange = (file) => {
-    setSelectedImages([...selectedImages, file]);
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setSelectedImages([file]);
+      setImagePreviewUrl(URL.createObjectURL(file));
+    }
   };
+  const [auth] = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = () => {
+  const [imgUrl, setImgUrl] = useState("");
+  const [uploadState, setUploadState] = useState(UploadState.IDLE);
+  async function handleFormData(file) {
+    setUploadState(UploadState.UPLOADING);
+    // const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("http://localhost:8080/upload", {
+        method: "POST",
+        body: formData,
+      });
+      const data = await res.json();
+      setImgUrl(data.secure_url);
+      console.log(imgUrl)
+      setUploadState(UploadState.UPLOADED);
+      return data.secure_url;
+    } catch (error) {
+      console.log(imgUrl)
+      console.error("Error uploading file:", error);
+      setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
+    }
+    //here***
+
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
-      // Submit the form
+      try {
+        const imageUrl = await handleFormData(selectedImages[0]);
+
+        const formData = new FormData();
+        formData.append('sellerId', auth.user._id);
+        formData.append('brand', brand);
+        formData.append('model', model);
+        formData.append('accessoryType', itemType);
+        formData.append('condition', condition);
+        formData.append('authenticity', authenticity);
+        formData.append('description', description);
+        formData.append('price', price);
+        formData.append('imgUrl', imageUrl);
+
+        console.log('Form Data:', Array.from(formData.entries()));
+
+        const res = await axios.post("http://localhost:8080/sell/mobile-accessories", formData);
+
+        if (res.status === 200) {
+          console.log('yayayay')
+          setAlertMessage('Product uploaded successfully');
+          setSubmissionSuccess(true);
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (error) {
+        console.log(error);
+        console.error("Registration Error:", error.response ? error.response.data : error.message);
+        //  toast.error("Something went wrong");
+      }
       console.log('Form submitted');
     } else {
       setErrors(newErrors);
     }
   };
+
+  useEffect(() => {
+    if (submissionSuccess) {
+      const timer = setTimeout(() => {
+        navigate("/added-items");
+      }, 2000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [submissionSuccess, navigate]);
+
   const clearItemType = () => {
     setItemType('');
-    
   };
-
+  const handleClose = () => {
+    setSubmissionSuccess(false)
+  };
   return (
     <>
+      {alertMessage && (
+        <Snackbar
+          open={submissionSuccess}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          message="Product uploaded successfully"
+
+        />
+      )}
       <Box
         sx={{
           bgcolor: 'lightgrey',
@@ -70,10 +169,10 @@ const MobileAccessoriesSellDetailsPage = () => {
         <Divider sx={{ width: '100%', height: '1px', bgcolor: 'gray', mb: 2 }} />
         <Box sx={{ width: '70%', margin: 'auto', bgcolor: 'white', p: 2, display: 'flex', flexDirection: 'column' }}>
           <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
-           
+
             {/* Item type Dropdown */}
 
-          <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.itemType}>
+            <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.itemType}>
               <InputLabel id="item-type">Item Type</InputLabel>
               <Select
                 labelId="item-type"
@@ -98,8 +197,18 @@ const MobileAccessoriesSellDetailsPage = () => {
               </Select>
               {errors.itemType && <Typography variant="caption" color="error">{errors.itemType}</Typography>}
             </FormControl>
-            
-            
+
+            <FormControl error={!!errors.authenticity}>
+              <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
+                Authenticity
+              </FormLabel>
+              <RadioGroup row value={authenticity} onChange={(e) => setAuthenticity(e.target.value)}>
+                <FormControlLabel value="Original" sx={{mb:'10px'}} control={<Radio />} label="Original" />
+                <FormControlLabel sx={{ ml: '35px' }} value="Refurbished" control={<Radio />} label="Refurbished" />
+              </RadioGroup>
+              {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
+            </FormControl>
+
             <FormControl error={!!errors.condition}>
               <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
                 Condition
@@ -110,8 +219,37 @@ const MobileAccessoriesSellDetailsPage = () => {
               </RadioGroup>
               {errors.condition && <Typography variant="caption" color="error">{errors.condition}</Typography>}
             </FormControl>
-            
+            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+              Brand
+            </Typography>
+            <FormControl sx={{ mb: 4 }} error={!!errors.brand}>
+              <TextField
+                
+               // inputProps={{ min: 0, step: "1", max: 200000 }}
+                id="brand-field"
+                placeholder="brand name"
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
 
+              />
+              {errors.brand && <Typography variant="caption" color="error">{errors.brand}</Typography>}
+            </FormControl>
+
+            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+              Model
+            </Typography>
+            <FormControl sx={{ mb: 4 }} error={!!errors.model}>
+              <TextField
+                
+               // inputProps={{ min: 0, step: "1", max: 200000 }}
+                id="model-field"
+   //             placeholder="brand name"
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
+
+              />
+              {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
+            </FormControl>
             {/* DESCRIPTION field */}
             <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
               Description
@@ -136,12 +274,12 @@ const MobileAccessoriesSellDetailsPage = () => {
             <FormControl sx={{ mb: 4 }} error={!!errors.price}>
               <TextField
                 type='number'
-                inputProps={{ min: 0, step: "1", max:200000 }}
+                inputProps={{ min: 0, step: "1", max: 200000 }}
                 id="price-field"
                 placeholder="Pick a good price"
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
-                
+
               />
               {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
             </FormControl>
@@ -151,11 +289,49 @@ const MobileAccessoriesSellDetailsPage = () => {
             </Typography>
 
             <Grid container spacing={1}>
-              {[...Array(5)].map((_, index) => (
-                <Grid item xs={6} sm={4} md={3} key={index}>
-                  <ImageUploadCard onFileChange={handleFileChange} />
-                </Grid>
-              ))}
+              <Card elevation={3} sx={{ width: 300, textAlign: 'center', height: '50' }}>
+                <CardContent>
+                  <input
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    id="image-upload"
+                    type="file"
+                    // here****
+                    // onChange={handleFormData}
+                    onChange={handleFileChange}
+                  />
+                  <label htmlFor="image-upload">
+                    <IconButton aria-label="upload picture" component="span">
+                      < ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                    </IconButton>
+                  </label>
+
+                  {/* {imgUrl ?  */}
+                  {imagePreviewUrl ?
+                    (
+                      <CardMedia
+                        component="img"
+                        height="200"
+
+                        // here****
+                        //image={imgUrl}
+                        image={imagePreviewUrl}
+                        alt="Uploaded image"
+                      />
+                    ) : (
+                      <Typography variant="h6" color="textSecondary">
+                        {uploadState === 'UPLOADING' ? 'Uploading...' : 'Add Image'}
+                      </Typography>
+                    )}
+                </CardContent>
+                {imgUrl && (
+                  <CardContent>
+                    {/* <Typography variant="h6" color="green">
+                            Uploaded!
+                        </Typography> */}
+                  </CardContent>
+                )}
+              </Card>
             </Grid>
             {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
 

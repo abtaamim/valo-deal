@@ -12,8 +12,8 @@ body {
 }
 
 .nav {
-  background-color: rgb(0, 7, 20);
-  color: aliceblue;
+  background-color: rgb(0, 6, 12);
+  color: rgb(194, 228, 255);
   display: flex;
   justify-content: space-between;
   align-items: stretch;
@@ -127,6 +127,7 @@ body {
   list-style: none;
   display: flex;
   gap: 1rem;
+  /* color:rgb(6, 23, 78); */
 }
 
 .secondNav a {
@@ -216,10 +217,11 @@ body {
   justify-self: unset;
 }
 .sequential-text-transition-container .text-content {
-  color: rgb(121, 117, 114); /* Set your desired color here */
+  color: rgb(255, 255, 255); /* Set your desired color here */
   font-weight: bold;
   font-size: large;
 }
+
 /* @media (max-width: 850px) {
   .placeholder-text {
     display: none;

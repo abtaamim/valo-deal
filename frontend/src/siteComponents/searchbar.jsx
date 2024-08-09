@@ -38,20 +38,22 @@ export default function SearchBar() {
     <Paper
       variant='outlined'
       component="form"
-      sx={{ borderRadius: '40px', p: '2px 4px', display: 'flex', alignItems: 'center', width: 600, height: 50, mt: '14px' }}
+      sx={{bgcolor:'rgb(24, 26, 27)', borderRadius: '40px', p: '2px 4px', display: 'flex', alignItems: 'center', width: 600, height: 50, mt: '14px' }}
     >
       
       <InputBase
-        sx={{ ml: 1, flex: 1 }}
+        sx={{ ml: 1, flex: 1, bgcolor:'rgb(24, 26, 27)',color:'rgb(173, 181, 189)'  }}
         // placeholder={lessThan850px ? 'Search' : ''}
         value={inputValue}
         onChange={handleInputChange}
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
+        
+        
        // inputProps={{ 'aria-label': 'search google maps' }}
         startAdornment={
           <InputAdornment position="start">
-            {!isFocused && <SearchIcon className=" text-gray-600" />}
+            {!isFocused && <SearchIcon sx={{color: 'rgb(173, 181, 189)'}} />}
           </InputAdornment>
         }
       />
@@ -62,12 +64,12 @@ export default function SearchBar() {
       )}
       {inputValue && (
         <IconButton sx={{ p: '10px' }} aria-label="clear" onClick={clearInput}>
-          <CloseIcon />
+          <CloseIcon sx={{color: 'rgb(173, 181, 189)'}}/>
         </IconButton>
       )}
 
       <Button variant="contained" disableElevation 
-      startIcon={lessThan850px &&<SearchIcon sx={{marginLeft:'6px',height:'25px'}}/>}
+      startIcon={lessThan850px &&<SearchIcon sx={{marginLeft:'6px',height:'25px', color:'blue'}}/>}
         sx={{
           borderRadius: '40px',
           width: lessThan850px ? '4px' : 'auto',

@@ -6,6 +6,8 @@ import { ListItemIcon, ListItemButton, ListItemText, ListItem, List, Divider, Gr
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import CategorySelection from './categorySelection';
 import { useState } from 'react';
+import {Tooltip} from '@mui/material';
+import { useAuth } from '../context/auth';
 function customListButton(string,onClick) {
   return (
     <ListItemButton onClick={onClick} sx={{ justifyContent: 'space-between', width: '100%' }}>
@@ -26,7 +28,7 @@ function customListButton(string,onClick) {
 const Sell = () => {   
   const [openCategoryDialog, setOpenCategoryDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-
+  const [auth] =useAuth()
   const items = {
     Mobiles:['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
     Computers: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
@@ -64,7 +66,7 @@ const Sell = () => {
       <Card variant="outlined" sx={{ width: '900px', backgroundColor: 'white', color: 'rgb(0, 7, 20)' ,borderColor:'transparent' }}>
         <CardContent>
           <Typography variant='h8' fontWeight="bold">
-            Welcome Tamim! Let's post an ad. 
+            Welcome {`${auth.user.name}`}! Let's post an ad. 
           </Typography>
           <Typography sx={{mb:'40px'}}>
             choose any option below
@@ -94,7 +96,9 @@ const Sell = () => {
                       <ListItemText primary={<Typography variant="h6" fontWeight="bold">Post a job vacancy</Typography>} />
                     </ListItem>
                     <Divider sx={{ width: '100%' }} />
+                    <Tooltip title="service not available" titleColor='red' sx={{color:'red', fontSize:'20px'}}>
                     {customListButton ('Post a job in Bangladesh' )}
+                    </Tooltip>
                     <Divider sx={{ width: '100%' }} />
                     {customListButton('Post a job overseas')}
                   </List>
