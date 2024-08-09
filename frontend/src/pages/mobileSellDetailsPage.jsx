@@ -66,7 +66,7 @@ const MobileSellDetailsPage = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:8080/upload", {
+      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
         method: "POST",
         body: formData,
       });
@@ -123,7 +123,7 @@ const MobileSellDetailsPage = () => {
 
         console.log('Form Data:', Array.from(formData.entries()));
 
-        const res = await axios.post("http://localhost:8080/sell/mobile", formData);
+        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/mobile", formData);
 
         if (res.status === 200) {
           console.log('yayayay')

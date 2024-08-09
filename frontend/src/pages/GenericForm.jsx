@@ -49,7 +49,7 @@ const GenericForm = ({ category, endpoint }) => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:8080/upload", {
+      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
         method: "POST",
         body: formData,
       });
@@ -94,7 +94,7 @@ const GenericForm = ({ category, endpoint }) => {
         formData.append('subCategory', subCategory);
         formData.append('condition', condition);
         formData.append('imgUrl', imageUrl);
-        const res = await axios.post(`http://localhost:8080/sell/${endpoint}`, formData);
+        const res = await axios.post(`https://valo-deal-backend.vercel.app/sell/${endpoint}`, formData);
         if (res.status === 200) {
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);

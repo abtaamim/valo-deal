@@ -49,10 +49,10 @@ const AddedItemList = () => {
   const fetchItems = async () => {
     try {
       
-      const mobilesResponse = await axios.get('http://localhost:8080/sell/mobiles');
-      const computersResponse = await axios.get('http://localhost:8080/sell/added-computers');
-      const electronicResponse = await axios.get('http://localhost:8080/sell/added-electronics');
-      const vehicleResponse = await axios.get('http://localhost:8080/sell/added-vehicles');
+      const mobilesResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/mobiles');
+      const computersResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-computers');
+      const electronicResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-electronics');
+      const vehicleResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-vehicles');
       setItems({ mobiles: mobilesResponse?.data.mobiles, computers: computersResponse?.data.computers,
          electronics: electronicResponse?.data.electronics, vehicles: vehicleResponse?.data.vehicles });
     } catch (error) {
@@ -66,7 +66,7 @@ const AddedItemList = () => {
 
   const handleDelete = async (itemId, itemType) => {
     try {
-      await axios.delete(`http://localhost:8080/sell/${itemType}/${itemId}`);
+      await axios.delete(`https://valo-deal-backend.vercel.app/sell/${itemType}/${itemId}`);
       fetchItems(); // Refresh items after deletion
     } catch (error) {
       console.error(`Error deleting ${itemType}:`, error);

@@ -62,7 +62,7 @@ const {category, subCat}= useParams();
 
       // console.log("header::::")
       // console.log(headers);
-      const response = await axios.get(`http://localhost:8080/sell/${category.toLowerCase()}/${subCat}`);
+      const response = await axios.get(`https://valo-deal-backend.vercel.app/sell/${category.toLowerCase()}/${subCat}`);
       console.log('Mobiles Response:', response.data); 
       
       setItems( response.data[category.toLowerCase()] );
@@ -81,7 +81,7 @@ const {category, subCat}= useParams();
   const catLow= category.toLowerCase();
   const handleRecentlyView = async (itemId, catLow) => {
     try {
-      await axios.post(`http://localhost:8080/recentlyViewed/${catLow}/${itemId}`);
+      await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${catLow}/${itemId}`);
     } catch (error) {
       console.error(`Error viewing item:`, error);
     }
@@ -89,7 +89,7 @@ const {category, subCat}= useParams();
 
   const handleCart = async (itemId, catLow) => {
     try {
-      await axios.post(`http://localhost:8080/cart/${catLow}/${itemId}`);
+      await axios.post(`https://valo-deal-backend.vercel.app/cart/${catLow}/${itemId}`);
      // fetchItems(); // Refresh items after deletion
     await updateCartSize();
     

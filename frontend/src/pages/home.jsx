@@ -76,13 +76,13 @@ const HomePage = () => {
 
       // console.log("header::::")
       // console.log(headers);
-      const mobilesResponse = await axios.get('http://localhost:8080/sell/latest-mobiles');
+      const mobilesResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-mobiles');
       console.log('Mobiles Response:', mobilesResponse.data);
-      const computersResponse = await axios.get('http://localhost:8080/sell/latest-computers');
+      const computersResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-computers');
       console.log('Computer Response:', computersResponse.data);
-      const electronicResponse = await axios.get('http://localhost:8080/sell/latest-electronics');
+      const electronicResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-electronics');
       console.log('Electronic Response:', electronicResponse.data);
-      const vehicleResponse = await axios.get('http://localhost:8080/sell/latest-vehicles');
+      const vehicleResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-vehicles');
       console.log('Vehicle Response:', vehicleResponse.data);
       setItems({ mobiles: mobilesResponse.data.latestMobile, computers: computersResponse.data.latestComputer,
          electronics: electronicResponse.data.latestElectronic, vehicles: vehicleResponse.data.latestVehicle  });
@@ -113,7 +113,7 @@ const HomePage = () => {
 
   // const handleDelete = async (itemId, itemType) => {
   //   try {
-  //     await axios.delete(`http://localhost:8080/sell/${itemType}/${itemId}`);
+  //     await axios.delete(`https://valo-deal-backend.vercel.app/sell/${itemType}/${itemId}`);
   //     fetchItems(); // Refresh items after deletion
   //   } catch (error) {
   //     console.error(`Error deleting ${itemType}:`, error);
@@ -121,7 +121,7 @@ const HomePage = () => {
   // };
   const handleRecentlyView = async (itemId, itemType) => {
     try {
-      await axios.post(`http://localhost:8080/recentlyViewed/${itemType}/${itemId}`);
+      await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
     } catch (error) {
       console.error(`Error viewing item:`, error);
     }
@@ -129,7 +129,7 @@ const HomePage = () => {
 
   const handleCart = async (itemId, itemType) => {
     try {
-      await axios.post(`http://localhost:8080/cart/${itemType}/${itemId}`);
+      await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
       // fetchItems(); // Refresh items after deletion
       await updateCartSize();
       console.log(itemType)
@@ -158,7 +158,7 @@ const HomePage = () => {
       const sellerIds = new Set(allitems.map((item) => item.sellerId));
 
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
-        axios.get(`http://localhost:8080/api/v1/auth/seller-info/${sellerId}`)
+        axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`)
       );
 
       const sellerResponses = await Promise.all(sellerPromises);
