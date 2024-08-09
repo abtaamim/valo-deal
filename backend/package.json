@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vercel/blob": "^0.23.4",
     "bcryptjs": "^2.4.3",
     "cloudinary": "^2.2.0",
     "colors": "^1.4.0",

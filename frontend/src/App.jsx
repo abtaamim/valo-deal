@@ -19,6 +19,7 @@ import AddedMobileList from './pages/showAddedItem';
 import { ComputerSellPage, VehicleSellPage, ElectronicsSellPage } from './pages/sellDetailsPage';
 import { CartProvider } from './context/CartContext';
 import ShowSubCatItem from './pages/showSubCatItem';
+import Profile from './pages/myAccountPage';
 
 //tahsin
 import Contact from "./pages/Contact";
@@ -30,6 +31,7 @@ import Dashboard from "./pages/user/Dashboard";
 import PrivateRoute from "./components/Routes/Private";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import { PostDetails } from './siteComponents/PostDetails';
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   
@@ -47,10 +49,11 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/posts/:id" element={<PostDetails />} />
           <Route path="/pricing" element={<Pricing />} />
+          <Route path="/profile" element={<Profile />} />
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/sell" element={<Sell />} />
-          <Route path="/sell/mobile" element={<MobileSellDetailsPage />} />
+          <Route path="/sell-mobile" element={<MobileSellDetailsPage />} />
           <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />
           <Route path="/sell/computers" element={< ComputerSellPage/>} />
           <Route path="/sell/vehicles" element={< VehicleSellPage/>} />
@@ -73,6 +76,7 @@ const App = () => {
         </Routes>
       </div>
       </CartProvider>
+      <Toaster />
     </>
   );
 };

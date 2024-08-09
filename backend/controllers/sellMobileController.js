@@ -89,4 +89,3 @@ const getLatestMobile = async (req, res) => {
 };
 module.exports = { sellMobileController, getAllMobilesController, getUserAddedMobilesController, deleteMobileController, getLatestMobile };
 
-

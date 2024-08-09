@@ -19,7 +19,7 @@ const SignInPopover = () => {
     localStorage.removeItem('auth');
     navigate("/");
     popupState.close();
-    
+
   };
 
   return (
@@ -59,12 +59,25 @@ const SignInPopover = () => {
               </Link>
             </Box>
           ) : (
-            <><Box p={2} sx={{ bgcolor: 'rgb(0, 6, 12)' }}>
-              <Typography variant="h6" sx={{ color: 'rgba(230, 230, 230, 0.788)' }}>Account Information</Typography>
-              <Typography variant="body2" sx={{ color: 'rgba(230, 230, 230, 0.788)' }}>Name: {auth.user.name}</Typography>
-              <Typography variant="body2" sx={{ mb: '5px', color: 'rgba(230, 230, 230, 0.788)' }}>Email: {auth.user.email}</Typography>
-            </Box>
+            <>
+              <Box p={2} sx={{ bgcolor: 'rgb(0, 6, 12)' }}>
+                <Typography variant="h6" sx={{ color: 'rgba(230, 230, 230, 0.788)' }}>Account Information</Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(230, 230, 230, 0.788)' }}>Name: {auth.user.name}</Typography>
+                <Typography variant="body2" sx={{ mb: '5px', color: 'rgba(230, 230, 230, 0.788)' }}>Email: {auth.user.email}</Typography>
+              </Box>
               <Divider />
+              <ListItemButton component={RouterLink} to="/Profile" underline="hover" onClick={popupState.close} sx={{
+                fontSize: '20px',
+                color: 'aliceblue',
+                bgcolor: 'rgb(0, 6, 12)',
+                '&:hover': {
+                  backgroundColor: 'rgb(27, 37, 54)',
+                  color: 'rgb(5, 205, 255)'
+                },
+              }}>
+
+                My Account
+              </ListItemButton>
               <ListItemButton component={RouterLink} to="/orders" underline="hover" onClick={popupState.close} sx={{
                 fontSize: '20px',
                 color: 'aliceblue',

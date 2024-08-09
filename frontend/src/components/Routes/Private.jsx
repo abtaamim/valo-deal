@@ -10,7 +10,8 @@ export default function PrivateRoute() {
 
   useEffect(() => {
     const authCheck = async () => {
-      const res = await axios.get("/api/v1/auth/user-auth");
+      //https://valo-deal-backend.vercel.app
+      const res = await axios.get("https://valo-deal-backend.vercel.app/api/v1/auth/user-auth");
       if (res.data.ok) {
         setOk(true);
       } else {

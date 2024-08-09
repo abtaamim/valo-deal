@@ -27,7 +27,7 @@ const navigate= useNavigate();
   }
   useEffect(() => {
     if (showMobileDialog) {
-      navigate('/sell/mobile');
+      navigate('/sell-mobile');
     }
     
   }, [showMobileDialog, navigate]);
