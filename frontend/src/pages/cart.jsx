@@ -88,7 +88,7 @@ const CartPage = () => {
   };
   useEffect(() => {
     fetchItems();
-  }, []);
+  }, [auth]);
 
   const handleDelete = async (itemId) => {
     try {

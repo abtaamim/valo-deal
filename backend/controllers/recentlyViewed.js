@@ -85,4 +85,7 @@ const getRecentlyViewedItems= async (req, res) => {
   }
 };
 
-module.exports = { recentlyViewedItems, removeFromRecentlyViewed, getRecentlyViewedItems };
+
+
+module.exports = { recentlyViewedItems, removeFromRecentlyViewed,
+   getRecentlyViewedItems };
