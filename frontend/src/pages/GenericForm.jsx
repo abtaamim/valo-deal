@@ -34,11 +34,17 @@ const GenericForm = ({ category, endpoint }) => {
   const location = useLocation();
   const { subCategory } = location.state || {};
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (index, event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedImages([file]);
-      setImagePreviewUrl(URL.createObjectURL(file));
+      const newSelectedImages = [...selectedImages];
+      const newImagePreviewUrls = [...imagePreviewUrl];
+
+      newSelectedImages[index] = file;
+      newImagePreviewUrls[index] = URL.createObjectURL(file);
+
+      setSelectedImages(newSelectedImages);
+      setImagePreviewUrl(newImagePreviewUrls);
     }
   };
 
@@ -62,7 +68,19 @@ const GenericForm = ({ category, endpoint }) => {
       setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
     }
   }
+  const handleMultipleImageUploads = async () => {
+    const uploadedImageUrls = [];
 
+    for (let i = 0; i < selectedImages.length; i++) {
+      const imageUrl = await handleFormData(selectedImages[i]);
+      if (imageUrl) {
+        uploadedImageUrls.push(imageUrl);
+      }
+    }
+    console.log('All uploaded image URLs:', uploadedImageUrls);
+    return uploadedImageUrls;
+
+  };
   const validateForm = () => {
     const newErrors = {};
     if (!brand) newErrors.brand = 'Brand is required';
@@ -83,7 +101,7 @@ const GenericForm = ({ category, endpoint }) => {
     if (Object.keys(newErrors).length === 0) {
       try {
 
-        const imageUrl = await handleFormData(selectedImages[0]);
+        const imageUrl = await handleMultipleImageUploads();
 
         const formData = new FormData();
         formData.append('sellerId', auth.user._id);
@@ -94,7 +112,9 @@ const GenericForm = ({ category, endpoint }) => {
         // formData.append('imgUrl', imgUrl);
         formData.append('subCategory', subCategory);
         formData.append('condition', condition);
-        formData.append('imgUrl', imageUrl);
+        imageUrl.forEach((img, index) => {
+          formData.append(`imgUrl[${index}]`, img);
+        })
         const res = await axios.post(`https://valo-deal-backend.vercel.app/sell/${endpoint}`, formData);
         if (res.status === 200) {
           setAlertMessage('Product uploaded successfully');
@@ -228,38 +248,40 @@ const GenericForm = ({ category, endpoint }) => {
             </Typography>
 
             <Grid container spacing={1}>
-              <Card elevation={3} sx={{ width: 300, textAlign: 'center', height: '50' }}>
-                <CardContent>
-                  <input
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    id="image-upload"
-                    type="file"
-                    onChange={handleFileChange}
-                  />
-                  <label htmlFor="image-upload">
-                    <IconButton aria-label="upload picture" component="span">
-                      < ImageOutlinedIcon sx={{ fontSize: 28 }} />
-                    </IconButton>
-                  </label>
-                  {imagePreviewUrl ? (
-                    <CardMedia
-                      component="img"
-                      height="200"
-                      image={imagePreviewUrl}
-                      alt="Uploaded image"
-                    />
-                  ) : (
-                    <Typography variant="h6" color="textSecondary">
-                      {uploadState === 'UPLOADING' ? 'Uploading...' : 'Add Image'}
-                    </Typography>
-                  )}
-                </CardContent>
-                {imgUrl && (
-                  <CardContent>
-                  </CardContent>
-                )}
-              </Card>
+              {selectedImages.map((_, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CardContent>
+                      <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id={`image-upload-${index}`}
+                        type="file"
+                        onChange={(event) => handleFileChange(index, event)}
+                      />
+                      <label htmlFor={`image-upload-${index}`}>
+                        <IconButton aria-label="upload picture" component="span">
+                          <ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      </label>
+
+                      {imagePreviewUrl[index] ? (
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={imagePreviewUrl[index]}
+                          alt={`Uploaded image ${index + 1}`}
+                        />
+                      ) : (
+                        <Typography variant="body2" color="textSecondary">
+                          {selectedImages[index] ? "Image Selected" : "Add Image"}
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+
             </Grid>
             {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
             <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>

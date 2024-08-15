@@ -108,7 +108,6 @@ const MobileSellDetailsPage = () => {
     console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
     
-    // Do something with the uploaded image URLs (e.g., save them to state or database)
   };
   
 

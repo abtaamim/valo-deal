@@ -47,12 +47,31 @@ const MobileAccessoriesSellDetailsPage = () => {
     return newErrors;
   };
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (index, event) => {
     const file = event.target.files[0];
     if (file) {
-      setSelectedImages([file]);
-      setImagePreviewUrl(URL.createObjectURL(file));
+      const newSelectedImages = [...selectedImages];
+      const newImagePreviewUrls = [...imagePreviewUrl];
+      
+      newSelectedImages[index] = file;
+      newImagePreviewUrls[index] = URL.createObjectURL(file);
+      
+      setSelectedImages(newSelectedImages);
+      setImagePreviewUrl(newImagePreviewUrls);
     }
+  };
+  const handleMultipleImageUploads = async () => {
+    const uploadedImageUrls = [];
+  
+    for (let i = 0; i < selectedImages.length; i++) {
+      const imageUrl = await handleFormData(selectedImages[i]);
+      if (imageUrl) {
+        uploadedImageUrls.push(imageUrl);
+      }
+    }
+    console.log('All uploaded image URLs:', uploadedImageUrls);
+    return uploadedImageUrls;
+    
   };
   const [auth] = useAuth();
   const navigate = useNavigate();
@@ -89,7 +108,7 @@ const MobileAccessoriesSellDetailsPage = () => {
     const newErrors = validateForm();
     if (Object.keys(newErrors).length === 0) {
       try {
-        const imageUrl = await handleFormData(selectedImages[0]);
+        const imageUrl = await handleMultipleImageUploads();
 
         const formData = new FormData();
         formData.append('sellerId', auth.user._id);
@@ -289,49 +308,39 @@ const MobileAccessoriesSellDetailsPage = () => {
             </Typography>
 
             <Grid container spacing={1}>
-              <Card elevation={3} sx={{ width: 300, textAlign: 'center', height: '50' }}>
-                <CardContent>
-                  <input
-                    accept="image/*"
-                    style={{ display: 'none' }}
-                    id="image-upload"
-                    type="file"
-                    // here****
-                    // onChange={handleFormData}
-                    onChange={handleFileChange}
+            {selectedImages.map((_, index) => (
+          <Grid item xs={12} sm={6} md={4} key={index}>
+            <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <CardContent>
+                <input
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  id={`image-upload-${index}`}
+                  type="file"
+                  onChange={(event) => handleFileChange(index, event)}
+                />
+                <label htmlFor={`image-upload-${index}`}>
+                  <IconButton aria-label="upload picture" component="span">
+                    <ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                  </IconButton>
+                </label>
+
+                {imagePreviewUrl[index] ? (
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={imagePreviewUrl[index]}
+                    alt={`Uploaded image ${index + 1}`}
                   />
-                  <label htmlFor="image-upload">
-                    <IconButton aria-label="upload picture" component="span">
-                      < ImageOutlinedIcon sx={{ fontSize: 28 }} />
-                    </IconButton>
-                  </label>
-
-                  {/* {imgUrl ?  */}
-                  {imagePreviewUrl ?
-                    (
-                      <CardMedia
-                        component="img"
-                        height="200"
-
-                        // here****
-                        //image={imgUrl}
-                        image={imagePreviewUrl}
-                        alt="Uploaded image"
-                      />
-                    ) : (
-                      <Typography variant="h6" color="textSecondary">
-                        {uploadState === 'UPLOADING' ? 'Uploading...' : 'Add Image'}
-                      </Typography>
-                    )}
-                </CardContent>
-                {imgUrl && (
-                  <CardContent>
-                    {/* <Typography variant="h6" color="green">
-                            Uploaded!
-                        </Typography> */}
-                  </CardContent>
+                ) : (
+                  <Typography variant="body2" color="textSecondary">
+                    {selectedImages[index] ? "Image Selected" : "Add Image"}
+                  </Typography>
                 )}
-              </Card>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
             </Grid>
             {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
 
