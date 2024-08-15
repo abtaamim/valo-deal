@@ -78,12 +78,17 @@ exports.loginController = async (req, res) => {
       });
     }
 
-    // Generate token
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
+    // Generate access token
+    const accessToken = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "5s", // Access token expiry time
     });
 
-    // Return success response with user details and token
+    // Generate refresh token
+    const refreshToken = await JWT.sign({ _id: user._id }, process.env.JWT_REFRESH_SECRET, {
+      expiresIn: "7d", // Refresh token expiry time
+    });
+
+    // Return success response with user details and tokens
     res.status(200).send({
       success: true,
       message: "Login successful",
@@ -94,13 +99,47 @@ exports.loginController = async (req, res) => {
         phone: user.phone,
         address: user.address,
       },
-      token,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     console.log(error);
     res.status(500).send({
       success: false,
       message: "Error in login",
+      error,
+    });
+  }
+};
+
+exports.refreshTokenController = async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      return res.status(400).send({
+        success: false,
+        message: "Refresh token is required",
+      });
+    }
+
+    // Verify refresh token
+    const decoded = JWT.verify(refreshToken, process.env.JWT_REFRESH_SECRET);
+
+    // Generate new access token
+    const accessToken = await JWT.sign({ _id: decoded._id }, process.env.JWT_SECRET, {
+      expiresIn: "5s",
+    });
+
+    res.status(200).send({
+      success: true,
+      accessToken,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(403).send({
+      success: false,
+      message: "Invalid refresh token",
       error,
     });
   }
