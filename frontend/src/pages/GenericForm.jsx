@@ -28,8 +28,8 @@ const GenericForm = ({ category, endpoint }) => {
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const [uploadState, setUploadState] = useState(UploadState.IDLE);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
+  const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
 
   const location = useLocation();
   const { subCategory } = location.state || {};

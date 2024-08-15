@@ -19,8 +19,8 @@ const MobileAccessoriesSellDetailsPage = () => {
   const [price, setPrice] = useState('');
   const [itemType, setItemType] = useState('');
   const [errors, setErrors] = useState({});
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [brand, setBrand] = useState('');
