@@ -119,7 +119,7 @@ const MobileSellDetailsPage = () => {
     if (!model) newErrors.model = 'Model is required';
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
-    if (selectedImages.length === 0) newErrors.images = 'At least one image is required';
+    if (selectedImages.length <3) newErrors.images = 'At least three image is required';
     return newErrors;
   };
 
