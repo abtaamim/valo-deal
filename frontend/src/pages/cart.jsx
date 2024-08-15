@@ -78,7 +78,7 @@ const CartPage = () => {
         throw new Error("No token found");
       }
       // const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get('http://localhost:8080/cart/fetchitems')
+      const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems')
       setCartItems(response.data.cartItems);
 
 
@@ -92,7 +92,7 @@ const CartPage = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/cart/${itemId}`);
+      await axios.delete(`https://valo-deal-backend.vercel.app/cart/${itemId}`);
       fetchItems();
       await updateCartSize();
       handleClose();

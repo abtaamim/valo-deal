@@ -90,7 +90,7 @@ const RecentlyViewedItemPage = () => {
         throw new Error("No token found");
       }
       // const headers = { Authorization: `Bearer ${token}` };
-      const response = await axios.get('http://localhost:8080/recentlyViewed/fetchitems')
+      const response = await axios.get('https://valo-deal-backend.vercel.app/recentlyViewed/fetchitems')
       setrecentlyViewedItems(response.data.recentlyViewedItems);
 
 
@@ -106,7 +106,7 @@ const RecentlyViewedItemPage = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/recentlyViewed/${itemId}`);
+      await axios.delete(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemId}`);
       fetchItems();
 
       handleClose();
