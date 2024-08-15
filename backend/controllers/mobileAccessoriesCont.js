@@ -38,13 +38,13 @@ const getAllMobAccessories = async (req, res) => {
     const userId = req.user._id; // Assuming user ID is available in req.user
 
     // Fetch mobileAccessories where sellerId is not equal to userId
-    const mobileAccessories = await mobAccModel.find({ sellerId: { $ne: userId } });
+    const mobileAcc = await mobAccModel.find({ sellerId: { $ne: userId } });
 
-    if (mobileAccessories.length === 0) {
+    if (mobileAcc.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobileAccessories found for the user' });
     }
 
-    res.status(200).json({ success: true, mobileAccessories });
+    res.status(200).json({ success: true, mobileAcc });
   } catch (error) {
     console.error('Error fetching user mobileAccessories:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });

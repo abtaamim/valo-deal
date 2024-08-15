@@ -21,7 +21,7 @@ router.get('/user-auth', requireSignIn, (req, res) => {
 });
 
 //for seller information
-router.get('/seller-info/:id', requireSignIn, async (req, res) => {
+router.get('/seller-info/:id',  async (req, res) => {
   try {
     const sellerId = req.params.id;
     const response = await userModel.findOne({ _id: sellerId });

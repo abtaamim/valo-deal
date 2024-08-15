@@ -2,17 +2,25 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton } from '@mui/material';
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
-
+import { useAuth } from '../context/auth';
+import { useCart } from '../context/CartContext';
 import { formatDistanceToNow } from 'date-fns';
 
-const ListingCard = ({ item, onDelete }) => (
+const ListingCard = ({ item, onDelete }) => {
+  const imageUrls = item.imgUrl
+  console.log(typeof item.imgUrl);
+  console.log("000",typeof imageUrls[0]);
+  console.log("next>>>",imageUrls);
+  console.log("after>>>",imageUrls[0]);
+  return(
   <Card sx={{ width: '300px' }}>
+    
     <CardMedia
       component="img"
       height="240"
-      image={item.imgUrl}
+      image={imageUrls[0]}
       alt={`${item.brand} ${item.model}`}
-      src={item.imgUrl}
+      //src={item.imgUrl[0]}
     />
     <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
       <Typography gutterBottom variant="h5" component="div">
@@ -42,10 +50,12 @@ const ListingCard = ({ item, onDelete }) => (
     </CardActions>
   </Card>
 );
+}
 
 const AddedItemList = () => {
   const [items, setItems] = useState({ mobiles: [], computers: [], electronics: [], vehicles: [] });
-
+  const [auth]= useAuth();
+  const { updateCartSize } = useCart();
   const fetchItems = async () => {
     try {
       
@@ -61,8 +71,10 @@ const AddedItemList = () => {
   };
 
   useEffect(() => {
+    updateCartSize();
     fetchItems();
-  }, []);
+    
+  }, [auth]);
 
   const handleDelete = async (itemId, itemType) => {
     try {
@@ -82,7 +94,7 @@ const AddedItemList = () => {
         {/* Render both mobiles and computers */}
         {Object.keys(items).map((key) => (
           items[key]?.map((item) => (
-            <Grid item key={item._id} xs={12} sm={6} md={4}>
+            <Grid item key={item._id} xs={12} sm={6} md={4} lg={3} >
               <ListingCard item={item} onDelete={(itemId) => handleDelete(itemId, key)} />
             </Grid>
           ))

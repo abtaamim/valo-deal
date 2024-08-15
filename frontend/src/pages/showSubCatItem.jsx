@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {Tooltip, Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton } from '@mui/material';
+import { Tooltip, Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton } from '@mui/material';
 import AddShoppingCartSharpIcon from '@mui/icons-material/AddShoppingCartSharp';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
@@ -36,11 +36,11 @@ const ListingCard = ({ item, onAddToCart, onRecentlyView }) => (
       </Typography> */}
     </CardContent>
     <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Button size="small" onClick={()=> onRecentlyView(item._id)}>View Details</Button>
+      <Button size="small" onClick={() => onRecentlyView(item._id)}>View Details</Button>
       <Tooltip title='add this item to tour cart'>
-      <IconButton onClick={() => onAddToCart(item._id)}>
-        <AddShoppingCartSharpIcon sx={{color:'rgb(0, 6, 12)'}}/>
-      </IconButton>
+        <IconButton onClick={() => onAddToCart(item._id)}>
+          <AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />
+        </IconButton>
       </Tooltip>
     </CardActions>
   </Card>
@@ -48,9 +48,9 @@ const ListingCard = ({ item, onAddToCart, onRecentlyView }) => (
 
 const ShowSubCatItem = () => {
   const [items, setItems] = useState([]);
-  const [auth] = useAuth(); 
-const {category, subCat}= useParams();
-  const {updateCartSize} = useCart();
+  const [auth] = useAuth();
+  const { category, subCat } = useParams();
+  const { updateCartSize } = useCart();
   const fetchItems = async () => {
     try {
       // const token = auth?.token; 
@@ -62,11 +62,26 @@ const {category, subCat}= useParams();
 
       // console.log("header::::")
       // console.log(headers);
-      const response = await axios.get(`http://localhost:8080/sell/${category.toLowerCase()}/${subCat}`);
-      console.log('Mobiles Response:', response.data); 
-      
-      setItems( response.data[category.toLowerCase()] );
-  
+      let response = null;
+      if (subCat.toLowerCase() === 'mobile phone accessories') {
+        response = await axios.get(`http://localhost:8080/sell/mobileAcc/${subCat}`);
+        setItems(response.data.mobileAcc);
+      }
+      else if (subCat.toLowerCase() === 'mobile phones') {
+        response = await axios.get(`http://localhost:8080/sell/${category.toLowerCase()}/${subCat}`);
+        setItems(response.data.mobiles);
+      }
+
+
+      else {
+        response = await axios.get(`http://localhost:8080/sell/${category.toLowerCase()}/${subCat}`);
+        setItems(response.data[category.toLowerCase()]);
+      }
+
+      console.log('Mobiles Response:', response.data);
+
+
+
     } catch (error) {
       console.error('Error fetching items:', error);
     }
@@ -76,9 +91,9 @@ const {category, subCat}= useParams();
     fetchItems();
     updateCartSize();
     setItems("")
-  }, [subCat]);
+  }, [subCat,auth]);
 
-  const catLow= category.toLowerCase();
+  const catLow = category.toLowerCase();
   const handleRecentlyView = async (itemId, catLow) => {
     try {
       await axios.post(`http://localhost:8080/recentlyViewed/${catLow}/${itemId}`);
@@ -90,9 +105,9 @@ const {category, subCat}= useParams();
   const handleCart = async (itemId, catLow) => {
     try {
       await axios.post(`http://localhost:8080/cart/${catLow}/${itemId}`);
-     // fetchItems(); // Refresh items after deletion
-    await updateCartSize();
-    
+      // fetchItems(); // Refresh items after deletion
+      await updateCartSize();
+
     } catch (error) {
       console.error(`Error adding to cart ${catLow}:`, error);
     }
@@ -100,29 +115,29 @@ const {category, subCat}= useParams();
 
   return (
     <>
-    <Box sx={{ p: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        {subCat}
-      </Typography>
-      <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-        {/* Render both mobiles and computers */}
-        { items.length===0?(
-          <Typography variant="h6" color="text.secondary">
-            No items available in this category.
-          </Typography>
-        ):
-          (
-            items.map((item) => (
-            <Grid item key={item._id} xs={12} sm={6} md={3}>
-              <ListingCard item={item} onAddToCart={(itemId) => handleCart(itemId, catLow)} 
-              onRecentlyView={(itemId) => handleRecentlyView(itemId, catLow)}
-              />
-            </Grid>
-          ))
-          )
-        }
-      </Grid>
-    </Box>
+      <Box sx={{ p: 2 }}>
+        <Typography variant="h4" gutterBottom>
+          {subCat}
+        </Typography>
+        <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          {/* Render both mobiles and computers */}
+          {items?.length === 0 ? (
+            <Typography variant="h6" color="text.secondary">
+              No items available in this category.
+            </Typography>
+          ) :
+            (
+              items?.map((item) => (
+                <Grid item key={item._id} xs={12} sm={6} md={3}>
+                  <ListingCard item={item} onAddToCart={(itemId) => handleCart(itemId, catLow)}
+                    onRecentlyView={(itemId) => handleRecentlyView(itemId, catLow)}
+                  />
+                </Grid>
+              ))
+            )
+          }
+        </Grid>
+      </Box>
     </>
   );
 };

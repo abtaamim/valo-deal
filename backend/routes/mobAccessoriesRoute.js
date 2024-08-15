@@ -13,6 +13,7 @@ router.post('/mobile-accessories', requireSignIn,upload.none(),mobAccessoriesCon
 // Route to get user-specific mobiles
 router.get('/mobile-accessories', requireSignIn, getAddedMobileAccessories);
 router.get('/latest-mobile-accessories', requireSignIn, getLatestMobile);
+router.get('/mobileAcc/:accessories', requireSignIn, getAllMobAccessories)
 router.delete('/mobile-accessories/:id', requireSignIn, async (req, res) => {
   try {
     const mobileId = req.params.id;
