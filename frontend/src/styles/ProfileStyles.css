@@ -75,3 +75,32 @@
 .btn-primary:hover:not(:disabled) {
   background-color: #51ff01;
 }
+.about-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.custom-card {
+  max-width: 800px;
+  width: 100%;
+  padding: 30px;
+  background-color: #444; 
+  border-radius: 30px; 
+  color: white; 
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2); 
+  text-align: center;
+}
+
+.custom-card h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+.custom-card p {
+  font-size: 1.3rem;
+  line-height: 1.6;
+}
+

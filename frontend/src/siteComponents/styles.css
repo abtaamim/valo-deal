@@ -232,3 +232,37 @@ body {
     display: none;
   }
 } */
+
+
+.footer {
+  background-color: #222324;
+  padding: 20px 0;
+  color: rgb(255, 202, 45);
+}
+
+.footer-content {
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 20px;
+}
+
+.footer-bottom {
+  margin-top: 20px;
+}
+
+.footer a {
+  color: rgb(255, 255, 255);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.footer .MuiIconButton-root {
+  margin-right: 8px;
+}
+
+.footer .MuiIconButton-root:last-child {
+  margin-right: 0;
+}
