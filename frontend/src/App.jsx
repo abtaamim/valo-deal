@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 // import './App.css';
 import Navbar from './siteComponents/navbar';
 import SecondNavbar from './siteComponents/second_navbar';
+import Footer from './siteComponents/Footer';
 import HomePage from './pages/home';
 import About from './pages/about';
 import Pricing from './pages/pricing';
@@ -76,6 +77,7 @@ const App = () => {
           <Route path="*" element={<Pagenotfound />} />
         </Routes>
       </div>
+      <Footer />
       </CartProvider>
       <Toaster />
     </>
