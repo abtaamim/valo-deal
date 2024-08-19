@@ -2,14 +2,101 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Tooltip, Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, ListItemButton,
-  MenuItem, FormControl, Select, InputLabel
+  MenuItem, FormControl, Select, InputLabel, Pagination
 } from '@mui/material';
 import AddShoppingCartSharpIcon from '@mui/icons-material/AddShoppingCartSharp';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import Pagination from '@mui/material/Pagination';
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; 
+import image1 from '../assests/h1.jpg';
+import image2 from '../assests/h2.jpg';
+import image3 from '../assests/h3.jpg';
+import image4 from '../assests/h4.jpg';
+
+const HomeSlider = () => (
+  <Box sx={{ marginBottom: '10px' }}>
+    <Carousel
+      autoPlay
+      infiniteLoop
+      showThumbs={false}
+      showStatus={false}
+      showIndicators={false}
+      interval={3000}
+      renderArrowPrev={(onClickHandler, hasPrev, label) =>
+        hasPrev && (
+          <Box
+            onClick={onClickHandler}
+            title={label}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              height: '100%',
+              width: '130px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              color: 'white',
+              fontSize: '60px',
+              zIndex: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              },
+            }}
+          >
+            &#10094;
+          </Box>
+        )
+      }
+      renderArrowNext={(onClickHandler, hasNext, label) =>
+        hasNext && (
+          <Box
+            onClick={onClickHandler}
+            title={label}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              height: '100%',
+              width: '130px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              color: 'white',
+              fontSize: '60px',
+              zIndex: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              },
+            }}
+          >
+            &#10095;
+          </Box>
+        )
+      }
+    >
+      <div>
+        <img src={image1} alt="Essentials for Gamers" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <img src={image2} alt="Deals in PCs" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <img src={image3} alt="Home décor under $50" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <img src={image4} alt="Shop deals in Fashion" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+    </Carousel>
+  </Box>
+);
 
 const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
   <Card sx={{ width: '280px' }}>
@@ -61,8 +148,9 @@ const HomePage = () => {
   const { updateCartSize } = useCart();
   const [sellerMap, setSellerMap] = useState(new Map());
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(3);
+  const [postsPerPage] = useState(12);
   const [sortOrder, setSortOrder] = useState('');
+  const [allItems, setAllItems] = useState([]);
 
   const fetchItems = async () => {
     try {
@@ -109,8 +197,6 @@ const HomePage = () => {
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
-
-  const [allItems, setAllItems] = useState([]);
 
   useEffect(() => {
     const allItems = [
@@ -179,12 +265,10 @@ const HomePage = () => {
         </Typography>
       ) : (
         <>
-          <Box sx={{ p: 3, bgcolor: 'grey' }}>
+          <HomeSlider /> {/* Include the slider here */}
+          <Box sx={{ p: 2, bgcolor: '#FAF9F6' }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-              {/* <Typography variant="h4" gutterBottom>
-                Home
-              </Typography> */}
-              <FormControl sx={{ minWidth: 120 }}>
+              <FormControl sx={{ minWidth: 380 }}>
                 <InputLabel id="sort-label">Sort by</InputLabel>
                 <Select
                   labelId="sort-label"
@@ -200,24 +284,24 @@ const HomePage = () => {
             </Box>
             <Grid container spacing={3}>
               {currentPosts.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={4}>
+                <Grid item key={item._id} xs={12} sm={6} md={2}>
                   <ListingCard
                     item={item}
                     onAddToCart={(itemId) => handleCart(itemId, item.itemType)}
                     onRecentlyView={(itemId) => handleRecentlyView(itemId, item.itemType)}
-                    sellerName={sellerMap.get(item.sellerId)?.name}
+                    sellerName={sellerMap.get(item.sellerId)?.name || ''}
                   />
                 </Grid>
               ))}
             </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Pagination
+                count={Math.ceil(allItems.length / postsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+              />
+            </Box>
           </Box>
-          <Pagination
-            count={Math.ceil(allItems.length / postsPerPage)}
-            page={currentPage}
-            onChange={handlePageChange}
-            color="secondary"
-            sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '10px' }}
-          />
         </>
       )}
     </>
