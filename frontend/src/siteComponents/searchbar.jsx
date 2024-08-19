@@ -51,8 +51,8 @@ const SearchBar = () => {
     e.preventDefault();
     if (!values.keyWord.trim()) return;
     try {
-      const res = await axios.get(`http://localhost:8080/search/${values.keyWord}`);
-      await axios.post('http://localhost:8080/search/searched-items', {
+      const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${values.keyWord}`);
+      await axios.post('https://valo-deal-backend.vercel.app/search/searched-items', {
         searchTerm: values.keyWord
       })
       setValues({ ...values, results: res.data.results });
