@@ -9,17 +9,17 @@ import Popper from '@mui/material/Popper';
 import { useAuth } from '../context/auth';
 import { Divider, ListItemButton } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+
 const SignInPopover = () => {
   const [auth, setAuth] = useAuth();
   const popupState = usePopupState({ variant: 'popover', popupId: 'signInPopover' });
   const navigate = useNavigate();
+
   const handleSignOut = () => {
-    // Perform sign-out logic, e.g., clear user data, redirect, etc.
     setAuth({ user: null, token: null });
     localStorage.removeItem('auth');
     navigate("/");
     popupState.close();
-
   };
 
   return (
@@ -39,8 +39,7 @@ const SignInPopover = () => {
         sx={{
           backgroundColor: 'aliceblue',
           border: '1px solid black',
-          zIndex: 1,
-
+          zIndex: 1500, // Increase zIndex to ensure it appears above the slider
         }}
         anchorOrigin={{
           vertical: 'bottom',
@@ -75,7 +74,6 @@ const SignInPopover = () => {
                   color: 'rgb(5, 205, 255)'
                 },
               }}>
-
                 My Account
               </ListItemButton>
               <ListItemButton component={RouterLink} to="/orders" underline="hover" onClick={popupState.close} sx={{
@@ -87,10 +85,8 @@ const SignInPopover = () => {
                   color: 'rgb(5, 205, 255)'
                 },
               }}>
-
                 Previous Orders
               </ListItemButton>
-
               <Divider />
               <ListItemButton component={RouterLink} to="/recently-viewed" underline="hover" onClick={popupState.close} sx={{
                 fontSize: '20px',
@@ -101,12 +97,9 @@ const SignInPopover = () => {
                   color: 'rgb(5, 205, 255)'
                 },
               }}>
-
                 Browsing History
               </ListItemButton>
-
               <Divider />
-
               <ListItemButton component={RouterLink} to="/added-items" underline="hover" onClick={popupState.close} sx={{
                 fontSize: '20px',
                 color: 'aliceblue',
@@ -115,11 +108,9 @@ const SignInPopover = () => {
                   backgroundColor: 'rgb(27, 37, 54)',
                   color: 'rgb(5, 205, 255)'
                 },
-              }}
-              >
-                Added Items for sell
+              }}>
+                Added Items for Sell
               </ListItemButton>
-
               <Divider />
               <ListItemButton component={RouterLink} to="/" underline="hover" onClick={handleSignOut} sx={{
                 fontSize: '20px',
@@ -129,9 +120,7 @@ const SignInPopover = () => {
                   bgcolor: 'rgb(27, 37, 54)',
                   color: 'red'
                 },
-
               }}>
-
                 Sign Out
               </ListItemButton>
             </>
