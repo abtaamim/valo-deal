@@ -134,14 +134,15 @@ const removeFromSearch = async (req, res) => {
   try {
     const userId = req.user._id; 
     const user = await User.findById(userId);
-    const itemId = req.params.itemId;
-
+   // const itemId = req.params.itemId;
+    const selectedForDelete= req.body.selectedForDelete;
+    console.log('back::::::', selectedForDelete)
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
 
     user.searchedItems = user.searchedItems.filter(
-      (item) => item._id.toString() !== itemId
+      (item) => !selectedForDelete.includes(item._id.toString())
     );
     await user.save();
     res.status(200).json({ success: true, message: 'Item removed from history.', searchedItems: user.searchedItems });

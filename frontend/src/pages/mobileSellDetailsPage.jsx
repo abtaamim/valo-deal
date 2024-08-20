@@ -29,7 +29,7 @@ const MobileSellDetailsPage = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
-  
+
   const handleBrand = (event) => {
     setBrand(event.target.value);
     setModel('');
@@ -60,10 +60,10 @@ const MobileSellDetailsPage = () => {
     if (file) {
       const newSelectedImages = [...selectedImages];
       const newImagePreviewUrls = [...imagePreviewUrl];
-      
+
       newSelectedImages[index] = file;
       newImagePreviewUrls[index] = URL.createObjectURL(file);
-      
+
       setSelectedImages(newSelectedImages);
       setImagePreviewUrl(newImagePreviewUrls);
     }
@@ -98,7 +98,7 @@ const MobileSellDetailsPage = () => {
 
   const handleMultipleImageUploads = async () => {
     const uploadedImageUrls = [];
-  
+
     for (let i = 0; i < selectedImages.length; i++) {
       const imageUrl = await handleFormData(selectedImages[i]);
       if (imageUrl) {
@@ -107,9 +107,9 @@ const MobileSellDetailsPage = () => {
     }
     console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
-    
+
   };
-  
+
 
   const validateForm = () => {
     const newErrors = {};
@@ -119,7 +119,11 @@ const MobileSellDetailsPage = () => {
     if (!model) newErrors.model = 'Model is required';
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
-    if (selectedImages.length <3) newErrors.images = 'At least three image is required';
+
+    const checkImage= selectedImages.filter(img=>(img!==null))
+    if (checkImage.length < 3) newErrors.images = 'At least three image is required';
+    
+
     return newErrors;
   };
 
@@ -134,7 +138,7 @@ const MobileSellDetailsPage = () => {
       //here*****
       try {
         const imageUrl = await handleMultipleImageUploads();
-        console .log(imageUrl);
+        console.log(imageUrl);
         const formData = new FormData();
         formData.append('sellerId', auth.user._id);
         formData.append('brand', brand);
@@ -145,10 +149,10 @@ const MobileSellDetailsPage = () => {
         formData.append('price', price);
         //formData.append('imgUrl', imgUrl);
         //here********
-        imageUrl.forEach((img, index)=>{
+        imageUrl.forEach((img, index) => {
           formData.append(`imgUrl[${index}]`, img);
         })
-       // formData.append('imgUrl', imageUrl);
+        // formData.append('imgUrl', imageUrl);
 
         console.log('Form Data:', Array.from(formData.entries()));
 
@@ -341,46 +345,45 @@ const MobileSellDetailsPage = () => {
             <Typography variant="caption" sx={{ mb: 2, textAlign: 'start', fontWeight: 'bold', fontSize: 15 }}>
               Add up to 5 photos
             </Typography>
+            <FormControl error={!!errors.images} >
+              <Grid container spacing={1}>
+                {selectedImages.map((_, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CardContent>
+                        <input
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          id={`image-upload-${index}`}
+                          type="file"
+                          onChange={(event) => handleFileChange(index, event)}
+                        />
+                        <label htmlFor={`image-upload-${index}`}>
+                          <IconButton aria-label="upload picture" component="span">
+                            <ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                          </IconButton>
+                        </label>
 
-            <Grid container spacing={1}>
-
-            {selectedImages.map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <CardContent>
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id={`image-upload-${index}`}
-                  type="file"
-                  onChange={(event) => handleFileChange(index, event)}
-                />
-                <label htmlFor={`image-upload-${index}`}>
-                  <IconButton aria-label="upload picture" component="span">
-                    <ImageOutlinedIcon sx={{ fontSize: 28 }} />
-                  </IconButton>
-                </label>
-
-                {imagePreviewUrl[index] ? (
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={imagePreviewUrl[index]}
-                    alt={`Uploaded image ${index + 1}`}
-                  />
-                ) : (
-                  <Typography variant="body2" color="textSecondary">
-                    {selectedImages[index] ? "Image Selected" : "Add Image"}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-              {/* </Box> */}
-            </Grid>
-            {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
-
+                        {imagePreviewUrl[index] ? (
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image={imagePreviewUrl[index]}
+                            alt={`Uploaded image ${index + 1}`}
+                          />
+                        ) : (
+                          <Typography variant="body2" color="textSecondary">
+                            {selectedImages[index] ? "Image Selected" : "Add Image"}
+                          </Typography>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+                {/* </Box> */}
+              </Grid>
+              {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
+            </FormControl>
             <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
               Submit
             </Button>

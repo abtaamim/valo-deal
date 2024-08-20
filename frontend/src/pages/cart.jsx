@@ -6,47 +6,11 @@ import RemoveShoppingCartOutlinedIcon from '@mui/icons-material/RemoveShoppingCa
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
-import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
-const ListingCard = ({ item, onRemove }) => (
-  <Card sx={{ width: '300px' }}>
-    <CardMedia
-      component="img"
-      height="240"
-      image={item.imgUrl}
-      alt={`${item.brand} ${item.model}`}
-      src={item.imgUrl}
-    />
-    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
-      <Typography gutterBottom variant="h5" component="div">
-        {item.brand} {item.model}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Condition: {item.condition}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Price: ${item.price}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Description: {item.description}
-      </Typography>
-      {/* <Typography variant="body2" color="text.secondary">
-        {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
-      </Typography> */}
-    </CardContent>
-    <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      
-      <Button size="small">View Details</Button>
-      
-      <IconButton onClick={() => onRemove(item._id)}>
-        <RemoveShoppingCartOutlinedIcon sx={{color:'rgb(0, 6, 12)'}}/>
-      </IconButton>
+import CustomDialog from './CustomDialog';
+import ListingCard from './CustomItemCard';
 
-    </CardActions>
-  </Card>
-);
+import { Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material';
+
 
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -107,37 +71,16 @@ const CartPage = () => {
         <Typography variant="h4" gutterBottom>
           cart
         </Typography>
-        <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-          {cartItems.map((item) => (
-            <Grid item key={item._id} xs={12} sm={6} md={3}>
-              <ListingCard item={item} onRemove={(itemId) => handleClickOpen(itemId)} />
-            </Grid>
-          ))}
-        </Grid>
+        
+        <ListingCard items={cartItems} handleClickOpen={handleClickOpen}
+          button={<RemoveShoppingCartOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+        />
       </Box>
-      <Dialog
+      
+      <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId} 
+        handleDelete={handleDelete} dialog_title= "This item will be removed from your cartttttttttt"
         open={open}
-        onClose={handleClose}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-        sx={{
-          '& .MuiPaper-root': {
-            backgroundColor: 'rgb(0, 6,12)',
-            borderRadius: '5px',
-          },
-        }}
-      >
-        <DialogTitle id="alert-dialog-title" sx={{ color: "rgb(194, 228, 255)" }}>
-          {"This item will be remove from your cart"}
-        </DialogTitle>
-
-        <DialogActions>
-          <Button variant='outlined'  sx={{borderColor:'rgb(194, 228, 255)', color:'rgb(194, 228, 255)', mb:'15px' }} onClick={handleClose}>Cancel</Button>
-          <Button variant='outlined' sx={{color:'red', borderColor:'red', mb:'15px' }} onClick={() => handleDelete(selectedItemId)} autoFocus>
-            Remove
-          </Button>
-        </DialogActions>
-      </Dialog>
+      />
     </>
   );
 };
