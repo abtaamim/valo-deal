@@ -19,6 +19,7 @@ const SearchPage = () => {
   const [auth] = useAuth();
   const { updateCartSize } = useCart()
   const navigate = useNavigate();
+
   // const handleRecentlyView = async (itemId, itemType) => {
   //   try {
   //     await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
@@ -26,6 +27,7 @@ const SearchPage = () => {
   //     console.error(`Error viewing item:`, error);
   //   }
   // };
+
   const { keyword } = useParams();
   console.log("keyword+++", keyword);
 

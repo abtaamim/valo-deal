@@ -1,13 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Tooltip, Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, ListItemButton } from '@mui/material';
+import {
+  Tooltip, Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, ListItemButton,
+  MenuItem, FormControl, Select, InputLabel, Pagination
+} from '@mui/material';
 import AddShoppingCartSharpIcon from '@mui/icons-material/AddShoppingCartSharp';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Pagination from '@mui/material/Pagination';
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; 
+import image1 from '../assests/h1.jpg';
+import image2 from '../assests/h2.jpg';
+import image3 from '../assests/h3.jpg';
+import image4 from '../assests/h4.jpg';
+
+const HomeSlider = () => (
+  <Box sx={{ marginBottom: '10px' }}>
+    <Carousel
+      autoPlay
+      infiniteLoop
+      showThumbs={false}
+      showStatus={false}
+      showIndicators={false}
+      interval={3000}
+      renderArrowPrev={(onClickHandler, hasPrev, label) =>
+        hasPrev && (
+          <Box
+            onClick={onClickHandler}
+            title={label}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              height: '100%',
+              width: '130px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              color: 'white',
+              fontSize: '60px',
+              zIndex: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              },
+            }}
+          >
+            &#10094;
+          </Box>
+        )
+      }
+      renderArrowNext={(onClickHandler, hasNext, label) =>
+        hasNext && (
+          <Box
+            onClick={onClickHandler}
+            title={label}
+            sx={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              height: '100%',
+              width: '130px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'transparent',
+              color: 'white',
+              fontSize: '60px',
+              zIndex: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              },
+            }}
+          >
+            &#10095;
+          </Box>
+        )
+      }
+    >
+      <div>
+        <img src={image1} alt="Essentials for Gamers" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <img src={image2} alt="Deals in PCs" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <img src={image3} alt="Home décor under $50" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+      <div>
+        <img src={image4} alt="Shop deals in Fashion" style={{ height: '300px', objectFit: 'cover' }} />
+      </div>
+    </Carousel>
+  </Box>
+);
+
 const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
   <Card sx={{ width: '280px' }}>
     <CardMedia
@@ -36,16 +126,13 @@ const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
       <Typography variant="body2" color="text.secondary">
         {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
       </Typography>
-      {/* <Typography variant="body2" color="text.secondary"> */}
       <ListItemButton sx={{ padding: '0', mt: '10px', height: '32px' }}>
-
         Seller : {sellerName}
       </ListItemButton>
-      {/* </Typography> */}
     </CardContent>
     <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
       <Button size="small" onClick={() => onRecentlyView(item._id)}>View Details</Button>
-      <Tooltip title='add this item to tour cart'>
+      <Tooltip title='Add this item to your cart'>
         <IconButton onClick={() => onAddToCart(item._id)}>
           <AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />
         </IconButton>
@@ -58,67 +145,45 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState({ mobiles: [], computers: [], electronics: [], vehicles: [] });
   const [auth] = useAuth();
-  //console.log('auth: ', auth)
   const { updateCartSize } = useCart();
-
   const [sellerMap, setSellerMap] = useState(new Map());
-
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(6);
+
+  const [postsPerPage] = useState(12);
+  const [sortOrder, setSortOrder] = useState('');
+  const [allItems, setAllItems] = useState([]);
+
+
   const fetchItems = async () => {
     try {
-      // const token = auth?.token; 
-      // console.log(token);
-      // if (!token) {
-      //   throw new Error("No token found");
-      // }
-      // const headers = { Authorization: `Bearer ${token}` };
-
-      // console.log("header::::")
-      // console.log(headers);
       const mobilesResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-mobiles');
-      console.log('Mobiles Response:', mobilesResponse.data);
       const computersResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-computers');
-      console.log('Computer Response:', computersResponse.data);
       const electronicResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-electronics');
-      console.log('Electronic Response:', electronicResponse.data);
       const vehicleResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/latest-vehicles');
-      console.log('Vehicle Response:', vehicleResponse.data);
-      setItems({ mobiles: mobilesResponse.data.latestMobile, computers: computersResponse.data.latestComputer,
-         electronics: electronicResponse.data.latestElectronic, vehicles: vehicleResponse.data.latestVehicle  });
-
+      setItems({
+        mobiles: mobilesResponse.data.latestMobile,
+        computers: computersResponse.data.latestComputer,
+        electronics: electronicResponse.data.latestElectronic,
+        vehicles: vehicleResponse.data.latestVehicle
+      });
     } catch (error) {
       console.error('Error fetching items:', error);
     }
   };
-  // useEffect(() => {
-  //   console.log('<<<<>>>', items.mobiles)
-  //   console.log('<<<<>>>', items.computers)
-  //   console.log('<<<<>>>', items.electronics)
-  // }, [items])
 
   useEffect(() => {
     const token = localStorage.getItem('authToken');
-
     if (!token) {
       console.log('User is not authenticated.');
-      // Handle unauthenticated state (e.g., redirect)
     } else {
       console.log('User is authenticated.');
     }
     fetchItems();
     updateCartSize();
-    //navigate("/");
-  }, [auth]);
 
-  // const handleDelete = async (itemId, itemType) => {
-  //   try {
-  //     await axios.delete(`https://valo-deal-backend.vercel.app/sell/${itemType}/${itemId}`);
-  //     fetchItems(); // Refresh items after deletion
-  //   } catch (error) {
-  //     console.error(`Error deleting ${itemType}:`, error);
-  //   }
-  // };
+  }, []);
+
+
   const handleRecentlyView = async (itemId, itemType) => {
     try {
       await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
@@ -130,16 +195,13 @@ const HomePage = () => {
   const handleCart = async (itemId, itemType) => {
     try {
       await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
-      // fetchItems(); // Refresh items after deletion
       await updateCartSize();
-      console.log(itemType)
+      console.log(itemType);
     } catch (error) {
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
 
-  //for seller info and pagination
-  const [allitems, setallitems] = useState([]);
   useEffect(() => {
     const allItems = [
       ...(items.mobiles || []),
@@ -147,75 +209,107 @@ const HomePage = () => {
       ...(items.electronics || []),
       ...(items.vehicles || []),
     ];
-    setallitems(allItems);
-  }, [items])
-
+    setAllItems(allItems);
+  }, [items]);
 
   const fetchSellerInfo = async () => {
     try {
-
-      // Use a Set to avoid duplicate seller IDs
-      const sellerIds = new Set(allitems.map((item) => item.sellerId));
-
+      const sellerIds = new Set(allItems.map((item) => item.sellerId));
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
         axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`)
       );
-
       const sellerResponses = await Promise.all(sellerPromises);
-
       const newSellerMap = new Map();
       sellerResponses.forEach((response) => {
         const sellerData = response.data.seller;
         newSellerMap.set(sellerData.sellerId, sellerData);
       });
-
       setSellerMap(newSellerMap);
     } catch (error) {
       console.error('Error fetching seller info:', error);
     }
   };
+
   useEffect(() => {
     fetchSellerInfo();
   }, [items]);
 
+  // Handle Sorting
+  const handleSortChange = (event) => {
+    const sortOrder = event.target.value;
+    setSortOrder(sortOrder);
+
+    const sortedItems = [...allItems].sort((a, b) => {
+      if (sortOrder === 'lowToHigh') {
+        return a.price - b.price;
+      } else if (sortOrder === 'highToLow') {
+        return b.price - a.price;
+      } else {
+        return 0;
+      }
+    });
+
+    setAllItems(sortedItems);
+  };
+
   // Get current posts
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = allitems.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = allItems.slice(indexOfFirstPost, indexOfLastPost);
+
   const handlePageChange = (event, pageNumber) => {
     setCurrentPage(pageNumber);
   };
+
   return (
     <>
-      {auth.user === null ? (<Typography variant="h4" gutterBottom>
-        Plese signIn to browse Item
-      </Typography>) :
-        (<>
-          <Box sx={{ p: 3, bgcolor: 'grey' }}>
-            <Typography variant="h4" gutterBottom>
-              home
-            </Typography>
-            <Grid container spacing={3} sx={{ lp: '10px' }} >
+      {auth.user === null ? (
+        <Typography variant="h4" gutterBottom>
+          Please sign in to browse items
+        </Typography>
+      ) : (
+        <>
+          <HomeSlider /> {/* Include the slider here */}
+          <Box sx={{ p: 2, bgcolor: '#FAF9F6' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+              <FormControl sx={{ minWidth: 380 }}>
+                <InputLabel id="sort-label">Sort by</InputLabel>
+                <Select
+                  labelId="sort-label"
+                  value={sortOrder}
+                  onChange={handleSortChange}
+                  label="Sort by"
+                >
+                  <MenuItem value=""><em>None</em></MenuItem>
+                  <MenuItem value="lowToHigh">Price: Low to High</MenuItem>
+                  <MenuItem value="highToLow">Price: High to Low</MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Grid container spacing={3}>
               {currentPosts.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={4} lg={2} sx={{ width: '280px' }}>
 
-                  <ListingCard item={item} onAddToCart={(itemId) => handleCart(itemId, item.itemType)}
+                <Grid item key={item._id} xs={12} sm={6} md={2}>
+                  <ListingCard
+                    item={item}
+                    onAddToCart={(itemId) => handleCart(itemId, item.itemType)}
+
                     onRecentlyView={(itemId) => handleRecentlyView(itemId, item.itemType)}
-                    sellerName={sellerMap.get(item.sellerId)?.name}
+                    sellerName={sellerMap.get(item.sellerId)?.name || ''}
                   />
                 </Grid>
-              ))
-
-              }
+              ))}
             </Grid>
+            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Pagination
+                count={Math.ceil(allItems.length / postsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+              />
+            </Box>
           </Box>
-          <Pagination count={Math.ceil(allitems.length / postsPerPage)}
-           page={currentPage} onChange={handlePageChange} 
-           color="secondary"
-           sx={{display:'flex', justifyContent: 'center', alignItems:'center', mt:'10px' }} />
-        </>)
-      }
-
+        </>
+      )}
     </>
   );
 };

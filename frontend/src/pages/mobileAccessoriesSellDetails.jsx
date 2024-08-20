@@ -19,8 +19,8 @@ const MobileAccessoriesSellDetailsPage = () => {
   const [price, setPrice] = useState('');
   const [itemType, setItemType] = useState('');
   const [errors, setErrors] = useState({});
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
+  const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [brand, setBrand] = useState('');
@@ -42,9 +42,11 @@ const MobileAccessoriesSellDetailsPage = () => {
     if (!price) newErrors.price = 'Price is required';
     if (!brand) newErrors.brand = 'Brand is required';
     if (!model) newErrors.model = 'Model is required';
+
     const checkImage= selectedImages.filter(img=>{img!==null})
     if (checkImage.length <3) newErrors.images = 'At least three image is required';
     
+
     if (!authenticity) newErrors.authenticity = 'Authenticity is required';
     return newErrors;
   };
