@@ -11,16 +11,17 @@ const router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
-// Sell product route
+
+router.get('/vehicles/:subCategory', requireSignIn, getSubcatVehiclesController);
 router.post('/vehicle', requireSignIn,upload.none(),vehicleController);
  
-router.get('/vehicles-subcat', requireSignIn, getSubcatVehiclesController);
+
 // Route to get user-specific omputers
 router.get('/vehicles', requireSignIn, getAllVehiclesController);
 router.get('/added-vehicles', requireSignIn, getAddedVehicle);
 
 router.get('/latest-vehicles', requireSignIn, getLatestVehicle); //for HomePage
-router.delete('/vehicles/:id', requireSignIn, async (req, res) => {
+router.delete('/vehicle/:id', requireSignIn, async (req, res) => {
   try {
     const compId = req.params.id;
     await deleteVehicle(compId);

@@ -19,7 +19,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Set loading to true when form is submitted
     try {
-      // http://localhost:8080/api/v1/auth/login
+      // https://valo-deal-backend.vercel.app/api/v1/auth/login
       // https://valo-deal-backend.vercel.app/api/v1/auth/login
       const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/login", {
         email,

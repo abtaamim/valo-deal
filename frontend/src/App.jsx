@@ -15,6 +15,7 @@ import AddedItemList from './pages/showAddedItem';
 import RecentlyViewedItemPage from './pages/recentlyViewedItem';
 import AddedMobileList from './pages/showAddedItem';
 import SearchPage from './pages/SearchPage';
+import ShowDetailsPage from './pages/ShowDetails';
 //import ComputerSellPage from './pages/computerSell';
 
 import { ComputerSellPage, VehicleSellPage, ElectronicsSellPage } from './pages/sellDetailsPage';
@@ -63,6 +64,7 @@ const App = () => {
           <Route path="/added-items" element={<AddedItemList/>}/>
           <Route path="/recently-viewed" element={<RecentlyViewedItemPage/>} />
           <Route path="/search/:keyword" element={<SearchPage />} />
+          <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
           <Route path="/dashboard" element={<PrivateRoute />}>
             <Route path="" element={<Dashboard />} />
           </Route>

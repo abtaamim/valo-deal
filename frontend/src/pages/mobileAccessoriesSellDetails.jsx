@@ -42,7 +42,9 @@ const MobileAccessoriesSellDetailsPage = () => {
     if (!price) newErrors.price = 'Price is required';
     if (!brand) newErrors.brand = 'Brand is required';
     if (!model) newErrors.model = 'Model is required';
-    if (selectedImages.length === 0) newErrors.images = 'At least one image is required';
+    const checkImage= selectedImages.filter(img=>{img!==null})
+    if (checkImage.length <3) newErrors.images = 'At least three image is required';
+    
     if (!authenticity) newErrors.authenticity = 'Authenticity is required';
     return newErrors;
   };

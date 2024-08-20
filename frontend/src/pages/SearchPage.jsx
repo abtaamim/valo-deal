@@ -11,63 +11,21 @@ import Pagination from '@mui/material/Pagination';
 import { useSearch } from "../context/SearchContext";
 import { Toaster, toast } from 'sonner';
 
+import CustomDialog from './CustomDialog';
+import ListingCard from './CustomItemCard';
 const SearchPage = () => {
-  const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
-    <Card sx={{ width: '280px' }}>
-      <CardMedia
-        component="img"
-        height="240"
-        image={item.imgUrl}
-        alt={`${item.brand} ${item.model}`}
-        src={item.imgUrl}
-      />
-      <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
-        <Typography gutterBottom variant="h5" component="div">
-          {item.brand} {item.model}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Condition: {item.condition}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Price: ${item.price}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Description: {item.description}
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
-        </Typography>
-        {/* <Typography variant="body2" color="text.secondary"> */}
-        <ListItemButton sx={{ padding: '0', mt: '10px', height: '32px' }}>
-
-          Seller : {sellerName}
-        </ListItemButton>
-        {/* </Typography> */}
-      </CardContent>
-      <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        <Button size="small" onClick={() => onRecentlyView(item._id)}>View Details</Button>
-        <Tooltip title='add this item to tour cart'>
-          <IconButton onClick={() => onAddToCart(item._id)}>
-            <AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />
-          </IconButton>
-        </Tooltip>
-      </CardActions>
-    </Card>
-  );
+  
   const [values, setValues] = useSearch();
   const [auth] = useAuth();
   const { updateCartSize } = useCart()
   const navigate = useNavigate();
-  const handleRecentlyView = async (itemId, itemType) => {
-    try {
-      await axios.post(`http://localhost:8080/recentlyViewed/${itemType}/${itemId}`);
-    } catch (error) {
-      console.error(`Error viewing item:`, error);
-    }
-  };
+  // const handleRecentlyView = async (itemId, itemType) => {
+  //   try {
+  //     await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
+  //   } catch (error) {
+  //     console.error(`Error viewing item:`, error);
+  //   }
+  // };
   const { keyword } = useParams();
   console.log("keyword+++", keyword);
 
@@ -75,7 +33,7 @@ const SearchPage = () => {
     const fetchResults = async () => {
       if (keyword) {
         try {
-          const res = await axios.get(`http://localhost:8080/search/${keyword}`);
+          const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${keyword}`);
           setValues({ ...values, results: res.data.results });
         } catch (error) {
           console.log('Error:', error);
@@ -99,7 +57,7 @@ const SearchPage = () => {
   const handleCart = async (itemId, itemType) => {
     try {
       if (auth.user) {
-        await axios.post(`http://localhost:8080/cart/${itemType}/${itemId}`);
+        await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
         // fetchItems(); // Refresh items after deletion
         updateCartSize();
         toast.success('item added to your cart successfully')
@@ -122,7 +80,7 @@ const SearchPage = () => {
       const sellerIds = new Set(values.results.map((item) => item.sellerId));
 
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
-        axios.get(`http://localhost:8080/api/v1/auth/seller-info/${sellerId}`)
+        axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`)
       );
 
       const sellerResponses = await Promise.all(sellerPromises);
@@ -143,21 +101,15 @@ const SearchPage = () => {
   }, []);
   return (
     <>
-    <Grid container spacing={3} sx={{ lp: '10px' }} >
-        {values.results.map((item) => (
-          <Grid item key={item._id} xs={12} sm={6} md={4} sx={{ width: '280px' }}>
-            <ListingCard item={item} onAddToCart={(itemId) => handleCart(itemId, item.itemType)}
-              onRecentlyView={(itemId) => handleRecentlyView(itemId, item.itemType)}
-              sellerName={sellerMap.get(item.sellerId)?.name}
-            />
-          </Grid>
-        ))}
-      </Grid>
+      
+      <ListingCard items={values.results}  button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+        handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
+      />
       < Toaster richColors />
-      
 
-      
-      
+
+
+
     </>
 
   )

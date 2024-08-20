@@ -75,7 +75,7 @@ const deleteMobileController = async (mobileId) => {
 const getLatestMobile = async (req, res) => {
   try {
     const userId = req.user._id; 
-    
+    console.log(req.user);
     const latestMobile = await mobileModel.find({ sellerId:  {$ne: userId } })
       .sort({ createdAt: -1 }).limit(3) .exec();
      

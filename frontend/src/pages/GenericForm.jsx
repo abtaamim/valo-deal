@@ -28,8 +28,8 @@ const GenericForm = ({ category, endpoint }) => {
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const [uploadState, setUploadState] = useState(UploadState.IDLE);
-  const [imagePreviewUrl, setImagePreviewUrl] = useState(null);
-  const [selectedImages, setSelectedImages] = useState([]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState([null,null,null,null,null]);
+  const [selectedImages, setSelectedImages] = useState([null,null,null,null,null]);
 
   const location = useLocation();
   const { subCategory } = location.state || {};
@@ -87,7 +87,9 @@ const GenericForm = ({ category, endpoint }) => {
     if (!model) newErrors.model = 'Model is required';
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
-    if (selectedImages.length === 0) newErrors.images = 'At least one image is required';
+    const checkImage= selectedImages.filter(img=>{img!==null})
+    if (checkImage.length <3) newErrors.images = 'At least three image is required';
+    
     return newErrors;
   };
 

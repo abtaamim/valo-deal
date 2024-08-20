@@ -13,7 +13,7 @@ router.post('/mobile', requireSignIn,upload.none(),sellMobileController);
 router.get('/mobiles', requireSignIn, getUserAddedMobilesController);
 router.get('/latest-mobiles', requireSignIn, getLatestMobile);
 router.get('/mobiles/:subCategory', requireSignIn, getAllMobilesController);
-router.delete('/mobiles/:id', requireSignIn, async (req, res) => {
+router.delete('/mobile/:id', requireSignIn, async (req, res) => {
   try {
     const mobileId = req.params.id;
     await deleteMobileController(mobileId);

@@ -13,7 +13,7 @@ const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
     <CardMedia
       component="img"
       height="240"
-      image={item.imgUrl}
+      image={item.imgUrl[1]}
       alt={`${item.brand} ${item.model}`}
       src={item.imgUrl}
     />
@@ -64,7 +64,7 @@ const HomePage = () => {
   const [sellerMap, setSellerMap] = useState(new Map());
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [postsPerPage] = useState(3);
+  const [postsPerPage] = useState(6);
   const fetchItems = async () => {
     try {
       // const token = auth?.token; 
@@ -109,7 +109,7 @@ const HomePage = () => {
     fetchItems();
     updateCartSize();
     //navigate("/");
-  }, []);
+  }, [auth]);
 
   // const handleDelete = async (itemId, itemType) => {
   //   try {
@@ -197,7 +197,7 @@ const HomePage = () => {
             </Typography>
             <Grid container spacing={3} sx={{ lp: '10px' }} >
               {currentPosts.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={4} sx={{ width: '280px' }}>
+                <Grid item key={item._id} xs={12} sm={6} md={4} lg={2} sx={{ width: '280px' }}>
 
                   <ListingCard item={item} onAddToCart={(itemId) => handleCart(itemId, item.itemType)}
                     onRecentlyView={(itemId) => handleRecentlyView(itemId, item.itemType)}
