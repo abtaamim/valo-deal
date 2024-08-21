@@ -36,7 +36,7 @@ const SearchBar = () => {
   //   const fetchResults = async () => {
   //     if (keyword) {
   //       try {
-  //         const res = await axios.get(`http://localhost:8080/search/${keyword}`);
+  //         const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${keyword}`);
   //         setValues({ ...values, results: res.data.results });
   //       } catch (error) {
   //         console.log('Error:', error);

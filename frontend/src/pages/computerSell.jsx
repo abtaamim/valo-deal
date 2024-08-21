@@ -46,7 +46,7 @@ const ComputerSellPage = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:8080/upload", {
+      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
         method: "POST",
         body: formData,
       });
@@ -95,7 +95,7 @@ const ComputerSellPage = () => {
       // });
       console.log('Form Data:', Array.from(formData.entries()));
       try {
-        const res = await axios.post("http://localhost:8080/sell/computer", formData);
+        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/computer", formData);
         // headers: {
         //   'Content-Type': 'multipart/form-data',
         // },

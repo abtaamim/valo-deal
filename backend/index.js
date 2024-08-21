@@ -11,6 +11,7 @@ const vehicleRoutes = require('./routes/vehicleRoute.js')
 const cartRoutes = require('./routes/userCartRoute.js')
 const recentlyViewedRoutes = require('./routes/recentlyViewedRoute.js')
 const searchRoutes =require('./routes/searchRoute.js')
+const showDetails = require('./routes/showDetails.js')
 
 const cors = require('cors');
 const path = require('path');
@@ -70,6 +71,7 @@ app.use("/sell", mobAccessories);
 app.use("/cart", cartRoutes);
 app.use("/recentlyViewed", recentlyViewedRoutes)
 app.use("/search", searchRoutes);
+app.use("/details", showDetails);
 
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");

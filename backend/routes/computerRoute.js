@@ -20,7 +20,7 @@ router.get('/computers/:subCategory', requireSignIn, getSubcatComputersControlle
 router.get('/computers', requireSignIn, getAllComputersController);
 router.get('/added-computers', requireSignIn, getAddedComputer);
 router.get('/latest-computers', requireSignIn, getLatestComputer);
-router.delete('/computers/:id', requireSignIn, async (req, res) => {
+router.delete('/computer/:id', requireSignIn, async (req, res) => {
   try {
     const compId = req.params.id;
     await deleteComputer(compId);

@@ -19,7 +19,7 @@ router.get('/electronics/:subCategory', requireSignIn, getSubcatElectronisContro
 router.get('/electronics', requireSignIn, getAllEletronicsController);
 router.get('/added-electronics', requireSignIn, getAddedElectronic);
 router.get('/latest-electronics', requireSignIn, getLatestElectronic);
-router.delete('/electronics/:id', requireSignIn, async (req, res) => {
+router.delete('/electronic/:id', requireSignIn, async (req, res) => {
   try {
     const compId = req.params.id;
     await deleteElectronic(compId);
