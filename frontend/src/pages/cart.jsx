@@ -78,7 +78,7 @@ const CartPage = () => {
       </Box>
       
       <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId} 
-        handleDelete={handleDelete} dialog_title= "This item will be removed from your cartttttttttt"
+        handleDelete={handleDelete} dialog_title= "This item will be removed from your cart"
         open={open}
       />
     </>
