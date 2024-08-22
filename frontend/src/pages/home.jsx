@@ -98,7 +98,7 @@ const HomeSlider = () => (
   </Box>
 );
 
-const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
+const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
   <Card sx={{ width: '280px' }}>
     <CardMedia
       component="img"
@@ -131,9 +131,9 @@ const ListingCard = ({ item, onAddToCart, onRecentlyView, sellerName }) => (
       </ListItemButton>
     </CardContent>
     <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Button size="small" onClick={() => onRecentlyView(item._id)}>View Details</Button>
+      <Button size="small" onClick={onViewDetails}>View Details</Button>
       <Tooltip title='Add this item to your cart'>
-        <IconButton onClick={() => onAddToCart(item._id)}>
+        <IconButton onClick={onAddToCart}>
           <AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />
         </IconButton>
       </Tooltip>
@@ -183,16 +183,13 @@ const HomePage = () => {
 
   }, []);
 
+const handleViewDetails = (itemId, itemType) => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  navigate(`/details/${itemType}/${itemId}`);
+};
 
-  const handleRecentlyView = async (itemId, itemType) => {
-    try {
-      await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
-    } catch (error) {
-      console.error(`Error viewing item:`, error);
-    }
-  };
 
-  const handleCart = async (itemId, itemType) => {
+  const handleAddToCart = async (itemId, itemType) => {
     try {
       await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
       await updateCartSize();
@@ -292,9 +289,8 @@ const HomePage = () => {
                 <Grid item key={item._id} xs={12} sm={6} md={2}>
                   <ListingCard
                     item={item}
-                    onAddToCart={(itemId) => handleCart(itemId, item.itemType)}
-
-                    onRecentlyView={(itemId) => handleRecentlyView(itemId, item.itemType)}
+                    onAddToCart={() => handleAddToCart(item._id, item.itemType)}
+                    onViewDetails={() => handleViewDetails(item._id, item.itemType)}
                     sellerName={sellerMap.get(item.sellerId)?.name || ''}
                   />
                 </Grid>
