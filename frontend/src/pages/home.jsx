@@ -15,6 +15,9 @@ import image1 from '../assests/h1.jpg';
 import image2 from '../assests/h2.jpg';
 import image3 from '../assests/h3.jpg';
 import image4 from '../assests/h4.jpg';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const HomeSlider = () => (
   <Box sx={{ marginBottom: '10px' }}>
@@ -193,8 +196,9 @@ const handleViewDetails = (itemId, itemType) => {
     try {
       await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
       await updateCartSize();
-      console.log(itemType);
+      toast.success('Item added to the cart!', { position: 'top-right' });
     } catch (error) {
+      toast.error('Already added item to the cart.', { position: 'top-right' });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
@@ -260,6 +264,7 @@ const handleViewDetails = (itemId, itemType) => {
 
   return (
     <>
+    <ToastContainer />
       {auth.user === null ? (
         <Typography variant="h4" gutterBottom>
           Please sign in to browse items
