@@ -171,14 +171,29 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       </ListItemButton>
     </CardContent>
     <CardActions sx={{ justifyContent: "space-between" }}>
-      <Button size="small" onClick={onViewDetails}>
+      <Button
+        size="small"
+        variant="contained"
+        sx={{ backgroundColor: "#FF8C00", color: "white" }}
+        onClick={onViewDetails}
+      >
         View Details
       </Button>
+      
       <Tooltip title="Add this item to your cart">
-        <IconButton onClick={onAddToCart}>
-          <AddShoppingCartSharpIcon sx={{ color: "rgb(0, 6, 12)" }} />
+        <IconButton
+          onClick={onAddToCart}
+          sx={{
+            color: "#191970",
+            "&:hover": {
+              color: "green",
+            },
+          }}
+        >
+          <AddShoppingCartSharpIcon />
         </IconButton>
       </Tooltip>
+      
     </CardActions>
   </Card>
 );

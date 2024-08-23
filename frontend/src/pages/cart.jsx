@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, Grid, Button } from '@mui/material';
-
+import { Box, Typography, Grid, Button, Snackbar } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import RemoveShoppingCartOutlinedIcon from '@mui/icons-material/RemoveShoppingCartOutlined';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
@@ -12,9 +12,11 @@ const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [auth] = useAuth();
   const { updateCartSize } = useCart();
+  const navigate = useNavigate();
 
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [open, setOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false); 
 
   const handleClickOpen = (itemId) => {
     setOpen(true);
@@ -49,12 +51,20 @@ const CartPage = () => {
       fetchItems();
       await updateCartSize();
       handleClose();
+      setSnackbarOpen(true); 
     } catch (error) {
       console.error(`Error deleting item:`, error);
     }
   };
 
-  // Calculate the total sum of the items in the cart
+  const handleBuyNow = () => {
+    navigate('/payment');
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
+  };
+
   const totalSum = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   return (
@@ -63,9 +73,15 @@ const CartPage = () => {
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ color: 'orange', fontWeight: 'bold', textDecoration: 'underline' }}
+          sx={{ 
+            color: 'orange', 
+            fontWeight: 'bold', 
+            border: '2px solid white',  
+            padding: '8px',             
+            borderRadius: '4px'         
+          }}
         >
-          Items you have added to the cart
+          Cart 🛒
         </Typography>
         
         
@@ -95,6 +111,7 @@ const CartPage = () => {
                     backgroundColor: 'darkgreen',
                   },
                 }}
+                onClick={handleBuyNow}
               >
                 Buy Now
               </Button>
@@ -107,6 +124,22 @@ const CartPage = () => {
         handleDelete={handleDelete} dialog_title="This item will be removed from your cart"
         open={open}
       />
+
+      <Snackbar
+        open={snackbarOpen}
+        onClose={handleSnackbarClose}
+        message="Item removed from cart"
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        ContentProps={{
+          sx: {
+            backgroundColor: 'grey',
+            color: 'white',               
+            fontWeight: 'bold',         
+          },
+        }}
+      />
+      
     </>
   );
 };
