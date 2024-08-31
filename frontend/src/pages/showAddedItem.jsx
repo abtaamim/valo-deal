@@ -79,8 +79,8 @@ const AddedItemList = () => {
       const computersResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-computers');
       const electronicResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-electronics');
       const vehicleResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-vehicles');
-      setItems({ mobiles: mobilesResponse?.data.mobiles, computers: computersResponse?.data.computers,
-         electronics: electronicResponse?.data.electronics, vehicles: vehicleResponse?.data.vehicles });
+      setItems({ mobiles: mobilesResponse.data.mobiles || [], computers: computersResponse?.data.computers || [],
+         electronics: electronicResponse?.data.electronics || [], vehicles: vehicleResponse?.data.vehicles || []});
     } catch (error) {
       console.error('Error fetching items:', error);
     }

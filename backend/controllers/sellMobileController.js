@@ -1,5 +1,5 @@
 const mobileModel=require('../models/sellMobileModel')
-
+const gsmarena = require('gsmarena-api');
 const sellMobileController = async (req, res) => {
   try {
     const { sellerId, brand, model, condition, authenticity, description, price, imgUrl } = req.body;
@@ -34,14 +34,14 @@ const sellMobileController = async (req, res) => {
 
 const getAllMobilesController = async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming user ID is available in req.user
+   // const userId = req.user._id; // Assuming user ID is available in req.user
 
     // Fetch mobiles where sellerId is not equal to userId
-    const mobiles = await mobileModel.find({ sellerId: { $ne: userId } });
+    const mobiles = await mobileModel.find();//{ sellerId: { $ne: userId } }
 
-    if (mobiles.length === 0) {
-      return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
-    }
+    // if (mobiles.length === 0) {
+    //   return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
+    // }
 
     res.status(200).json({ success: true, mobiles });
   } catch (error) {
@@ -74,9 +74,9 @@ const deleteMobileController = async (mobileId) => {
 
 const getLatestMobile = async (req, res) => {
   try {
-    const userId = req.user._id; 
-    console.log(req.user);
-    const latestMobile = await mobileModel.find({ sellerId:  {$ne: userId } })
+   // const userId = req.user._id; 
+    //console.log(req.user);
+    const latestMobile = await mobileModel.find()//{ sellerId:  {$ne: userId } }
       .sort({ createdAt: -1 }).limit(3) .exec();
      
     if (!latestMobile) {
@@ -88,5 +88,25 @@ const getLatestMobile = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
-module.exports = { sellMobileController, getAllMobilesController, getUserAddedMobilesController, deleteMobileController, getLatestMobile };
+
+const getgsmBrand = async(req, res)=>{
+  try{
+  const brands = await gsmarena.catalog.getBrands();
+  //console.log(brands);
+  res.status(200).json({ success: true, brands });
+  }catch(error){
+    console.log("Error gsm: ",error);
+  }
+}
+const getgsmModel =async(req, res)=>{
+  try{
+    const brand = req.params.brandId;
+    //const models = await gsmarena.catalog.getModels(brand);
+    const models = await gsmarena.catalog.getBrand(brand);
+    res.status(200).json({ success: true, models });
+  }catch(error){
+    console.log("Error gsm: ",error);
+  }
+}
+module.exports = {getgsmBrand, getgsmModel, sellMobileController, getAllMobilesController, getUserAddedMobilesController, deleteMobileController, getLatestMobile };
 

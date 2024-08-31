@@ -27,7 +27,7 @@ router.post('/create', async (req, res) => {
     await order.save();
 
     // Clear the user's cart after confirming the order
-    user.cartItems = [];
+    user.cartItems.length=0;
     await user.save();
 
     res.status(201).json({ success: true, message: 'Order confirmed and cart cleared', order });

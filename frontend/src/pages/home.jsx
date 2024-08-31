@@ -31,6 +31,7 @@ import image3 from "../assests/h3.jpg";
 import image4 from "../assests/h4.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import '../siteComponents/styles.css';
 
 const HomeSlider = () => (
   <Box sx={{ marginBottom: "10px" }}>
@@ -98,11 +99,11 @@ const HomeSlider = () => (
         )
       }
     >
-      <div>
+      <div class="image-container">
         <img
           src={image1}
           alt="Essentials for Gamers"
-          style={{ height: "300px", objectFit: "cover" }}
+         // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div>
@@ -249,7 +250,7 @@ const HomePage = () => {
     }
     fetchItems();
     updateCartSize();
-  }, []);
+  }, [auth]);
 
   const handleViewDetails = (itemId, itemType) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -264,7 +265,9 @@ const HomePage = () => {
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
     } catch (error) {
-      toast.error("Already added item to the cart.", { position: "top-right" });
+      auth.user?
+      (toast.error("Already added item to the cart.", { position: "top-right" }))
+      :(toast.error("Sign in to add to cart.", { position: "top-right" }))
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
@@ -333,11 +336,11 @@ const HomePage = () => {
   return (
     <>
       <ToastContainer />
-      {auth.user === null ? (
+      {/* {auth.user === null ? (
         <Typography variant="h4" gutterBottom>
           Please sign in to browse items
         </Typography>
-      ) : (
+      ) : ( */}
         <>
           <HomeSlider /> {/* Include the slider here */}
           <Box sx={{ p: 2, bgcolor: "#FAF9F6" }}>
@@ -388,7 +391,7 @@ const HomePage = () => {
             </Box>
           </Box>
         </>
-      )}
+      {/* )} */}
     </>
   );
 };
