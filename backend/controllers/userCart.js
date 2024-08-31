@@ -2,6 +2,7 @@ const computerModel = require('../models/computersModel');
 const mobileModel=require('../models/sellMobileModel')
 const electronicModel = require('../models/electronicsModel')
 const vehicleModel = require('../models/vehiclesModel');
+const mobileAccessories= require('../models/mobileAccessoriesModel')
 const User = require('../models/userModel')
 
 const getItemModel = (itemType) => {
@@ -10,6 +11,11 @@ const getItemModel = (itemType) => {
     case 'computer': return computerModel;
     case 'electronic': return electronicModel;
     case 'vehicle': return vehicleModel;
+    case 'mobileaccessories': return mobileAccessories;
+    case 'mobiles': return mobileModel;
+    case 'computers': return computerModel;
+    case 'electronics': return electronicModel;
+    case 'vehicles': return vehicleModel;
     default: throw new Error('Invalid item type');
   }
 };
@@ -79,13 +85,16 @@ const getCartItems= async (req, res) => {
     }
 
     const cartItems = await Promise.all(user.cartItems.map(async (cartItem) => {
+     console.log(cartItem.itemType);
       const ItemModel = getItemModel(cartItem.itemType);
       const item = await ItemModel.findById(cartItem.itemId);
       return { ...item._doc, itemType: cartItem.itemType };
     }));
+    console.log(cartItems)
 
     res.status(200).json({ success: true, cartItems });
   } catch (error) {
+    
     res.status(500).json({ success: false, message: error.message });
   }
 };
@@ -104,4 +113,20 @@ const getCartSize = async(req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 }
-module.exports ={addToCart, removeFromCart, getCartItems, getCartSize}
+const deleteWholeCart = async(req, res) =>{
+  try{
+    const userId = req.user._id;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    user.markModified('cartItems');
+    user.cartItems.length = 0;
+    await user.save();
+    res.status(200).json({ success: true, message: 'Cart deleted' });
+  }
+  catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+}
+module.exports ={addToCart, removeFromCart, getCartItems, getCartSize, deleteWholeCart}

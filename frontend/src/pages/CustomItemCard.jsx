@@ -33,7 +33,7 @@ const ListingCard = (props) => {
             <CardMedia
               component="img"
               sx={{ width: '40%', objectFit: 'cover' }}
-              image={item.imgUrl}
+              image={item.imgUrl[0]}
               alt={`${item.brand} ${item.model}`}
             />
             {/* Content on the right side */}

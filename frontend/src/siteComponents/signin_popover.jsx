@@ -9,12 +9,14 @@ import Popper from '@mui/material/Popper';
 import { useAuth } from '../context/auth';
 import { Divider, ListItemButton } from '@mui/material';
 import { useNavigate } from "react-router-dom";
+import {useMediaQuery} from '@mui/material';
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 
 const SignInPopover = () => {
   const [auth, setAuth] = useAuth();
   const popupState = usePopupState({ variant: 'popover', popupId: 'signInPopover' });
   const navigate = useNavigate();
-
+  const isXs = useMediaQuery('(max-width:450px)');
   const handleSignOut = () => {
     setAuth({ user: null, token: null });
     localStorage.removeItem('auth');
@@ -26,10 +28,10 @@ const SignInPopover = () => {
     <div style={{ display: 'inline-block', position: 'relative' }}>
       <div className='signProp' {...bindHover(popupState)}>
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
-          {auth.user ? `Hello, ${auth.user.name}` : 'Hello, SignIn'}
+          { isXs? (auth.user ? (<> {auth.user.name} <Person2OutlinedIcon /> </>) :( <Person2OutlinedIcon />)): (auth.user?   `Hello, ${auth.user.name}` : 'Hello, SignIn')}
         </Typography>
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-          Account & Lists
+          {!isXs? 'Account & Lists': null}
           <ArrowDropDownIcon />
         </Typography>
       </div>
@@ -39,7 +41,7 @@ const SignInPopover = () => {
         sx={{
           backgroundColor: 'aliceblue',
           border: '1px solid black',
-          zIndex: 1500, // Increase zIndex to ensure it appears above the slider
+          zIndex: 2500, // Increase zIndex to ensure it appears above the slider
         }}
         anchorOrigin={{
           vertical: 'bottom',

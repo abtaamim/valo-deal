@@ -29,16 +29,17 @@ export default function Navbar() {
           Deliver to
         </Typography>
         <Typography
-          variant="body1"
+          //variant="caption"
           sx={{
             fontWeight: 'bold',
             display: 'flex',
             alignItems: 'center',
-            fontSize: '1.1rem',
+            fontSize: '0.9rem',
           }}
         >
-          <LocationOnOutlinedIcon sx={{ mr: 0.5 }} />
-          {/* {`${auth.user.address}`} */}
+          <LocationOnOutlinedIcon sx={{ mr: 0.5, fontSize:'0.9rem' }} />
+
+          { auth.user?`${auth.user.address}` : null}
         </Typography>
       </Stack>
           
@@ -46,12 +47,13 @@ export default function Navbar() {
 
       <ul >
       
-        <div className="hideOnMobile navhover"> <CustomLink to="/pricing" >Pricing</CustomLink>
+        {/* <div className="hideOnMobile navhover"> <CustomLink to="/pricing" >Pricing</CustomLink>
         </div>
         
         <div className="hideOnMobile navhover">  <CustomLink to="/about" >About</CustomLink>
-        </div>
-        <CustomLink to="/cart" id='cart' className='hideOnMobile'>
+        </div> */}
+        {auth.user?
+        (<CustomLink to="/cart" id='cart' className='hideOnMobile'>
           {({ isActive }) => (
             <Tooltip title="Cart">
               <Badge badgeContent={cartSize} color="secondary" overlap='circular'> 
@@ -60,12 +62,22 @@ export default function Navbar() {
               </IconButton></Badge>
             </Tooltip>
           )}
-        </CustomLink>
-        
+        </CustomLink>):(
+          <CustomLink to="/login" >
+            {({ isActive }) => (
+            <Tooltip title="Cart">
+              <Badge badgeContent={cartSize} color="secondary" overlap='circular'> 
+              <IconButton size='large' className={`cart-icon ${isActive ? 'active' : ''}`}>
+                <ShoppingCartOutlinedIcon />
+              </IconButton></Badge>
+            </Tooltip>
+          )}
+          </CustomLink>
+        )
+        }
           <SignInPopover className='hideOnMobile'/>
         
       </ul>
     </nav>
   );
 }
-

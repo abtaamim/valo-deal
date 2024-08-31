@@ -38,18 +38,18 @@ const PaymentPage = () => {
     setLoading(true);
     try {
       await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
-      setCartItems([]);
+      //setCartItems([]);
       await updateCartSize();
 
-      const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
-      setCartItems(response.data.cartItems);
+      // const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
+      // setCartItems(response.data.cartItems);
 
       setSnackbarOpen(true);
       setLoading(false);
 
       setTimeout(() => {
         navigate('/');
-      }, 3000);
+      }, 1000);
     } catch (error) {
       console.error('Error clearing the cart:', error);
       alert('There was an error processing your order. Please try again.');

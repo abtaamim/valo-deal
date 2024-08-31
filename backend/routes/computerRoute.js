@@ -15,11 +15,11 @@ const upload = multer({ storage });
 // Sell product route
 router.post('/computer', requireSignIn,upload.none(),computerController);
  
-router.get('/computers/:subCategory', requireSignIn, getSubcatComputersController);
+router.get('/computers/:subCategory',  getSubcatComputersController);
 // Route to get user-specific omputers
 router.get('/computers', requireSignIn, getAllComputersController);
 router.get('/added-computers', requireSignIn, getAddedComputer);
-router.get('/latest-computers', requireSignIn, getLatestComputer);
+router.get('/latest-computers',  getLatestComputer);
 router.delete('/computer/:id', requireSignIn, async (req, res) => {
   try {
     const compId = req.params.id;

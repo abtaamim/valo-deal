@@ -90,7 +90,7 @@ const GenericForm = ({ category, endpoint }) => {
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
 
-    const checkImage= selectedImages.filter(img=>{img!==null})
+    const checkImage= selectedImages.filter(img=>(img!==null))
     if (checkImage.length <3) newErrors.images = 'At least three image is required';
 
     return newErrors;
@@ -251,7 +251,7 @@ const GenericForm = ({ category, endpoint }) => {
             <Typography variant="caption" sx={{ mb: 2, textAlign: 'start', fontWeight: 'bold', fontSize: 15 }}>
               Add up to 5 photos
             </Typography>
-
+            <FormControl error={!!errors.images} >
             <Grid container spacing={1}>
               {selectedImages.map((_, index) => (
                 <Grid item xs={12} sm={6} md={4} key={index}>
@@ -289,6 +289,7 @@ const GenericForm = ({ category, endpoint }) => {
 
             </Grid>
             {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
+            </FormControl>
             <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
               Submit
             </Button>
