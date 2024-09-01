@@ -12,16 +12,18 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useSearch } from '../context/SearchContext';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-
+import { useAuth } from '../context/auth';
 const SearchBar = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [values, setValues] = useSearch();
   const navigate = useNavigate();
+  const [auth] = useAuth();
   const theme = useTheme();
   const lessThan850px = useMediaQuery('(max-width:1000px)');
   const { keyword } = useParams();
   console.log("keyword+++", keyword);
   console.log("values.keyword", values.keyWord);
+  const isXs = useMediaQuery('(max-width:450px)');
   // Sync keyWord from URL with state
   // useEffect(() => {
   //   if (keyword && keyword !== values.keyWord) {
@@ -52,9 +54,9 @@ const SearchBar = () => {
     if (!values.keyWord.trim()) return;
     try {
       const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${values.keyWord}`);
-      await axios.post('https://valo-deal-backend.vercel.app/search/searched-items', {
+      {auth.user? await axios.post('https://valo-deal-backend.vercel.app/search/searched-items', {
         searchTerm: values.keyWord
-      })
+      }):null}
       setValues({ ...values, results: res.data.results });
       navigate(`/search/${values.keyWord}`); // Update the URL
     } catch (error) {
@@ -72,7 +74,7 @@ const SearchBar = () => {
     <Paper
       variant="outlined"
       component="form"
-      sx={{ bgcolor: 'rgb(24, 26, 27)', borderRadius: '40px', p: '2px 4px', display: 'flex', alignItems: 'center', width: 600, height: 50, mt: '14px' }}
+      sx={{ bgcolor: 'rgb(24, 26, 27)', borderRadius: '40px', p: '2px 4px', display: 'flex', alignItems: 'center', width: {xs:300,md:600}, height: 50,  mt: '14px' }}
       onSubmit={handleSubmit}
     >
       <InputBase
@@ -84,9 +86,11 @@ const SearchBar = () => {
         autoFocus
         placeholder={!isFocused ? 'Search...' : ''}
         startAdornment={
-          <InputAdornment position="start">
-            <SearchIcon sx={{ color: 'rgb(173, 181, 189)' }} />
-          </InputAdornment>
+          !isXs && (
+            <InputAdornment position="start">
+              <SearchIcon sx={{ color: 'rgb(173, 181, 189)' }} />
+            </InputAdornment>
+          )
         }
       />
       {values.keyWord && (

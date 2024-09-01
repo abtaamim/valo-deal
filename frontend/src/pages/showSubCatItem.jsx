@@ -6,45 +6,8 @@ import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
 import { useParams } from 'react-router-dom';
-const ListingCard = ({ item, onAddToCart, onRecentlyView }) => (
-  <Card sx={{ width: '300px' }}>
-    <CardMedia
-      component="img"
-      height="240"
-      image={item.imgUrl}
-      alt={`${item.brand} ${item.model}`}
-      src={item.imgUrl}
-    />
-    <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
-      <Typography gutterBottom variant="h5" component="div">
-        {item.brand} {item.model}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Condition: {item.condition}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Price: ${item.price}
-      </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Description: {item.description}
-      </Typography>
-      {/* <Typography variant="body2" color="text.secondary">
-        {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
-      </Typography> */}
-    </CardContent>
-    <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-      <Button size="small" onClick={() => onRecentlyView(item._id)}>View Details</Button>
-      <Tooltip title='add this item to tour cart'>
-        <IconButton onClick={() => onAddToCart(item._id)}>
-          <AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />
-        </IconButton>
-      </Tooltip>
-    </CardActions>
-  </Card>
-);
+import ListingCard from './CustomItemCard';
+import { Toaster, toast } from 'sonner';
 
 const ShowSubCatItem = () => {
   const [items, setItems] = useState([]);
@@ -53,15 +16,7 @@ const ShowSubCatItem = () => {
   const { updateCartSize } = useCart();
   const fetchItems = async () => {
     try {
-      // const token = auth?.token; 
-      // console.log(token);
-      // if (!token) {
-      //   throw new Error("No token found");
-      // }
-      // const headers = { Authorization: `Bearer ${token}` };
-
-      // console.log("header::::")
-      // console.log(headers);
+      
       let response = null;
       if (subCat.toLowerCase() === 'mobile phone accessories') {
         response = await axios.get(`https://valo-deal-backend.vercel.app/sell/mobileAcc/${subCat}`);
@@ -91,7 +46,7 @@ const ShowSubCatItem = () => {
     fetchItems();
     updateCartSize();
     setItems("")
-  }, [subCat,auth]);
+  }, [subCat, auth]);
 
   const catLow = category.toLowerCase();
   const handleRecentlyView = async (itemId, catLow) => {
@@ -107,8 +62,13 @@ const ShowSubCatItem = () => {
       await axios.post(`https://valo-deal-backend.vercel.app/cart/${catLow}/${itemId}`);
       // fetchItems(); // Refresh items after deletion
       await updateCartSize();
-
+      
+        (toast.success('item added to your cart successfully'))
+        
     } catch (error) {
+      auth.user ?(
+        toast.error('allready in your cart')
+      ): (toast.error('Sign in to add to cart'))
       console.error(`Error adding to cart ${catLow}:`, error);
     }
   };
@@ -127,13 +87,14 @@ const ShowSubCatItem = () => {
             </Typography>
           ) :
             (
-              items?.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={3}>
-                  <ListingCard item={item} onAddToCart={(itemId) => handleCart(itemId, catLow)}
-                    onRecentlyView={(itemId) => handleRecentlyView(itemId, catLow)}
-                  />
-                </Grid>
-              ))
+              
+              <>
+                <ListingCard items={items} button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+                  handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
+                />
+                <Toaster richColors />
+
+              </>
             )
           }
         </Grid>

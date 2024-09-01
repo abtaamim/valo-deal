@@ -35,10 +35,10 @@ const mobAccessoriesCont = async (req, res) => {
 
 const getAllMobAccessories = async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming user ID is available in req.user
+   // const userId = req.user._id; // Assuming user ID is available in req.user
 
     // Fetch mobileAccessories where sellerId is not equal to userId
-    const mobileAcc = await mobAccModel.find({ sellerId: { $ne: userId } });
+    const mobileAcc = await mobAccModel.find();//{ sellerId: { $ne: userId } }
 
     if (mobileAcc.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobileAccessories found for the user' });

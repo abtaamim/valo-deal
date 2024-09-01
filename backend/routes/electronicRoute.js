@@ -14,11 +14,11 @@ const upload = multer({ storage });
 // Sell product route
 router.post('/electronic', requireSignIn,upload.none(),electronicController);
  
-router.get('/electronics/:subCategory', requireSignIn, getSubcatElectronisController);
+router.get('/electronics/:subCategory',  getSubcatElectronisController);
 // Route to get user-specific omputers
 router.get('/electronics', requireSignIn, getAllEletronicsController);
 router.get('/added-electronics', requireSignIn, getAddedElectronic);
-router.get('/latest-electronics', requireSignIn, getLatestElectronic);
+router.get('/latest-electronics',  getLatestElectronic);
 router.delete('/electronic/:id', requireSignIn, async (req, res) => {
   try {
     const compId = req.params.id;

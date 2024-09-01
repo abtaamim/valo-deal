@@ -13,6 +13,6 @@ const ElectronicsSellPage = () => {
   return <GenericForm category="electronics" endpoint="electronic" />;
 };
 
-// Add more categories as needed
+
 
 export { ComputerSellPage, VehicleSellPage, ElectronicsSellPage };

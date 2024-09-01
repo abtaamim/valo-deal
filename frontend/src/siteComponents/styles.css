@@ -10,7 +10,7 @@ body {
   /* margin: 1rem; */
   padding: 1rem;
   text-align: center;
-  background-color: rgb(44, 43, 43);
+  background-color: rgb(227, 230, 230);
   width: 100%;
   height: 100%;
   min-height: 100vh;
@@ -197,7 +197,7 @@ body {
   }
 } */
 @media (max-width: 1000px) {
-   .nav-links,  .signProp, #cart, .hideOnMobile {
+   .nav-links,   #cart, .hideOnMobile {
     display: none;
   }
 
@@ -266,3 +266,12 @@ body {
 .footer .MuiIconButton-root:last-child {
   margin-right: 0;
 }
+
+.image-container {
+  position: relative;
+  display: inline-block; /* or block, depending on your layout needs */
+  -webkit-mask-image: linear-gradient(black, transparent);
+  mask-image: linear-gradient(black, transparent);
+}
+
+

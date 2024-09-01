@@ -12,7 +12,7 @@ const router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-router.get('/vehicles/:subCategory', requireSignIn, getSubcatVehiclesController);
+router.get('/vehicles/:subCategory',  getSubcatVehiclesController);
 router.post('/vehicle', requireSignIn,upload.none(),vehicleController);
  
 
@@ -20,7 +20,7 @@ router.post('/vehicle', requireSignIn,upload.none(),vehicleController);
 router.get('/vehicles', requireSignIn, getAllVehiclesController);
 router.get('/added-vehicles', requireSignIn, getAddedVehicle);
 
-router.get('/latest-vehicles', requireSignIn, getLatestVehicle); //for HomePage
+router.get('/latest-vehicles',  getLatestVehicle); //for HomePage
 router.delete('/vehicle/:id', requireSignIn, async (req, res) => {
   try {
     const compId = req.params.id;

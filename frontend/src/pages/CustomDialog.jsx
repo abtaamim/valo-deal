@@ -6,7 +6,7 @@ const CustomDialog=(props)=>{
   const dialog_title= props.dialog_title
   const open= props.open
   const selectedItemType= props.selectedItemType
-  console.log("props>>>",props);
+  //console.log("props>>>",props);
   return(
     <Dialog
         open={open}

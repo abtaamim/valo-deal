@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardMedia, Box, DialogContent, Radio, RadioGroup, FormControlLabel, FormControl, FormLabel, IconButton, InputAdornment, Grid, Button } from '@mui/material';
-import { TextField, Typography, Divider, Select, InputLabel, MenuItem } from '@mui/material';
+import { Autocomplete, TextField, Typography, Divider, Select, InputLabel, MenuItem } from '@mui/material';
 import CancelIcon from '@mui/icons-material/Cancel';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/auth';
 import gsmarena from 'gsmarena-api';
 import Snackbar from '@mui/material/Snackbar';
-
+//const gsmarena = require('gsmarena-api');
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 
 const UploadState = {
@@ -29,14 +29,25 @@ const MobileSellDetailsPage = () => {
   const [alertMessage, setAlertMessage] = useState('');
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
+  const [brandId, setBrandId] = useState('');
 
   const handleBrand = (event) => {
-    setBrand(event.target.value);
+    const selectedBrandName = event.target.value;
+    setBrand(selectedBrandName);
     setModel('');
+
+
+    const selectedBrand = gsmBrandName.find(brand => brand.name === selectedBrandName);
+    console.log(selectedBrandName);
+    if (selectedBrand) {
+      setBrandId(selectedBrand.id);
+    }
   };
 
-  const handleModel = (event) => {
-    setModel(event.target.value);
+
+  const handleModel = (event,value) => {
+    //setModel(event.target.value);
+    setModel(value);
   };
 
   const clearBrand = () => {
@@ -48,6 +59,53 @@ const MobileSellDetailsPage = () => {
     setModel('');
   };
 
+  const [gsmBrandName, setGsmBrandName] = useState([{ name: null, id: null }])
+  const [gsmModelName, setGsmModelName] = useState([]);
+  const getgsmBrand = async () => {
+    try {
+      const res = await axios.get("https://valo-deal-backend.vercel.app/sell/gsmbrand")
+      const brands = res.data.brands;
+      console.log(res.data.brands);
+
+      setGsmBrandName(brands.map(brand => ({ name: brand.name, id: brand.id })))
+
+    } catch (error) {
+      console.log("Error gsm: ", error);
+    }
+  }
+  useEffect(() => {
+    getgsmBrand();
+    console.log(gsmBrandName);
+  }, [])
+  const getgsmModel = async () => {
+    try {
+      const res = await axios.get(`https://valo-deal-backend.vercel.app/sell/gsmmodel/${brandId}`)
+      const models = res.data.models;
+      console.log(res.data.models);
+      setGsmModelName(models.map(model => (model.name)));
+    } catch (error) {
+      console.log("Error gsm model: ", error);
+    }
+  }
+  useEffect(() => {
+    if (brandId) {
+      getgsmModel();
+    }
+
+  }, [brand])
+  const handleBrandChange = (event, value) => {
+    setBrand(value);
+    setModel('');
+
+    const selectedBrand = gsmBrandName.find(brand => brand.name === value);
+    if (selectedBrand) {
+      setBrandId(selectedBrand.id);
+      //getgsmModel(selectedBrand.id);
+    }
+  }
+  // useEffect(() => {
+
+  // }, [gsmBrandName]);
   // const handleFileChange = (event) => {
   //   const file = event.target.files[0];
   //   if (file) {
@@ -120,9 +178,9 @@ const MobileSellDetailsPage = () => {
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
 
-    const checkImage= selectedImages.filter(img=>(img!==null))
+    const checkImage = selectedImages.filter(img => (img !== null))
     if (checkImage.length < 3) newErrors.images = 'At least three image is required';
-    
+
 
     return newErrors;
   };
@@ -256,14 +314,31 @@ const MobileSellDetailsPage = () => {
             {/* BRAND DROPDOWN */}
 
             <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
-              <InputLabel id="brand-select-label">Brand</InputLabel>
+
+              <Autocomplete
+          options={gsmBrandName.map(brand => brand.name)}
+          value={brand}
+          onChange={handleBrandChange}
+          isOptionEqualToValue={(option, value) => option === value}
+       
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Brand"
+              variant="outlined"
+              error={!!errors.brand}
+              
+            />
+          )}
+        />
+              {/* <InputLabel id="brand-select-label">Brand</InputLabel>
               <Select
                 labelId="brand-select-label"
                 value={brand}
                 onChange={handleBrand}
-                label="Brand"
+                label="Model"
                 endAdornment={
-                  brand ? (
+                  model ? (
                     <InputAdornment position='end'>
                       <IconButton onClick={clearBrand} sx={{ mr: '18px' }}>
                         <CancelIcon />
@@ -271,20 +346,29 @@ const MobileSellDetailsPage = () => {
                     </InputAdornment>
                   ) : null
                 }
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 224,
+                      width: 250,
+                    },
+                  },
+                }}
               >
-                {Object.keys(brands_models).map((brandName) => (
-                  <MenuItem key={brandName} value={brandName}>
-                    {brandName}
+                {gsmBrandName.map((brand) => (
+                  <MenuItem key={brand.name} value={brand.name}>
+                    {brand.name}
                   </MenuItem>
                 ))}
-              </Select>
+              </Select> */}
               {errors.brand && <Typography variant="caption" color="error">{errors.brand}</Typography>}
             </FormControl>
+
 
             {/* MODEL DROPDOWN */}
 
             <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.model}>
-              <InputLabel id="model-select-label">Model</InputLabel>
+              {/* <InputLabel id="model-select-label">Model</InputLabel>
               <Select
                 labelId="model-select-label"
                 value={model}
@@ -299,13 +383,37 @@ const MobileSellDetailsPage = () => {
                     </InputAdornment>
                   ) : null
                 }
+                MenuProps={{
+                  PaperProps: {
+                    style: {
+                      maxHeight: 224,
+                      width: 250,
+                    },
+                  },
+                }}
               >
-                {brand && brands_models[brand].map((modelName) => (
+                {brand && gsmModelName?.map((modelName) => (
                   <MenuItem key={modelName} value={modelName}>
                     {modelName}
                   </MenuItem>
                 ))}
-              </Select>
+              </Select> */}
+              <Autocomplete
+          options={gsmModelName.map(model => model)}
+          value={model}
+          onChange={handleModel}
+          disabled={!brand}
+          //sx={{height:'250px'}}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Model"
+              variant="outlined"
+              error={!!errors.model}
+              
+            />
+          )}
+        />
               {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
             </FormControl>
 

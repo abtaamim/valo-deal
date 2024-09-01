@@ -48,9 +48,9 @@ const getAllEletronicsController = async (req, res) => {
 
 const getSubcatElectronisController = async (req, res) => {
   try {
-    const userId = req.user._id; 
+   // const userId = req.user._id; 
     const  subCategory  = req.params.subCategory;
-    const electronics =await electronicModel.find({subCategory: subCategory , sellerId: { $ne: userId } });
+    const electronics =await electronicModel.find({subCategory: subCategory  });//, sellerId: { $ne: userId }
     if (electronics.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
     }
@@ -67,9 +67,9 @@ const getAddedElectronic = async(req, res)=>{
     const userId = req.user._id; 
     const electronics = await electronicModel.find({ sellerId: userId });
 
-    if (electronics.length === 0) {
-      return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
-    }
+    // if (electronics.length === 0) {
+    //   return res.status(404).json({ success: false, message: 'No electronic found for the user' });
+    // }
 
     res.status(200).json({ success: true, electronics });
   } catch (error) {
@@ -89,8 +89,8 @@ const deleteElectronic = async (compId) => {
 }
 const getLatestElectronic = async (req, res) => {
   try {
-    const userId = req.user._id; 
-    const latestElectronic = await electronicModel.find({ sellerId:  {$ne:userId}  })//{ $ne:
+   // const userId = req.user._id; 
+    const latestElectronic = await electronicModel.find()//{ sellerId:  {$ne:userId}  }
       .sort({ createdAt: -1 }).limit(3) .exec();
      
     if (!latestElectronic) {

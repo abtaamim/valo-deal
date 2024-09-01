@@ -48,9 +48,9 @@ const getAllComputersController = async (req, res) => {
 
 const getSubcatComputersController = async (req, res) => {
   try {
-    const userId = req.user._id; 
+    //const userId = req.user._id; 
     const  subCategory  = req.params.subCategory;
-    const computers =await computerModel.find({subCategory: subCategory , sellerId: { $ne: userId } });
+    const computers =await computerModel.find({subCategory: subCategory });//, sellerId: { $ne: userId } 
     if (computers.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
     }
@@ -67,9 +67,9 @@ const getAddedComputer = async(req, res)=>{
     const userId = req.user._id; 
     const computers = await computerModel.find({ sellerId: userId });
 
-    if (computers.length === 0) {
-      return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
-    }
+    // if (computers.length === 0) {
+    //   return res.status(404).json({ success: false, message: 'No computer found for the user' });
+    // }
 
     res.status(200).json({ success: true, computers });
   } catch (error) {
@@ -90,8 +90,8 @@ const deleteComputer = async (compId) => {
 
 const getLatestComputer = async (req, res) => {
   try {
-    const userId = req.user._id; 
-    const latestComputer = await computerModel.find({ sellerId: {$ne:userId}  })
+    //const userId = req.user._id; 
+    const latestComputer = await computerModel.find()//{ sellerId: {$ne:userId}  }
       .sort({ createdAt: -1 }).limit(3) .exec();
      
     if (!latestComputer) {
