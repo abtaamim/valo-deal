@@ -33,13 +33,12 @@ import image4 from "../assests/h4.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import '../siteComponents/styles.css';
+import "../siteComponents/styles.css";
 
 import image5 from "../assests/mobile.png";
 import image6 from "../assests/pc.png";
 import image7 from "../assests/car.jpg";
 import image8 from "../assests/camera.png";
-
 
 const HomeSlider = () => (
   <Box sx={{ marginBottom: "1px" }}>
@@ -111,7 +110,7 @@ const HomeSlider = () => (
         <img
           src={image1}
           alt="Essentials for Gamers"
-         // style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div>
@@ -139,26 +138,25 @@ const HomeSlider = () => (
   </Box>
 );
 
-
 const categories = [
   {
     title: "Latest mobile collections",
-    image: image5, 
+    image: image5,
     link: "/sub-category-item/Mobiles/MobilePhones",
   },
   {
     title: "Best cameras",
-    image: image8, 
+    image: image8,
     link: "/sub-category-item/Electronics/Cameras",
   },
   {
     title: "Deals in PCs,Laptops",
-    image: image6, 
+    image: image6,
     link: "/sub-category-item/Computers/Computer%20Components",
   },
   {
     title: "Car on sale 🔥",
-    image: image7, 
+    image: image7,
     link: "/sub-category-item/Vehicles/Car",
   },
 ];
@@ -170,8 +168,15 @@ const CategorySection = () => {
         {categories.map((category, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
             {/* Link wrapping the Card for full-card clickability */}
-            <Link to={category.link} style={{ textDecoration: 'none' }}> 
-              <Card sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+            <Link to={category.link} style={{ textDecoration: "none" }}>
+              <Card
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                }}
+              >
                 <Box sx={{ position: "relative" }}>
                   <CardMedia
                     component="img"
@@ -203,9 +208,6 @@ const CategorySection = () => {
   );
 };
 
-
-
-
 const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
   <Card
     sx={{
@@ -214,6 +216,13 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
+      borderRadius: "16px",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      transition: "transform 0.2s, box-shadow 0.2s",
+      "&:hover": {
+        transform: "scale(1.05)",
+        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
+      },
     }}
   >
     <CardMedia
@@ -250,12 +259,12 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       <Button
         size="small"
         variant="contained"
-        sx={{ backgroundColor: "#FF8C00", color: "white" }}
+        sx={{ backgroundColor: "#FF8C00", color: "white",borderRadius: "8px" }}
         onClick={onViewDetails}
       >
         View Details
       </Button>
-      
+
       <Tooltip title="Add this item to your cart">
         <IconButton
           onClick={onAddToCart}
@@ -269,7 +278,6 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
           <AddShoppingCartSharpIcon />
         </IconButton>
       </Tooltip>
-      
     </CardActions>
   </Card>
 );
@@ -340,9 +348,11 @@ const HomePage = () => {
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
     } catch (error) {
-      auth.user?
-      (toast.error("Already added item to the cart.", { position: "top-right" }))
-      :(toast.error("Sign in to add to cart.", { position: "top-right" }))
+      auth.user
+        ? toast.error("Already added item to the cart.", {
+            position: "top-right",
+          })
+        : toast.error("Sign in to add to cart.", { position: "top-right" });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
@@ -416,57 +426,57 @@ const HomePage = () => {
           Please sign in to browse items
         </Typography>
       ) : ( */}
-        <>
-          <HomeSlider /> {/* Include the slider here */}
-          <CategorySection />
-          <Box sx={{ p: 2, bgcolor: "#FAF9F6" }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-              }}
-            >
-              <FormControl sx={{ minWidth: 380 }}>
-                <InputLabel id="sort-label">Sort by</InputLabel>
-                <Select
-                  labelId="sort-label"
-                  value={sortOrder}
-                  onChange={handleSortChange}
-                  label="Sort by"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value="lowToHigh">Price: Low to High</MenuItem>
-                  <MenuItem value="highToLow">Price: High to Low</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Grid container spacing={3}>
-              {currentPosts.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={2}>
-                  <ListingCard
-                    item={item}
-                    onAddToCart={() => handleAddToCart(item._id, item.itemType)}
-                    onViewDetails={() =>
-                      handleViewDetails(item._id, item.itemType)
-                    }
-                    sellerName={sellerMap.get(item.sellerId)?.name || ""}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-              <Pagination
-                count={Math.ceil(allItems.length / postsPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-              />
-            </Box>
+      <>
+        <HomeSlider /> {/* Include the slider here */}
+        <CategorySection />
+        <Box sx={{ p: 2, bgcolor: "#FAF9F6" }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <FormControl sx={{ minWidth: 380 }}>
+              <InputLabel id="sort-label">Sort by</InputLabel>
+              <Select
+                labelId="sort-label"
+                value={sortOrder}
+                onChange={handleSortChange}
+                label="Sort by"
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value="lowToHigh">Price: Low to High</MenuItem>
+                <MenuItem value="highToLow">Price: High to Low</MenuItem>
+              </Select>
+            </FormControl>
           </Box>
-        </>
+          <Grid container spacing={3}>
+            {currentPosts.map((item) => (
+              <Grid item key={item._id} xs={12} sm={6} md={2}>
+                <ListingCard
+                  item={item}
+                  onAddToCart={() => handleAddToCart(item._id, item.itemType)}
+                  onViewDetails={() =>
+                    handleViewDetails(item._id, item.itemType)
+                  }
+                  sellerName={sellerMap.get(item.sellerId)?.name || ""}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+            <Pagination
+              count={Math.ceil(allItems.length / postsPerPage)}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
+          </Box>
+        </Box>
+      </>
       {/* )} */}
     </>
   );
