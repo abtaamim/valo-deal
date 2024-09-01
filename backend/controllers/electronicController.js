@@ -91,7 +91,7 @@ const getLatestElectronic = async (req, res) => {
   try {
    // const userId = req.user._id; 
     const latestElectronic = await electronicModel.find()//{ sellerId:  {$ne:userId}  }
-      .sort({ createdAt: -1 }).limit(3) .exec();
+      .sort({ createdAt: -1 }).limit(6) .exec();
      
     if (!latestElectronic) {
       return res.status(404).json({ success: false, message: 'No Electronics found' });
