@@ -113,25 +113,25 @@ const HomeSlider = () => (
           // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
-      <div>
+      <div class="image-container">
         <img
           src={image2}
           alt="Deals in PCs"
-          style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
-      <div>
+      <div class="image-container">
         <img
           src={image3}
           alt="Home décor under $50"
-          style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
-      <div>
+      <div class="image-container">
         <img
           src={image4}
           alt="Shop deals in Fashion"
-          style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
     </Carousel>
@@ -249,7 +249,6 @@ const CategorySection = () => {
   );
 };
 
-
 const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
   <Card
     onClick={onViewDetails}
@@ -271,13 +270,21 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       },
     }}
   >
-    <CardMedia
-      component="img"
-      height="240"
-      image={item.imgUrl[1]}
-      alt={`${item.brand} ${item.model}`}
-      src={item.imgUrl}
-    />
+    <Box sx={{ position: "relative", overflow: "hidden" }}>
+      <CardMedia
+        component="img"
+        height="240"
+        image={item.imgUrl[1]}
+        alt={`${item.brand} ${item.model}`}
+        src={item.imgUrl}
+        sx={{
+          transition: "transform 0.6s ease-in-out",
+          "&:hover": {
+            transform: "scale(1.1)", // Apply zoom-out effect on hover
+          },
+        }}
+      />
+    </Box>
     <CardContent
       sx={{
         flexGrow: 1,
