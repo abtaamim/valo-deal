@@ -195,7 +195,7 @@ const CategorySection = () => {
                 <Box sx={{ position: "relative", overflow: "hidden" }}>
                   <CardMedia
                     component="img"
-                    height="380"
+                    height="300"
                     image={category.image}
                     alt={category.title}
                     sx={{
@@ -477,15 +477,11 @@ const HomePage = () => {
   return (
     <>
       <ToastContainer />
-      {/* {auth.user === null ? (
-        <Typography variant="h4" gutterBottom>
-          Please sign in to browse items
-        </Typography>
-      ) : ( */}
       <>
-        <HomeSlider /> {/* Include the slider here */}
+        <HomeSlider /> 
         <CategorySection />
-        <Box sx={{ p: 2, bgcolor: "#373839" }}>
+        <Box sx={{ p: 2, bgcolor: "#373839" ,pl: 5,  
+                  pr: 0}}>
           <Box
             sx={{
               display: "flex",
@@ -494,7 +490,7 @@ const HomePage = () => {
               mb: 2,
             }}
           >
-            <FormControl sx={{ minWidth: 470 }}>
+            <FormControl sx={{ minWidth: 370 }}>
               <InputLabel id="sort-label" sx={{ color: "white" }}>
                 Sort by
               </InputLabel>
@@ -526,7 +522,7 @@ const HomePage = () => {
           </Box>
           <Grid container spacing={3}>
             {currentPosts.map((item) => (
-              <Grid item key={item._id} xs={12} sm={6} md={2}>
+              <Grid item key={item._id} xs={12} sm={6} md={3}>
                 <ListingCard
                   item={item}
                   onAddToCart={() => handleAddToCart(item._id, item.itemType)}
