@@ -477,15 +477,11 @@ const HomePage = () => {
   return (
     <>
       <ToastContainer />
-      {/* {auth.user === null ? (
-        <Typography variant="h4" gutterBottom>
-          Please sign in to browse items
-        </Typography>
-      ) : ( */}
       <>
-        <HomeSlider /> {/* Include the slider here */}
+        <HomeSlider /> 
         <CategorySection />
-        <Box sx={{ p: 2, bgcolor: "#373839" }}>
+        <Box sx={{ p: 2, bgcolor: "#373839" ,pl: 5,  
+                  pr: 0}}>
           <Box
             sx={{
               display: "flex",

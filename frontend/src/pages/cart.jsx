@@ -69,20 +69,26 @@ const CartPage = () => {
 
   return (
     <>
-      <Box sx={{ p: 2 }}>
+      <Box 
+        sx={{ 
+          p: 2, 
+          pl: 0,  
+          pr: 10   
+        }}
+      >
         <Typography
           variant="h4"
           gutterBottom
           sx={{ 
             color: 'orange', 
             fontWeight: 'bold', 
-            border: '2px solid white',  
             padding: '8px',             
-            borderRadius: '4px'         
+            textAlign: 'center', 
           }}
         >
-          Cart 🛒
+          My Cart 🛒
         </Typography>
+        
         
         
         <ListingCard items={cartItems} handleClickOpen={handleClickOpen}
