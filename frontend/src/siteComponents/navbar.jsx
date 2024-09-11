@@ -72,7 +72,7 @@ export default function Navbar() {
             </CustomLink>
           )) : null
         }
-        {auth.user ?
+        {!isXs ? (auth.user ?
           (<CustomLink to="/cart" id='cart' className='hideOnMobile'>
             {({ isActive }) => (
               <Tooltip title="Cart">
@@ -93,7 +93,7 @@ export default function Navbar() {
                 </Tooltip>
               )}
             </CustomLink>
-          )
+          )) : null
         }
         {!isXs ? <SignInPopover /> : null}
 

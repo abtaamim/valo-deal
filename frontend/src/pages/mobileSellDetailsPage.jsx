@@ -63,7 +63,7 @@ const MobileSellDetailsPage = () => {
   const [gsmModelName, setGsmModelName] = useState([]);
   const getgsmBrand = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/sell/gsmbrand")
+      const res = await axios.get("https://valo-deal-backend.vercel.app/sell/gsmbrand")
       const brands = res.data.brands;
       console.log(res.data.brands);
 
@@ -79,7 +79,7 @@ const MobileSellDetailsPage = () => {
   }, [])
   const getgsmModel = async () => {
     try {
-      const res = await axios.get(`http://localhost:8080/sell/gsmmodel/${brandId}`)
+      const res = await axios.get(`https://valo-deal-backend.vercel.app/sell/gsmmodel/${brandId}`)
       const models = res.data.models;
       console.log(res.data.models);
       setGsmModelName(models.map(model => (model.name)));
@@ -136,7 +136,7 @@ const MobileSellDetailsPage = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:8080/upload", {
+      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
         method: "POST",
         body: formData,
       });
@@ -214,7 +214,7 @@ const MobileSellDetailsPage = () => {
 
         console.log('Form Data:', Array.from(formData.entries()));
 
-        const res = await axios.post("http://localhost:8080/sell/mobile", formData);
+        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/mobile", formData);
 
         if (res.status === 200) {
           console.log('yayayay')

@@ -29,8 +29,8 @@ const GenericForm = ({ category, endpoint }) => {
   const [imgUrl, setImgUrl] = useState("");
   const [uploadState, setUploadState] = useState(UploadState.IDLE);
 
-  const [imagePreviewUrl, setImagePreviewUrl] = useState([null,null,null,null,null]);
-  const [selectedImages, setSelectedImages] = useState([null,null,null,null,null]);
+  const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
+  const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
 
 
   const location = useLocation();
@@ -57,7 +57,7 @@ const GenericForm = ({ category, endpoint }) => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("http://localhost:8080/upload", {
+      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
         method: "POST",
         body: formData,
       });
@@ -90,8 +90,8 @@ const GenericForm = ({ category, endpoint }) => {
     if (!description) newErrors.description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
 
-    const checkImage= selectedImages.filter(img=>(img!==null))
-    if (checkImage.length <3) newErrors.images = 'At least three image is required';
+    const checkImage = selectedImages.filter(img => (img !== null))
+    if (checkImage.length < 3) newErrors.images = 'At least three image is required';
 
     return newErrors;
   };
@@ -120,7 +120,7 @@ const GenericForm = ({ category, endpoint }) => {
         imageUrl.forEach((img, index) => {
           formData.append(`imgUrl[${index}]`, img);
         })
-        const res = await axios.post(`http://localhost:8080/sell/${endpoint}`, formData);
+        const res = await axios.post(`https://valo-deal-backend.vercel.app/sell/${endpoint}`, formData);
         if (res.status === 200) {
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
@@ -252,43 +252,43 @@ const GenericForm = ({ category, endpoint }) => {
               Add up to 5 photos
             </Typography>
             <FormControl error={!!errors.images} >
-            <Grid container spacing={1}>
-              {selectedImages.map((_, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                  <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <CardContent>
-                      <input
-                        accept="image/*"
-                        style={{ display: 'none' }}
-                        id={`image-upload-${index}`}
-                        type="file"
-                        onChange={(event) => handleFileChange(index, event)}
-                      />
-                      <label htmlFor={`image-upload-${index}`}>
-                        <IconButton aria-label="upload picture" component="span">
-                          <ImageOutlinedIcon sx={{ fontSize: 28 }} />
-                        </IconButton>
-                      </label>
-
-                      {imagePreviewUrl[index] ? (
-                        <CardMedia
-                          component="img"
-                          height="140"
-                          image={imagePreviewUrl[index]}
-                          alt={`Uploaded image ${index + 1}`}
+              <Grid container spacing={1}>
+                {selectedImages.map((_, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <CardContent>
+                        <input
+                          accept="image/*"
+                          style={{ display: 'none' }}
+                          id={`image-upload-${index}`}
+                          type="file"
+                          onChange={(event) => handleFileChange(index, event)}
                         />
-                      ) : (
-                        <Typography variant="body2" color="textSecondary">
-                          {selectedImages[index] ? "Image Selected" : "Add Image"}
-                        </Typography>
-                      )}
-                    </CardContent>
-                  </Card>
-                </Grid>
-              ))}
+                        <label htmlFor={`image-upload-${index}`}>
+                          <IconButton aria-label="upload picture" component="span">
+                            <ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                          </IconButton>
+                        </label>
 
-            </Grid>
-            {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
+                        {imagePreviewUrl[index] ? (
+                          <CardMedia
+                            component="img"
+                            height="140"
+                            image={imagePreviewUrl[index]}
+                            alt={`Uploaded image ${index + 1}`}
+                          />
+                        ) : (
+                          <Typography variant="body2" color="textSecondary">
+                            {selectedImages[index] ? "Image Selected" : "Add Image"}
+                          </Typography>
+                        )}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
+
+              </Grid>
+              {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
             </FormControl>
             <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
               Submit
