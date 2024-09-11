@@ -219,16 +219,16 @@ const HomePage = () => {
   const fetchItems = async () => {
     try {
       const mobilesResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-mobiles"
+        "http://localhost:8080/sell/latest-mobiles"
       );
       const computersResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-computers"
+        "http://localhost:8080/sell/latest-computers"
       );
       const electronicResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-electronics"
+        "http://localhost:8080/sell/latest-electronics"
       );
       const vehicleResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-vehicles"
+        "http://localhost:8080/sell/latest-vehicles"
       );
       setItems({
         mobiles: mobilesResponse.data.latestMobile,
@@ -260,7 +260,7 @@ const HomePage = () => {
   const handleAddToCart = async (itemId, itemType) => {
     try {
       await axios.post(
-        `https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`
+        `http://localhost:8080/cart/${itemType}/${itemId}`
       );
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
@@ -287,7 +287,7 @@ const HomePage = () => {
       const sellerIds = new Set(allItems.map((item) => item.sellerId));
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
         axios.get(
-          `https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`
+          `http://localhost:8080/api/v1/auth/seller-info/${sellerId}`
         )
       );
       const sellerResponses = await Promise.all(sellerPromises);

@@ -9,7 +9,7 @@ export const CartProvider = ({ children }) => {
   const updateCartSize = async () => {
     if (auth.user !== null) {
       try {
-        const response = await axios.get('https://valo-deal-backend.vercel.app/cart/size');
+        const response = await axios.get('http://localhost:8080/cart/size');
         setCartSize(response.data.cartSize);
       } catch (error) {
         console.error('Error fetching cart size:', error);

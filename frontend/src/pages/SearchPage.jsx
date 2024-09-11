@@ -14,7 +14,7 @@ import { Toaster, toast } from 'sonner';
 import CustomDialog from './CustomDialog';
 import ListingCard from './CustomItemCard';
 const SearchPage = () => {
-  
+
   const [values, setValues] = useSearch();
   const [auth] = useAuth();
   const { updateCartSize } = useCart()
@@ -22,7 +22,7 @@ const SearchPage = () => {
 
   // const handleRecentlyView = async (itemId, itemType) => {
   //   try {
-  //     await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
+  //     await axios.post(`http://localhost:8080/recentlyViewed/${itemType}/${itemId}`);
   //   } catch (error) {
   //     console.error(`Error viewing item:`, error);
   //   }
@@ -35,7 +35,7 @@ const SearchPage = () => {
     const fetchResults = async () => {
       if (keyword) {
         try {
-          const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${keyword}`);
+          const res = await axios.get(`http://localhost:8080/search/${keyword}`);
           setValues({ ...values, results: res.data.results });
         } catch (error) {
           console.log('Error:', error);
@@ -59,7 +59,7 @@ const SearchPage = () => {
   const handleCart = async (itemId, itemType) => {
     try {
       if (auth.user) {
-        await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
+        await axios.post(`http://localhost:8080/cart/${itemType}/${itemId}`);
         // fetchItems(); // Refresh items after deletion
         updateCartSize();
         toast.success('item added to your cart successfully')
@@ -82,7 +82,7 @@ const SearchPage = () => {
       const sellerIds = new Set(values.results.map((item) => item.sellerId));
 
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
-        axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`)
+        axios.get(`http://localhost:8080/api/v1/auth/seller-info/${sellerId}`)
       );
 
       const sellerResponses = await Promise.all(sellerPromises);
@@ -103,12 +103,14 @@ const SearchPage = () => {
   }, []);
   return (
     <>
-      
-      <ListingCard items={values.results}  button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
-        handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
-      />
-      < Toaster richColors />
-
+      <Box sx={{ p: 2 }}>
+        <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <ListingCard items={values.results} button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+            handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
+          />
+          < Toaster richColors />
+        </Grid>
+      </Box>
 
 
 

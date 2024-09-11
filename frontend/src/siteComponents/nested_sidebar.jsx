@@ -14,21 +14,22 @@ import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined
 import { Link as RouterLink } from 'react-router-dom';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import AllDrawer from './all_sidebar';
-const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
+import { useMediaQuery } from '@mui/material';
+const NestedSidebar = ({ open, onClose, category, onMainMenuClick }) => {
   const items = {
-    Mobiles:['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
+    Mobiles: ['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
     Computers: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
     Electronics: ['Desktop Computers', 'Laptops', 'Computer & Laptop Accessories', 'TVs', 'Cameras', 'ACs & Home Appliances', 'Photocopies', 'Other Electronics'],
     Vehicles: ['Car', 'Motorbikes', 'Bicycles', 'Auto Parts & Accessories'],
     'Home & Living': [],
     "Men's Fashion & Grooming": [],
   };
-
+  const isXs = useMediaQuery('(max-width:450px)');
   const DrawerList = (
-    <Box sx={{ width: 350 }} role="presentation">
+    <Box sx={{ width: isXs ? 250 : 350 }} role="presentation">
       <List sx={{ paddingTop: 0, justifyContent: 'flex-start', color: 'rgb(27, 37, 54)' }}>
-        
-        
+
+
         <ListItem disablePadding>
           <ListItemButton
             component={RouterLink}
@@ -51,13 +52,13 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
           </ListItemButton>
         </ListItem>
         <ListItem disablePadding>
-          <ListItemButton 
-          sx={{justifyContent: 'flex-start'}}
-          onClick={onMainMenuClick}
+          <ListItemButton
+            sx={{ justifyContent: 'flex-start' }}
+            onClick={onMainMenuClick}
           >
-              
+
             <ListItemIcon sx={{ minWidth: 25 }}>
-              <ArrowBackOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }}/>
+              <ArrowBackOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }} />
             </ListItemIcon>
             <ListItemText
               primary="MAIN MENU"
@@ -65,7 +66,7 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
             />
           </ListItemButton>
         </ListItem>
-        <Divider/>
+        <Divider />
         <ListItem>
           <ListItemText
             primary={category}
@@ -74,10 +75,10 @@ const NestedSidebar = ({ open, onClose, category,onMainMenuClick}) => {
         </ListItem>
         {items[category]?.map((subCat) => (
           <ListItem key={subCat} disablePadding>
-            <ListItemButton 
-            component={RouterLink}
-            to={`/sub-category-item/${category}/${subCat}`} 
-            onClick={onClose}>
+            <ListItemButton
+              component={RouterLink}
+              to={`/sub-category-item/${category}/${subCat}`}
+              onClick={onClose}>
               <ListItemText primary={subCat} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
               <ListItemIcon>
                 <ArrowForwardIosOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }} />

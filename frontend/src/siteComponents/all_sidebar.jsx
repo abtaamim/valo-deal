@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
+import { useMediaQuery } from '@mui/material';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
@@ -42,9 +43,9 @@ export default function AllDrawer() {
   };
 
   const [auth] = useAuth();
-
+  const isXs = useMediaQuery('(max-width:450px)');
   const DrawerList = (
-    <Box sx={{ width: 350 }} role="presentation" onClick={toggleMainDrawer(false)}>
+    <Box sx={{ width: isXs ? 250 : 350 }} role="presentation" onClick={toggleMainDrawer(false)}>
       <List sx={{ paddingTop: 0, justifyContent: 'flex-start', color: 'rgb(27, 37, 54)' }}>
         <ListItem disablePadding>
           {!auth.user ? (<ListItemButton

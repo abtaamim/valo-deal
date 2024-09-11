@@ -37,7 +37,7 @@ const RecentlyViewedItemPage = () => {
 
   const fetchSearchItems = async () => {
     try {
-      const res = await axios.get('https://valo-deal-backend.vercel.app/search/fetch/searched-items');
+      const res = await axios.get('http://localhost:8080/search/fetch/searched-items');
       const fetchedSearchItems = res.data.searchedItems;
       setSearchItems(fetchedSearchItems);
 
@@ -54,7 +54,7 @@ const RecentlyViewedItemPage = () => {
       if (!token) {
         throw new Error("No token found");
       }
-      const response = await axios.get('https://valo-deal-backend.vercel.app/recentlyViewed/fetchitems');
+      const response = await axios.get('http://localhost:8080/recentlyViewed/fetchitems');
       setrecentlyViewedItems(response.data.recentlyViewedItems);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -117,7 +117,7 @@ const RecentlyViewedItemPage = () => {
   //console.log(selectedForDelete);
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemId}`);
+      await axios.delete(`http://localhost:8080/recentlyViewed/${itemId}`);
       fetchItems();
 
       handleClose();
@@ -128,7 +128,7 @@ const RecentlyViewedItemPage = () => {
   const deleteSearch = async () => {
     if (selectedForDelete.length > 0) {
       try {
-        await axios.delete('https://valo-deal-backend.vercel.app/search/delete', {
+        await axios.delete('http://localhost:8080/search/delete', {
           data: { selectedForDelete }
         });
         fetchSearchItems();

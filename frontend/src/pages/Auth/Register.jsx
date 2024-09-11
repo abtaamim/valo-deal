@@ -68,12 +68,12 @@ const Register = () => {
     setLoading(true);
     try {
 
-      // https://valo-deal-backend.vercel.app/api/v1/auth/register
-      // https://valo-deal-backend.vercel.app/api/v1/auth/register
+      // http://localhost:8080/api/v1/auth/register
+      // http://localhost:8080/api/v1/auth/register
       
 
       const res = await axios.post(
-        "https://valo-deal-backend.vercel.app/api/v1/auth/register",
+        "http://localhost:8080/api/v1/auth/register",
         {
           name,
           email,

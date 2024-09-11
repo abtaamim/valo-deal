@@ -30,8 +30,12 @@ const addToCart = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
     }
-
-    // Check if the item already exists in the cart
+    const ItemModel = getItemModel(itemType);
+    const item = await ItemModel.findById(itemId);
+    console.log('user:'+typeof (userId)+' seller:'+ typeof (item.sellerId) )
+    if(userId === item.sellerId.toString()) {
+      return res.status(403).json({ message: 'You cannot add items from your own items.' });
+    }
     const existingItem = user.cartItems.find(
       (item) => item.itemId.toString() === itemId
     );
