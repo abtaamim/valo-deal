@@ -33,13 +33,12 @@ import image4 from "../assests/h4.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import '../siteComponents/styles.css';
+import "../siteComponents/styles.css";
 
 import image5 from "../assests/mobile.png";
 import image6 from "../assests/pc.png";
 import image7 from "../assests/car.jpg";
 import image8 from "../assests/camera.png";
-
 
 const HomeSlider = () => (
   <Box sx={{ marginBottom: "1px" }}>
@@ -111,54 +110,53 @@ const HomeSlider = () => (
         <img
           src={image1}
           alt="Essentials for Gamers"
-         // style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
-      <div>
+      <div class="image-container">
         <img
           src={image2}
           alt="Deals in PCs"
-          style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
-      <div>
+      <div class="image-container">
         <img
           src={image3}
           alt="Home décor under $50"
-          style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
-      <div>
+      <div class="image-container">
         <img
           src={image4}
           alt="Shop deals in Fashion"
-          style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
     </Carousel>
   </Box>
 );
 
-
 const categories = [
   {
     title: "Latest mobile collections",
-    image: image5, 
+    image: image5,
     link: "/sub-category-item/Mobiles/MobilePhones",
   },
   {
     title: "Best cameras",
-    image: image8, 
+    image: image8,
     link: "/sub-category-item/Electronics/Cameras",
   },
   {
     title: "Deals in PCs,Laptops",
-    image: image6, 
+    image: image6,
     link: "/sub-category-item/Computers/Computer%20Components",
   },
   {
     title: "Car on sale 🔥",
-    image: image7, 
+    image: image7,
     link: "/sub-category-item/Vehicles/Car",
   },
 ];
@@ -169,26 +167,74 @@ const CategorySection = () => {
       <Grid container spacing={2}>
         {categories.map((category, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            {/* Link wrapping the Card for full-card clickability */}
-            <Link to={category.link} style={{ textDecoration: 'none' }}> 
-              <Card sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                <Box sx={{ position: "relative" }}>
+            <Link to={category.link} style={{ textDecoration: "none" }}>
+              <Card
+                sx={{
+                  height: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  overflow: "hidden",
+                  borderRadius: "20px",
+                  position: "relative",
+                  transform: "perspective(1000px)", // Enabling 3D space
+                  transition: "transform 0.6s ease-in-out, box-shadow 0.6s ease-in-out",
+                  boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
+                  "&:hover": {
+                    transform: "scale(1.08) rotateY(6deg) rotateX(4deg)", // 3D tilt effect
+                    boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
+                  },
+                  "&:hover .imageOverlay": {
+                    opacity: 0.5,
+                  },
+                  "&:hover .title": {
+                    textShadow: "0px 0px 8px rgba(255, 255, 255, 0.8)", // Text glow effect
+                  },
+                }}
+              >
+                <Box sx={{ position: "relative", overflow: "hidden" }}>
                   <CardMedia
                     component="img"
-                    height="380"
+                    height="300"
                     image={category.image}
                     alt={category.title}
+                    sx={{
+                      transition: "transform 0.6s ease-in-out",
+                      "&:hover": {
+                        transform: "scale(1.3)", // More pronounced zoom on hover
+                      },
+                    }}
                   />
+                  {/* Gradient overlay */}
+                  <Box
+                    className="imageOverlay"
+                    sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      background:
+                        "linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8))",
+                      opacity: 0,
+                      transition: "opacity 0.5s ease-in-out",
+                    }}
+                  ></Box>
                   <Typography
                     variant="h6"
+                    className="title"
                     sx={{
                       position: "absolute",
                       top: 8,
                       left: 8,
-                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      backgroundColor: "rgba(0, 0, 0, 0.4)",
                       color: "white",
-                      padding: "4px 8px",
-                      borderRadius: "4px",
+                      padding: "6px 12px",
+                      borderRadius: "8px",
+                      fontWeight: "bold",
+                      textTransform: "uppercase",
+                      letterSpacing: "1.2px",
+                      transition: "text-shadow 0.5s ease-in-out",
                     }}
                   >
                     {category.title}
@@ -203,64 +249,82 @@ const CategorySection = () => {
   );
 };
 
-
-
-
 const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
   <Card
+    onClick={onViewDetails}
     sx={{
       width: "300px",
       height: "500px",
       display: "flex",
       flexDirection: "column",
       justifyContent: "space-between",
+      borderRadius: "16px",
+      border: "1px solid #4d4d4d",
+      boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
+      transition: "transform 0.2s, box-shadow 0.2s",
+      cursor: "pointer",
+      backgroundColor: "#1f232c", 
+      "&:hover": {
+        transform: "scale(1.05)",
+        boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
+      },
     }}
   >
-    <CardMedia
-      component="img"
-      height="240"
-      image={item.imgUrl[1]}
-      alt={`${item.brand} ${item.model}`}
-      src={item.imgUrl}
-    />
-    <CardContent sx={{ flexGrow: 1, overflow: "hidden" }}>
-      <Typography gutterBottom variant="h5" component="div">
+    <Box sx={{ position: "relative", overflow: "hidden" }}>
+      <CardMedia
+        component="img"
+        height="240"
+        image={item.imgUrl[1]}
+        alt={`${item.brand} ${item.model}`}
+        src={item.imgUrl}
+        sx={{
+          transition: "transform 0.6s ease-in-out",
+          "&:hover": {
+            transform: "scale(1.1)", // Apply zoom-out effect on hover
+          },
+        }}
+      />
+    </Box>
+    <CardContent
+      sx={{
+        flexGrow: 1,
+        overflow: "hidden",
+        backgroundColor: "#222324",
+        color: "white", 
+      }}
+    >
+      <Typography gutterBottom variant="h5" component="div" sx={{ color: "#eaeaea" }}>
         {item.brand} {item.model}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="#7e7e7e">
         Condition: {item.condition}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="#7e7e7e">
         {item.authenticity ? `Authenticity: ${item.authenticity}` : ""}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
-        Price: ${item.price}
-      </Typography>
-      <Typography variant="body2" color="text.secondary" noWrap>
+      <Typography variant="body2" color="#7e7e7e" noWrap>
         Description: {item.description}
       </Typography>
-      <Typography variant="body2" color="text.secondary">
+      <Typography variant="body2" color="#b1afac">
         {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
       </Typography>
-      <ListItemButton sx={{ padding: "0", mt: "10px", height: "32px" }}>
+      <ListItemButton sx={{ padding: "0", mt: "10px", height: "32px", color: "#bebebe" }}>
         Seller : {sellerName}
       </ListItemButton>
     </CardContent>
-    <CardActions sx={{ justifyContent: "space-between" }}>
-      <Button
-        size="small"
-        variant="contained"
-        sx={{ backgroundColor: "#FF8C00", color: "white" }}
-        onClick={onViewDetails}
-      >
-        View Details
-      </Button>
+    <CardActions sx={{ justifyContent: "space-between", backgroundColor: "#222324" }}>
+      <Typography variant="body2" sx={{ color: "#cecdcd", fontWeight: "bold" }}>
+        Price: ${item.price}
+      </Typography>
       
       <Tooltip title="Add this item to your cart">
         <IconButton
-          onClick={onAddToCart}
+          onClick={(e) => {
+            e.stopPropagation();
+            onAddToCart();
+          }}
           sx={{
-            color: "#191970",
+            color: "#FF8C00",
             "&:hover": {
               color: "green",
             },
@@ -269,10 +333,10 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
           <AddShoppingCartSharpIcon />
         </IconButton>
       </Tooltip>
-      
     </CardActions>
   </Card>
 );
+
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -340,9 +404,11 @@ const HomePage = () => {
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
     } catch (error) {
-      auth.user?
-      (toast.error("Already added item to the cart.", { position: "top-right" }))
-      :(toast.error("Sign in to add to cart.", { position: "top-right" }))
+      auth.user
+        ? toast.error("Already added item to the cart.", {
+            position: "top-right",
+          })
+        : toast.error("Sign in to add to cart.", { position: "top-right" });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
@@ -411,62 +477,86 @@ const HomePage = () => {
   return (
     <>
       <ToastContainer />
-      {/* {auth.user === null ? (
-        <Typography variant="h4" gutterBottom>
-          Please sign in to browse items
-        </Typography>
-      ) : ( */}
-        <>
-          <HomeSlider /> {/* Include the slider here */}
-          <CategorySection />
-          <Box sx={{ p: 2, bgcolor: "#FAF9F6" }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-              }}
-            >
-              <FormControl sx={{ minWidth: 380 }}>
-                <InputLabel id="sort-label">Sort by</InputLabel>
-                <Select
-                  labelId="sort-label"
-                  value={sortOrder}
-                  onChange={handleSortChange}
-                  label="Sort by"
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value="lowToHigh">Price: Low to High</MenuItem>
-                  <MenuItem value="highToLow">Price: High to Low</MenuItem>
-                </Select>
-              </FormControl>
-            </Box>
-            <Grid container spacing={3}>
-              {currentPosts.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={2}>
-                  <ListingCard
-                    item={item}
-                    onAddToCart={() => handleAddToCart(item._id, item.itemType)}
-                    onViewDetails={() =>
-                      handleViewDetails(item._id, item.itemType)
-                    }
-                    sellerName={sellerMap.get(item.sellerId)?.name || ""}
-                  />
-                </Grid>
-              ))}
-            </Grid>
-            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-              <Pagination
-                count={Math.ceil(allItems.length / postsPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-              />
-            </Box>
+      <>
+        <HomeSlider /> 
+        <CategorySection />
+        <Box sx={{ p: 2, bgcolor: "#373839" ,pl: 5,  
+                  pr: 0}}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              mb: 2,
+            }}
+          >
+            <FormControl sx={{ minWidth: 370 }}>
+              <InputLabel id="sort-label" sx={{ color: "white" }}>
+                Sort by
+              </InputLabel>
+              <Select
+                labelId="sort-label"
+                value={sortOrder}
+                onChange={handleSortChange}
+                label="Sort by"
+                sx={{
+                  color: "white",
+                  border: "1px solid grey",
+                  "& .MuiSelect-icon": {
+                    color: "white", // Dropdown icon color
+                  },
+                }}
+              >
+                <MenuItem value="">
+                  <em style={{ color: "black" }}>None</em>
+                </MenuItem>
+                <MenuItem value="lowToHigh" sx={{ color: "black" }}>
+                  Price: Low to High
+                </MenuItem>
+                <MenuItem value="highToLow" sx={{ color: "black" }}>
+                  Price: High to Low
+                </MenuItem>
+              </Select>
+            </FormControl>
+            
           </Box>
-        </>
+          <Grid container spacing={3}>
+            {currentPosts.map((item) => (
+              <Grid item key={item._id} xs={12} sm={6} md={3}>
+                <ListingCard
+                  item={item}
+                  onAddToCart={() => handleAddToCart(item._id, item.itemType)}
+                  onViewDetails={() =>
+                    handleViewDetails(item._id, item.itemType)
+                  }
+                  sellerName={sellerMap.get(item.sellerId)?.name || ""}
+                />
+              </Grid>
+            ))}
+          </Grid>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+            <Pagination
+              count={Math.ceil(allItems.length / postsPerPage)}
+              page={currentPage}
+              onChange={handlePageChange}
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "white", 
+                },
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "grey",
+                  color: "white", 
+                },
+                "& .MuiPaginationItem-root:hover": {
+                  backgroundColor: "grey", 
+                  color: "white", 
+                },
+              }}
+            />
+          </Box>
+          
+        </Box>
+      </>
       {/* )} */}
     </>
   );
