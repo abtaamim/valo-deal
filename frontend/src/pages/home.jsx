@@ -23,6 +23,7 @@ import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "../context/auth";
 import { useCart } from "../context/CartContext";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import image1 from "../assests/h1.jpg";
@@ -31,17 +32,24 @@ import image3 from "../assests/h3.jpg";
 import image4 from "../assests/h4.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import '../siteComponents/styles.css';
 
+import image5 from "../assests/mobile.png";
+import image6 from "../assests/pc.png";
+import image7 from "../assests/car.jpg";
+import image8 from "../assests/camera.png";
+
+
 const HomeSlider = () => (
-  <Box sx={{ marginBottom: "10px" }}>
+  <Box sx={{ marginBottom: "1px" }}>
     <Carousel
       autoPlay
       infiniteLoop
       showThumbs={false}
       showStatus={false}
       showIndicators={false}
-      interval={3000}
+      interval={2700}
       renderArrowPrev={(onClickHandler, hasPrev, label) =>
         hasPrev && (
           <Box
@@ -130,6 +138,73 @@ const HomeSlider = () => (
     </Carousel>
   </Box>
 );
+
+
+const categories = [
+  {
+    title: "Latest mobile collections",
+    image: image5, 
+    link: "/sub-category-item/Mobiles/MobilePhones",
+  },
+  {
+    title: "Best cameras",
+    image: image8, 
+    link: "/sub-category-item/Electronics/Cameras",
+  },
+  {
+    title: "Deals in PCs,Laptops",
+    image: image6, 
+    link: "/sub-category-item/Computers/Computer%20Components",
+  },
+  {
+    title: "Car on sale 🔥",
+    image: image7, 
+    link: "/sub-category-item/Vehicles/Car",
+  },
+];
+
+const CategorySection = () => {
+  return (
+    <Box sx={{ p: 2 }}>
+      <Grid container spacing={2}>
+        {categories.map((category, index) => (
+          <Grid item xs={12} sm={6} md={3} key={index}>
+            {/* Link wrapping the Card for full-card clickability */}
+            <Link to={category.link} style={{ textDecoration: 'none' }}> 
+              <Card sx={{ height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                <Box sx={{ position: "relative" }}>
+                  <CardMedia
+                    component="img"
+                    height="380"
+                    image={category.image}
+                    alt={category.title}
+                  />
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      position: "absolute",
+                      top: 8,
+                      left: 8,
+                      backgroundColor: "rgba(0, 0, 0, 0.5)",
+                      color: "white",
+                      padding: "4px 8px",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    {category.title}
+                  </Typography>
+                </Box>
+              </Card>
+            </Link>
+          </Grid>
+        ))}
+      </Grid>
+    </Box>
+  );
+};
+
+
+
 
 const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
   <Card
@@ -343,6 +418,7 @@ const HomePage = () => {
       ) : ( */}
         <>
           <HomeSlider /> {/* Include the slider here */}
+          <CategorySection />
           <Box sx={{ p: 2, bgcolor: "#FAF9F6" }}>
             <Box
               sx={{
