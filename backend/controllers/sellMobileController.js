@@ -77,7 +77,9 @@ const getLatestMobile = async (req, res) => {
    // const userId = req.user._id; 
     //console.log(req.user);
     const latestMobile = await mobileModel.find()//{ sellerId:  {$ne: userId } }
+
       .sort({ createdAt: -1 }).limit(6) .exec();
+
      
     if (!latestMobile) {
       return res.status(404).json({ success: false, message: 'No Mobiles found' });

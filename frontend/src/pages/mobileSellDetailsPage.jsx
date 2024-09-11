@@ -45,7 +45,7 @@ const MobileSellDetailsPage = () => {
   };
 
 
-  const handleModel = (event,value) => {
+  const handleModel = (event, value) => {
     //setModel(event.target.value);
     setModel(value);
   };
@@ -63,7 +63,7 @@ const MobileSellDetailsPage = () => {
   const [gsmModelName, setGsmModelName] = useState([]);
   const getgsmBrand = async () => {
     try {
-      const res = await axios.get("https://valo-deal-backend.vercel.app/sell/gsmbrand")
+      const res = await axios.get("http://localhost:8080/sell/gsmbrand")
       const brands = res.data.brands;
       console.log(res.data.brands);
 
@@ -79,7 +79,7 @@ const MobileSellDetailsPage = () => {
   }, [])
   const getgsmModel = async () => {
     try {
-      const res = await axios.get(`https://valo-deal-backend.vercel.app/sell/gsmmodel/${brandId}`)
+      const res = await axios.get(`http://localhost:8080/sell/gsmmodel/${brandId}`)
       const models = res.data.models;
       console.log(res.data.models);
       setGsmModelName(models.map(model => (model.name)));
@@ -136,7 +136,7 @@ const MobileSellDetailsPage = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
+      const res = await fetch("http://localhost:8080/upload", {
         method: "POST",
         body: formData,
       });
@@ -214,7 +214,7 @@ const MobileSellDetailsPage = () => {
 
         console.log('Form Data:', Array.from(formData.entries()));
 
-        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/mobile", formData);
+        const res = await axios.post("http://localhost:8080/sell/mobile", formData);
 
         if (res.status === 200) {
           console.log('yayayay')
@@ -272,66 +272,70 @@ const MobileSellDetailsPage = () => {
 
         />
       )}
-      <Box
-        sx={{
-          bgcolor: 'lightgrey',
-          margin: 'auto',
-          maxWidth: 800,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center', // Center the Box content horizontally
-          justifyContent: 'center', // Center the Box content vertically
-          minHeight: '100vh' // Ensure the Box takes full height of the viewport
-        }}
-      >
-        <Typography variant='h6' sx={{ fontWeight: 'bold', mb: 1, p: 2, textAlign: 'left', width: '100%' }}>
-          Fill in the details
-        </Typography>
-        <Divider sx={{ width: '100%', height: '1px', bgcolor: 'gray', mb: 2 }} />
-        <Box sx={{ width: '70%', margin: 'auto', bgcolor: 'white', p: 2, display: 'flex', flexDirection: 'column' }}>
-          <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
-            <FormControl error={!!errors.condition}>
-              <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
-                Condition
-              </FormLabel>
-              <RadioGroup row sx={{ mb: 3, display: 'flex', flexDirection: 'row' }} value={condition} onChange={(e) => setCondition(e.target.value)}>
-                <FormControlLabel value="used" control={<Radio />} label="Used" />
-                <FormControlLabel sx={{ ml: '50px' }} value="new" control={<Radio />} label="New" />
-              </RadioGroup>
-              {errors.condition && <Typography variant="caption" color="error">{errors.condition}</Typography>}
-            </FormControl>
-            <FormControl error={!!errors.authenticity}>
-              <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
-                Authenticity
-              </FormLabel>
-              <RadioGroup row value={authenticity} onChange={(e) => setAuthenticity(e.target.value)}>
-                <FormControlLabel value="Original" control={<Radio />} label="Original" />
-                <FormControlLabel sx={{ ml: '35px' }} value="Refurbished" control={<Radio />} label="Refurbished" />
-              </RadioGroup>
-              {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
-            </FormControl>
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }} >
+        <Box
+          sx={{
+            bgcolor: 'white',
+            //margin: 'auto',
 
-            {/* BRAND DROPDOWN */}
+            //alignSelf: 'center',
+            maxWidth: 600,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center', // Center the Box content horizontally
+            justifyContent: 'center', // Center the Box content vertically
+            minHeight: '100vh', // Ensure the Box takes full height of the viewport
 
-            <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
+          }}
+        >
+          <Typography variant='h6' sx={{ fontWeight: 'bold', mb: 1, p: 2, textAlign: 'left', width: '100%' }}>
+            Fill in the details
+          </Typography>
+          <Divider sx={{ width: '100%', height: '1px', bgcolor: 'gray' }} />
+          <Box sx={{ width: '100%', bgcolor: 'white', p: 1, display: 'flex', flexDirection: 'column' }}>
+            <DialogContent sx={{ display: 'flex', flexDirection: 'column' }}>
+              <FormControl error={!!errors.condition}>
+                <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
+                  Condition
+                </FormLabel>
+                <RadioGroup row sx={{ mb: 3, display: 'flex', flexDirection: 'row' }} value={condition} onChange={(e) => setCondition(e.target.value)}>
+                  <FormControlLabel value="used" control={<Radio />} label="Used" />
+                  <FormControlLabel sx={{ ml: '50px' }} value="new" control={<Radio />} label="New" />
+                </RadioGroup>
+                {errors.condition && <Typography variant="caption" color="error">{errors.condition}</Typography>}
+              </FormControl>
+              <FormControl error={!!errors.authenticity}>
+                <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
+                  Authenticity
+                </FormLabel>
+                <RadioGroup row value={authenticity} onChange={(e) => setAuthenticity(e.target.value)}>
+                  <FormControlLabel value="Original" control={<Radio />} label="Original" />
+                  <FormControlLabel sx={{ ml: '35px' }} value="Refurbished" control={<Radio />} label="Refurbished" />
+                </RadioGroup>
+                {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
+              </FormControl>
 
-              <Autocomplete
-          options={gsmBrandName.map(brand => brand.name)}
-          value={brand}
-          onChange={handleBrandChange}
-          isOptionEqualToValue={(option, value) => option === value}
-       
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Brand"
-              variant="outlined"
-              error={!!errors.brand}
-              
-            />
-          )}
-        />
-              {/* <InputLabel id="brand-select-label">Brand</InputLabel>
+              {/* BRAND DROPDOWN */}
+
+              <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
+
+                <Autocomplete
+                  options={gsmBrandName.map(brand => brand.name)}
+                  value={brand}
+                  onChange={handleBrandChange}
+                  isOptionEqualToValue={(option, value) => option === value}
+
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Brand"
+                      variant="outlined"
+                      error={!!errors.brand}
+
+                    />
+                  )}
+                />
+                {/* <InputLabel id="brand-select-label">Brand</InputLabel>
               <Select
                 labelId="brand-select-label"
                 value={brand}
@@ -361,14 +365,14 @@ const MobileSellDetailsPage = () => {
                   </MenuItem>
                 ))}
               </Select> */}
-              {errors.brand && <Typography variant="caption" color="error">{errors.brand}</Typography>}
-            </FormControl>
+                {errors.brand && <Typography variant="caption" color="error">{errors.brand}</Typography>}
+              </FormControl>
 
 
-            {/* MODEL DROPDOWN */}
+              {/* MODEL DROPDOWN */}
 
-            <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.model}>
-              {/* <InputLabel id="model-select-label">Model</InputLabel>
+              <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.model}>
+                {/* <InputLabel id="model-select-label">Model</InputLabel>
               <Select
                 labelId="model-select-label"
                 value={model}
@@ -398,104 +402,105 @@ const MobileSellDetailsPage = () => {
                   </MenuItem>
                 ))}
               </Select> */}
-              <Autocomplete
-          options={gsmModelName.map(model => model)}
-          value={model}
-          onChange={handleModel}
-          disabled={!brand}
-          //sx={{height:'250px'}}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Model"
-              variant="outlined"
-              error={!!errors.model}
-              
-            />
-          )}
-        />
-              {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
-            </FormControl>
+                <Autocomplete
+                  options={gsmModelName.map(model => model)}
+                  value={model}
+                  onChange={handleModel}
+                  disabled={!brand}
+                  //sx={{height:'250px'}}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      label="Model"
+                      variant="outlined"
+                      error={!!errors.model}
 
-            {/* DESCRIPTION field */}
-            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
-              Description
-            </Typography>
-            <FormControl sx={{ mb: 6 }} error={!!errors.description}>
-              <TextField
-                id="description-field"
-                multiline
-                rows={4}
-                placeholder="More details= more interested buyers"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-              {errors.description && <Typography variant="caption" color="error">{errors.description}</Typography>}
-            </FormControl>
+                    />
+                  )}
+                />
+                {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
+              </FormControl>
 
-            {/* PRICE field */}
+              {/* DESCRIPTION field */}
+              <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+                Description
+              </Typography>
+              <FormControl sx={{ mb: 6 }} error={!!errors.description}>
+                <TextField
+                  id="description-field"
+                  multiline
+                  rows={4}
+                  placeholder="More details= more interested buyers"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                />
+                {errors.description && <Typography variant="caption" color="error">{errors.description}</Typography>}
+              </FormControl>
 
-            <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
-              Price(Tk)
-            </Typography>
-            <FormControl sx={{ mb: 4 }} error={!!errors.price}>
-              <TextField
-                type='number'
-                inputProps={{ min: 0, step: "1", max: 200000 }}
-                id="price-field"
-                placeholder="Pick a good price"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-              {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
-            </FormControl>
-            <Divider sx={{ mb: 2, width: '100%', height: '1px', bgcolor: 'black' }} />
-            <Typography variant="caption" sx={{ mb: 2, textAlign: 'start', fontWeight: 'bold', fontSize: 15 }}>
-              Add up to 5 photos
-            </Typography>
-            <FormControl error={!!errors.images} >
-              <Grid container spacing={1}>
-                {selectedImages.map((_, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      <CardContent>
-                        <input
-                          accept="image/*"
-                          style={{ display: 'none' }}
-                          id={`image-upload-${index}`}
-                          type="file"
-                          onChange={(event) => handleFileChange(index, event)}
-                        />
-                        <label htmlFor={`image-upload-${index}`}>
-                          <IconButton aria-label="upload picture" component="span">
-                            <ImageOutlinedIcon sx={{ fontSize: 28 }} />
-                          </IconButton>
-                        </label>
+              {/* PRICE field */}
 
-                        {imagePreviewUrl[index] ? (
-                          <CardMedia
-                            component="img"
-                            height="140"
-                            image={imagePreviewUrl[index]}
-                            alt={`Uploaded image ${index + 1}`}
+              <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+                Price(Tk)
+              </Typography>
+              <FormControl sx={{ mb: 4 }} error={!!errors.price}>
+                <TextField
+                  type='number'
+                  inputProps={{ min: 0, step: "1", max: 200000 }}
+                  id="price-field"
+                  placeholder="Pick a good price"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+                {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
+              </FormControl>
+              <Divider sx={{ mb: 2, width: '100%', height: '1px', bgcolor: 'black' }} />
+              <Typography variant="caption" sx={{ mb: 2, textAlign: 'start', fontWeight: 'bold', fontSize: 15 }}>
+                Add up to 5 photos
+              </Typography>
+              <FormControl error={!!errors.images} >
+                <Grid container spacing={1}>
+                  {selectedImages.map((_, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <CardContent>
+                          <input
+                            accept="image/*"
+                            style={{ display: 'none' }}
+                            id={`image-upload-${index}`}
+                            type="file"
+                            onChange={(event) => handleFileChange(index, event)}
                           />
-                        ) : (
-                          <Typography variant="body2" color="textSecondary">
-                            {selectedImages[index] ? "Image Selected" : "Add Image"}
-                          </Typography>
-                        )}
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-                {/* </Box> */}
-              </Grid>
-              {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
-            </FormControl>
-            <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
-              Submit
-            </Button>
-          </DialogContent>
+                          <label htmlFor={`image-upload-${index}`}>
+                            <IconButton aria-label="upload picture" component="span">
+                              <ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                            </IconButton>
+                          </label>
+
+                          {imagePreviewUrl[index] ? (
+                            <CardMedia
+                              component="img"
+                              height="140"
+                              image={imagePreviewUrl[index]}
+                              alt={`Uploaded image ${index + 1}`}
+                            />
+                          ) : (
+                            <Typography variant="body2" color="textSecondary">
+                              {selectedImages[index] ? "Image Selected" : "Add Image"}
+                            </Typography>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </Grid>
+                  ))}
+                  {/* </Box> */}
+                </Grid>
+                {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
+              </FormControl>
+              <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
+                Submit
+              </Button>
+            </DialogContent>
+          </Box>
         </Box>
       </Box>
     </>

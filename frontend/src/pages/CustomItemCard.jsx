@@ -9,7 +9,7 @@ const ListingCard = (props) => {
 
   const handleRecentlyView = async (itemType, itemId) => {
     try {
-      await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
+      await axios.post(`http://localhost:8080/recentlyViewed/${itemType}/${itemId}`);
     } catch (e) {
       console.error(`Error viewing item:`, e);
     } finally {

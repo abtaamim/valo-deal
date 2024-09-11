@@ -18,7 +18,7 @@ const PaymentPage = () => {
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
+        const response = await axios.get('http://localhost:8080/cart/fetchitems');
         setCartItems(response.data.cartItems);
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -37,11 +37,11 @@ const PaymentPage = () => {
     }
     setLoading(true);
     try {
-      await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
+      await axios.delete('http://localhost:8080/cart/clear');
       //setCartItems([]);
       await updateCartSize();
 
-      // const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
+      // const response = await axios.get('http://localhost:8080/cart/fetchitems');
       // setCartItems(response.data.cartItems);
 
       setSnackbarOpen(true);

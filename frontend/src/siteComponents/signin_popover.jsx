@@ -9,10 +9,10 @@ import Popper from '@mui/material/Popper';
 import { useAuth } from '../context/auth';
 import { Divider, ListItemButton } from '@mui/material';
 import { useNavigate } from "react-router-dom";
-import {useMediaQuery} from '@mui/material';
+import { useMediaQuery } from '@mui/material';
 import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 
-const SignInPopover = () => {
+const SignInPopover = ({ className }) => {
   const [auth, setAuth] = useAuth();
   const popupState = usePopupState({ variant: 'popover', popupId: 'signInPopover' });
   const navigate = useNavigate();
@@ -26,13 +26,13 @@ const SignInPopover = () => {
 
   return (
     <div style={{ display: 'inline-block', position: 'relative' }}>
-      <div className='signProp' {...bindHover(popupState)}>
-        <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
-          { isXs? (auth.user ? (<> {auth.user.name} <Person2OutlinedIcon /> </>) :( <Person2OutlinedIcon />)): (auth.user?   `Hello, ${auth.user.name}` : 'Hello, SignIn')}
+      <div  {...bindHover(popupState)}>
+        <Typography variant={isXs ? "h9" : "h6"} sx={{ display: 'flex', alignItems: 'center', gap: '4px', whiteSpace: 'nowrap' }}>
+          {isXs ? (auth.user ? (<> {auth.user.name} <Person2OutlinedIcon sx={{ fontSize: '30px' }} /> </>) : (<Person2OutlinedIcon />)) : (auth.user ? `Hello, ${auth.user.name}` : 'Hello, SignIn')}
         </Typography>
         <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center', gap: '4px', cursor: 'pointer', whiteSpace: 'nowrap' }}>
-          {!isXs? 'Account & Lists': null}
-          <ArrowDropDownIcon />
+          {!isXs ? 'Account & Lists' : null}
+
         </Typography>
       </div>
 
@@ -41,7 +41,7 @@ const SignInPopover = () => {
         sx={{
           backgroundColor: 'aliceblue',
           border: '1px solid black',
-          zIndex: 2500, // Increase zIndex to ensure it appears above the slider
+          zIndex: 2500,
         }}
         anchorOrigin={{
           vertical: 'bottom',
