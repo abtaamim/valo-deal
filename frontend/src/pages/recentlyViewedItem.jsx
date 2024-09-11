@@ -135,12 +135,12 @@ const RecentlyViewedItemPage = () => {
       } catch (error) {
         console.error('Error deleting searched item:', error);
       }
-      
+
     } else {
       console.warn('No items selected for deletion.');
     }
   };
-  
+
   return (
     <Box sx={{ bgcolor: 'rgba(32, 33, 36, 1)', p: '0', m: '0' }}>
       <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column">
@@ -159,8 +159,8 @@ const RecentlyViewedItemPage = () => {
                   <Button onClick={deleteSearch} variant="contained" sx={{ justifyContent: 'end', color: 'rgb(255, 0, 0)', mr: '10px' }}>
                     Delete Selected
                   </Button>
-                  
-                  
+
+
                 ) : (null)}
               </Box>
               {searchItems?.map((searchItem) => (

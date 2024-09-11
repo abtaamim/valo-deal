@@ -32,7 +32,7 @@ const addToCart = async (req, res) => {
     }
     const ItemModel = getItemModel(itemType);
     const item = await ItemModel.findById(itemId);
-    
+
     if(userId === item.sellerId.toString()) {
       return res.status(403).json({ message: 'You cannot add items from your own items.' });
     }

@@ -70,7 +70,7 @@ const Register = () => {
 
       // https://valo-deal-backend.vercel.app/api/v1/auth/register
       // https://valo-deal-backend.vercel.app/api/v1/auth/register
-      
+
 
       const res = await axios.post(
         "https://valo-deal-backend.vercel.app/api/v1/auth/register",
@@ -113,9 +113,9 @@ const Register = () => {
       inputLength === 0
         ? []
         : bangladeshPlaces.filter(
-            (place) =>
-              place.name.toLowerCase().slice(0, inputLength) === inputValue
-          );
+          (place) =>
+            place.name.toLowerCase().slice(0, inputLength) === inputValue
+        );
 
     setSuggestions(filteredSuggestions);
   };

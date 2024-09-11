@@ -145,7 +145,7 @@ const ComputerSellPage = () => {
       <Box
         sx={{
           bgcolor: 'lightgrey',
-           margin: 'auto',
+          margin: 'auto',
           maxWidth: 800,
           display: 'flex',
           flexDirection: 'column',
@@ -170,7 +170,7 @@ const ComputerSellPage = () => {
               </RadioGroup>
               {errors.condition && <Typography variant="caption" color="error">{errors.condition}</Typography>}
             </FormControl>
-            
+
 
             {/* BRAND  */}
 

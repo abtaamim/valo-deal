@@ -24,39 +24,17 @@ const SearchBar = () => {
   console.log("keyword+++", keyword);
   console.log("values.keyword", values.keyWord);
   const isXs = useMediaQuery('(max-width:450px)');
-  // Sync keyWord from URL with state
-  // useEffect(() => {
-  //   if (keyword && keyword !== values.keyWord) {
-  //     console.log('keyword=',keyword);
-  //     console.log('value=',values.keyWord);
-  //     setValues({ ...values, keyWord: keyword });
-  //   }
-  // }, [keyword, values, setValues]);
 
-  // // Fetch data when keyWord changes
-  // useEffect(() => {
-  //   const fetchResults = async () => {
-  //     if (keyword) {
-  //       try {
-  //         const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${keyword}`);
-  //         setValues({ ...values, results: res.data.results });
-  //       } catch (error) {
-  //         console.log('Error:', error);
-  //       }
-  //     }
-  //   };
-  //   fetchResults();
-  // }, [keyword]);
-
-  // Handle search submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!values.keyWord.trim()) return;
     try {
       const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${values.keyWord}`);
-      {auth.user? await axios.post('https://valo-deal-backend.vercel.app/search/searched-items', {
-        searchTerm: values.keyWord
-      }):null}
+      {
+        auth.user ? await axios.post('https://valo-deal-backend.vercel.app/search/searched-items', {
+          searchTerm: values.keyWord
+        }) : null
+      }
       setValues({ ...values, results: res.data.results });
       navigate(`/search/${values.keyWord}`); // Update the URL
     } catch (error) {
@@ -74,7 +52,7 @@ const SearchBar = () => {
     <Paper
       variant="outlined"
       component="form"
-      sx={{ bgcolor: 'rgb(24, 26, 27)', borderRadius: '40px', p: '2px 4px', display: 'flex', alignItems: 'center', width: {xs:300,md:600}, height: 50,  mt: '14px' }}
+      sx={{ bgcolor: 'rgb(24, 26, 27)', borderRadius: '40px', p: '2px 4px', display: 'flex', alignItems: 'center', minWidth: '300px', width: { xs: 350, md: 600 }, height: 50, mt: '14px' }}
       onSubmit={handleSubmit}
     >
       <InputBase

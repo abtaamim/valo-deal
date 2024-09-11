@@ -14,7 +14,7 @@ import { Toaster, toast } from 'sonner';
 import CustomDialog from './CustomDialog';
 import ListingCard from './CustomItemCard';
 const SearchPage = () => {
-  
+
   const [values, setValues] = useSearch();
   const [auth] = useAuth();
   const { updateCartSize } = useCart()
@@ -103,12 +103,14 @@ const SearchPage = () => {
   }, []);
   return (
     <>
-      
-      <ListingCard items={values.results}  button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
-        handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
-      />
-      < Toaster richColors />
-
+      <Box sx={{ p: 2 }}>
+        <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <ListingCard items={values.results} button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+            handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
+          />
+          < Toaster richColors />
+        </Grid>
+      </Box>
 
 
 

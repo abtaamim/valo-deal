@@ -43,9 +43,9 @@ const MobileAccessoriesSellDetailsPage = () => {
     if (!brand) newErrors.brand = 'Brand is required';
     if (!model) newErrors.model = 'Model is required';
 
-    const checkImage= selectedImages.filter(img=>{img!==null})
-    if (checkImage.length <3) newErrors.images = 'At least three image is required';
-    
+    const checkImage = selectedImages.filter(img => { img !== null })
+    if (checkImage.length < 3) newErrors.images = 'At least three image is required';
+
 
     if (!authenticity) newErrors.authenticity = 'Authenticity is required';
     return newErrors;
@@ -56,17 +56,17 @@ const MobileAccessoriesSellDetailsPage = () => {
     if (file) {
       const newSelectedImages = [...selectedImages];
       const newImagePreviewUrls = [...imagePreviewUrl];
-      
+
       newSelectedImages[index] = file;
       newImagePreviewUrls[index] = URL.createObjectURL(file);
-      
+
       setSelectedImages(newSelectedImages);
       setImagePreviewUrl(newImagePreviewUrls);
     }
   };
   const handleMultipleImageUploads = async () => {
     const uploadedImageUrls = [];
-  
+
     for (let i = 0; i < selectedImages.length; i++) {
       const imageUrl = await handleFormData(selectedImages[i]);
       if (imageUrl) {
@@ -75,7 +75,7 @@ const MobileAccessoriesSellDetailsPage = () => {
     }
     console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
-    
+
   };
   const [auth] = useAuth();
   const navigate = useNavigate();
@@ -226,7 +226,7 @@ const MobileAccessoriesSellDetailsPage = () => {
                 Authenticity
               </FormLabel>
               <RadioGroup row value={authenticity} onChange={(e) => setAuthenticity(e.target.value)}>
-                <FormControlLabel value="Original" sx={{mb:'10px'}} control={<Radio />} label="Original" />
+                <FormControlLabel value="Original" sx={{ mb: '10px' }} control={<Radio />} label="Original" />
                 <FormControlLabel sx={{ ml: '35px' }} value="Refurbished" control={<Radio />} label="Refurbished" />
               </RadioGroup>
               {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
@@ -247,8 +247,8 @@ const MobileAccessoriesSellDetailsPage = () => {
             </Typography>
             <FormControl sx={{ mb: 4 }} error={!!errors.brand}>
               <TextField
-                
-               // inputProps={{ min: 0, step: "1", max: 200000 }}
+
+                // inputProps={{ min: 0, step: "1", max: 200000 }}
                 id="brand-field"
                 placeholder="brand name"
                 value={brand}
@@ -263,10 +263,10 @@ const MobileAccessoriesSellDetailsPage = () => {
             </Typography>
             <FormControl sx={{ mb: 4 }} error={!!errors.model}>
               <TextField
-                
-               // inputProps={{ min: 0, step: "1", max: 200000 }}
+
+                // inputProps={{ min: 0, step: "1", max: 200000 }}
                 id="model-field"
-   //             placeholder="brand name"
+                //             placeholder="brand name"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
 
@@ -312,39 +312,39 @@ const MobileAccessoriesSellDetailsPage = () => {
             </Typography>
 
             <Grid container spacing={1}>
-            {selectedImages.map((_, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
-            <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <CardContent>
-                <input
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  id={`image-upload-${index}`}
-                  type="file"
-                  onChange={(event) => handleFileChange(index, event)}
-                />
-                <label htmlFor={`image-upload-${index}`}>
-                  <IconButton aria-label="upload picture" component="span">
-                    <ImageOutlinedIcon sx={{ fontSize: 28 }} />
-                  </IconButton>
-                </label>
+              {selectedImages.map((_, index) => (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card elevation={3} sx={{ textAlign: 'center', height: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <CardContent>
+                      <input
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        id={`image-upload-${index}`}
+                        type="file"
+                        onChange={(event) => handleFileChange(index, event)}
+                      />
+                      <label htmlFor={`image-upload-${index}`}>
+                        <IconButton aria-label="upload picture" component="span">
+                          <ImageOutlinedIcon sx={{ fontSize: 28 }} />
+                        </IconButton>
+                      </label>
 
-                {imagePreviewUrl[index] ? (
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={imagePreviewUrl[index]}
-                    alt={`Uploaded image ${index + 1}`}
-                  />
-                ) : (
-                  <Typography variant="body2" color="textSecondary">
-                    {selectedImages[index] ? "Image Selected" : "Add Image"}
-                  </Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
+                      {imagePreviewUrl[index] ? (
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={imagePreviewUrl[index]}
+                          alt={`Uploaded image ${index + 1}`}
+                        />
+                      ) : (
+                        <Typography variant="body2" color="textSecondary">
+                          {selectedImages[index] ? "Image Selected" : "Add Image"}
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
             </Grid>
             {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
 

@@ -16,7 +16,7 @@ import ListingCard from './CustomItemCard';
 //   console.log("after>>>",imageUrls[0]);
 //   return(
 //   <Card sx={{ width: '300px' }}>
-    
+
 //     <CardMedia
 //       component="img"
 //       height="240"
@@ -56,7 +56,7 @@ import ListingCard from './CustomItemCard';
 
 const AddedItemList = () => {
   const [items, setItems] = useState({ mobiles: [], computers: [], electronics: [], vehicles: [] });
-  const [auth]= useAuth();
+  const [auth] = useAuth();
   const { updateCartSize } = useCart();
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [selectedItemType, setSelectedItemType] = useState(null);
@@ -79,8 +79,10 @@ const AddedItemList = () => {
       const computersResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-computers');
       const electronicResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-electronics');
       const vehicleResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-vehicles');
-      setItems({ mobiles: mobilesResponse.data.mobiles || [], computers: computersResponse?.data.computers || [],
-         electronics: electronicResponse?.data.electronics || [], vehicles: vehicleResponse?.data.vehicles || []});
+      setItems({
+        mobiles: mobilesResponse.data.mobiles || [], computers: computersResponse?.data.computers || [],
+        electronics: electronicResponse?.data.electronics || [], vehicles: vehicleResponse?.data.vehicles || []
+      });
     } catch (error) {
       console.error('Error fetching items:', error);
     }
@@ -89,13 +91,13 @@ const AddedItemList = () => {
   useEffect(() => {
     updateCartSize();
     fetchItems();
-    
+
   }, [auth]);
 
-  const [allItems, setAllItems]= useState([]);
+  const [allItems, setAllItems] = useState([]);
   useEffect(() => {
-    setAllItems([...items.mobiles,...items.computers,...items.electronics,...items.vehicles]);
-    console.log('ali///',allItems);
+    setAllItems([...items.mobiles, ...items.computers, ...items.electronics, ...items.vehicles]);
+    console.log('ali///', allItems);
   }, [items]);
   const handleDelete = async (itemId, itemType) => {
     try {
@@ -124,8 +126,8 @@ const AddedItemList = () => {
       <ListingCard items={allItems} handleClickOpen={handleClickOpen}
         button={<DeleteOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
       />
-      <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId} 
-        handleDelete={(itemId,itemType)=>handleDelete(itemId,itemType)}
+      <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId}
+        handleDelete={(itemId, itemType) => handleDelete(itemId, itemType)}
         dialog_title="delete this item from your list" open={open} selectedItemType={selectedItemType}
       />
     </Box>

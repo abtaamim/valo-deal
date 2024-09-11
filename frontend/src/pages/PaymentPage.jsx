@@ -108,8 +108,8 @@ const PaymentPage = () => {
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Delivery Address"
           InputLabelProps={{
-            shrink: false, 
-            style: { display: 'none' }, 
+            shrink: false,
+            style: { display: 'none' },
           }}
           sx={{
             mt: 3,

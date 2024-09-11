@@ -16,7 +16,7 @@ const CartPage = () => {
 
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [open, setOpen] = useState(false);
-  const [snackbarOpen, setSnackbarOpen] = useState(false); 
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const handleClickOpen = (itemId) => {
     setOpen(true);
@@ -51,7 +51,7 @@ const CartPage = () => {
       fetchItems();
       await updateCartSize();
       handleClose();
-      setSnackbarOpen(true); 
+      setSnackbarOpen(true);
     } catch (error) {
       console.error(`Error deleting item:`, error);
     }
@@ -69,28 +69,28 @@ const CartPage = () => {
 
   return (
     <>
-      <Box 
-        sx={{ 
-          p: 2, 
-          pl: 0,  
-          pr: 10   
+      <Box
+        sx={{
+          p: 2,
+          pl: 0,
+          pr: 10
         }}
       >
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ 
-            color: 'orange', 
-            fontWeight: 'bold', 
-            padding: '8px',             
-            textAlign: 'center', 
+          sx={{
+            color: 'orange',
+            fontWeight: 'bold',
+            padding: '8px',
+            textAlign: 'center',
           }}
         >
           My Cart 🛒
         </Typography>
-        
-        
-        
+
+
+
         <ListingCard items={cartItems} handleClickOpen={handleClickOpen}
           button={<RemoveShoppingCartOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
         />
@@ -110,9 +110,9 @@ const CartPage = () => {
                 sx={{
                   backgroundColor: 'green',
                   color: 'white',
-                  width: '200px', 
-                  height: '60px', 
-                  fontSize: '1.3rem', 
+                  width: '200px',
+                  height: '60px',
+                  fontSize: '1.3rem',
                   '&:hover': {
                     backgroundColor: 'darkgreen',
                   },
@@ -125,8 +125,8 @@ const CartPage = () => {
           </Grid>
         </Box>
       </Box>
-      
-      <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId} 
+
+      <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId}
         handleDelete={handleDelete} dialog_title="This item will be removed from your cart"
         open={open}
       />
@@ -140,12 +140,12 @@ const CartPage = () => {
         ContentProps={{
           sx: {
             backgroundColor: 'grey',
-            color: 'white',               
-            fontWeight: 'bold',         
+            color: 'white',
+            fontWeight: 'bold',
           },
         }}
       />
-      
+
     </>
   );
 };

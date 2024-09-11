@@ -16,7 +16,7 @@ const ShowSubCatItem = () => {
   const { updateCartSize } = useCart();
   const fetchItems = async () => {
     try {
-      
+
       let response = null;
       if (subCat.toLowerCase() === 'mobile phone accessories') {
         response = await axios.get(`https://valo-deal-backend.vercel.app/sell/mobileAcc/${subCat}`);
@@ -62,13 +62,13 @@ const ShowSubCatItem = () => {
       await axios.post(`https://valo-deal-backend.vercel.app/cart/${catLow}/${itemId}`);
       // fetchItems(); // Refresh items after deletion
       await updateCartSize();
-      
-        (toast.success('item added to your cart successfully'))
-        
+
+      (toast.success('item added to your cart successfully'))
+
     } catch (error) {
-      auth.user ?(
+      auth.user ? (
         toast.error('allready in your cart')
-      ): (toast.error('Sign in to add to cart'))
+      ) : (toast.error('Sign in to add to cart'))
       console.error(`Error adding to cart ${catLow}:`, error);
     }
   };
@@ -87,7 +87,7 @@ const ShowSubCatItem = () => {
             </Typography>
           ) :
             (
-              
+
               <>
                 <ListingCard items={items} button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
                   handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}

@@ -29,8 +29,8 @@ const Profile = () => {
     setLoading(true);
 
     try {
-        // https://valo-deal-backend.vercel.app/api/v1/auth/profile
-        //  https://valo-deal-backend.vercel.app/api/v1/auth/profile
+      // https://valo-deal-backend.vercel.app/api/v1/auth/profile
+      //  https://valo-deal-backend.vercel.app/api/v1/auth/profile
       const res = await axios.put('https://valo-deal-backend.vercel.app/api/v1/auth/profile', {
         name,
         email,

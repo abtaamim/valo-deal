@@ -33,7 +33,7 @@ const Login = () => {
           token: res.data.token,
         });
         localStorage.setItem('auth', JSON.stringify(res.data));
-        
+
         console.log('<<<<<<<<<<<<<<')
         console.log(localStorage.auth.token)
         console.log('>>>>>>>>>>>>>>>>>>')
@@ -41,7 +41,7 @@ const Login = () => {
         console.log(res.data.token);
 
         // Save user to local storage
-       // localStorage.setItem("auth", JSON.stringify(res.data));
+        // localStorage.setItem("auth", JSON.stringify(res.data));
         navigate(location.state?.from || "/");
       } else {
         toast.error(res.data.message);
