@@ -492,7 +492,7 @@ const HomePage = () => {
               mb: 2,
             }}
           >
-            <FormControl sx={{ minWidth: 370 }}>
+            <FormControl sx={{ minWidth: 300 }}>
               <InputLabel id="sort-label" sx={{ color: "white" }}>
                 Sort by
               </InputLabel>

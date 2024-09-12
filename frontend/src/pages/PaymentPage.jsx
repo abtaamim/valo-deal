@@ -37,6 +37,7 @@ const PaymentPage = () => {
     }
     setLoading(true);
     try {
+
       cartItems.map(async (cartItem, i) => {
         await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
           buyerId: auth.user._id,
@@ -49,6 +50,7 @@ const PaymentPage = () => {
         })
       })
       await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
+
 
       await updateCartSize();
 
