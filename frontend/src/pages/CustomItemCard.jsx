@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-import { Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, Typography, Box } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, CardActions, Typography, Box, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const ListingCard = (props) => {
@@ -25,20 +25,62 @@ const ListingCard = (props) => {
   };
 
   return (
-    <Grid container spacing={2} sx={{ flexWrap: 'wrap', gap: 0, ml: '20px' }}>
+    <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
       {items.map((item) => (
         <Grid item key={item._id} xs={12} sm={6} md={4}>
-          <Card sx={{ display: 'flex', flexDirection: 'row', height: '250px', borderRadius: '15px', overflow: 'hidden' }}>
-            {/* Image on the left side */}
-            <CardMedia
-              component="img"
-              sx={{ width: '40%', objectFit: 'cover' }}
-              image={item.imgUrl[0]}
-              alt={`${item.brand} ${item.model}`}
-            />
-            {/* Content on the right side */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: '60%' }}>
-              <CardContent sx={{ flexGrow: 1, p: 2 }}>
+          <Card
+            sx={{
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' }, 
+              height: { xs: 'auto', sm: '260px' }, 
+              borderRadius: '10px',
+              overflow: 'hidden',
+              cursor: 'pointer',
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+              transition: 'transform 0.3s ease, background-color 0.3s ease',
+              '&:hover': {
+                transform: 'scale(1.03)',
+                backgroundColor: 'grey.300',
+              },
+            }}
+            onClick={() => handleRecentlyView(item.itemType, item._id)}
+          >
+            <Box sx={{ position: 'relative', width: { xs: '100%', sm: '40%' }, height: { xs: '200px', sm: '100%' }, overflow: 'hidden' }}>
+              <CardMedia
+                component="img"
+                sx={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+                image={item.imgUrl[0]}
+                alt={`${item.brand} ${item.model}`}
+              />
+              <Box
+                className="view-details-overlay"
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                  color: 'white',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  opacity: 0,
+                  transition: 'opacity 0.3s ease',
+                  '&:hover': {
+                    opacity: 1,
+                  },
+                }}
+              >
+                <Typography variant="h6">View Details</Typography>
+              </Box>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '60%' }, padding: '12px' }}>
+              <CardContent sx={{ flexGrow: 1 }}>
                 <Typography gutterBottom variant="h6" component="div">
                   {item.brand} {item.model}
                 </Typography>
@@ -51,22 +93,25 @@ const ListingCard = (props) => {
                   {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Price: ${item.price}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {truncateText(item.description, 100)} {/* Truncate description */}
+                  {truncateText(item.description, 90)}
                 </Typography>
               </CardContent>
-              <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
-                <Button
-                  size="small"
-                  variant="contained"
-                  sx={{ backgroundColor: '#FF8C00', color: 'white' }}
-                  onClick={() => handleRecentlyView(item.itemType, item._id)}
+              <CardActions sx={{ justifyContent: 'space-between' }}>
+                <Typography variant="body2" sx={{ color: '#ff8300', fontWeight: 600 }}>
+                  Price: ${item.price}
+                </Typography>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleClickOpen(item._id, item.itemType);
+                  }}
+                  sx={{
+                    color: 'inherit',
+                    '& .MuiSvgIcon-root': {
+                      color: 'inherit',
+                    },
+                  }}
                 >
-                  View Details
-                </Button>
-                <IconButton onClick={() => handleClickOpen(item._id, item.itemType)}>
                   {button}
                 </IconButton>
               </CardActions>
