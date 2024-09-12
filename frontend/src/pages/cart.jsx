@@ -73,7 +73,8 @@ const CartPage = () => {
         sx={{
           p: 2,
           pl: 0,
-          pr: 10
+          pr: 2, // Adjust padding for mobile screens
+          textAlign: 'center'
         }}
       >
         <Typography
@@ -84,35 +85,36 @@ const CartPage = () => {
             fontWeight: 'bold',
             padding: '8px',
             textAlign: 'center',
+            fontSize: { xs: '1.5rem', sm: '2rem' } // Responsive font size
           }}
         >
           My Cart 🛒
         </Typography>
 
-
-
-        <ListingCard items={cartItems} handleClickOpen={handleClickOpen}
+        <ListingCard 
+          items={cartItems} 
+          handleClickOpen={handleClickOpen}
           button={<RemoveShoppingCartOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
         />
 
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+        <Box sx={{ mt: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Grid container spacing={2} alignItems="center" justifyContent="center">
-            <Grid item>
+            <Grid item xs={12} sm={6} md={4}>
               <Box sx={{ p: 2, border: '1px solid #ccc', borderRadius: '8px' }}>
-                <Typography variant="h6" align="center" sx={{ color: 'white' }}>
+                <Typography variant="h6" align="center" sx={{ color: 'white', fontSize: { xs: '1rem', sm: '1.2rem' } }}>
                   Total: ${totalSum.toFixed(2)}
                 </Typography>
               </Box>
             </Grid>
-            <Grid item>
+            <Grid item xs={12} sm={6} md={4}>
               <Button
                 variant="contained"
                 sx={{
                   backgroundColor: 'green',
                   color: 'white',
-                  width: '200px',
+                  width: '100%', 
                   height: '60px',
-                  fontSize: '1.3rem',
+                  fontSize: { xs: '1rem', sm: '1.3rem' },
                   '&:hover': {
                     backgroundColor: 'darkgreen',
                   },
@@ -126,8 +128,11 @@ const CartPage = () => {
         </Box>
       </Box>
 
-      <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId}
-        handleDelete={handleDelete} dialog_title="This item will be removed from your cart"
+      <CustomDialog 
+        handleClose={handleClose} 
+        selectedItemId={selectedItemId}
+        handleDelete={handleDelete} 
+        dialog_title="This item will be removed from your cart"
         open={open}
       />
 
@@ -145,7 +150,6 @@ const CartPage = () => {
           },
         }}
       />
-
     </>
   );
 };
