@@ -1,8 +1,8 @@
 const computerModel = require('../models/computersModel');
-const mobileModel=require('../models/sellMobileModel')
+const mobileModel = require('../models/sellMobileModel')
 const electronicModel = require('../models/electronicsModel')
 const vehicleModel = require('../models/vehiclesModel');
-const mobileAccessories= require('../models/mobileAccessoriesModel')
+const mobileAccessories = require('../models/mobileAccessoriesModel')
 const User = require('../models/userModel')
 
 const getItemModel = (itemType) => {
@@ -21,9 +21,9 @@ const getItemModel = (itemType) => {
 };
 
 const addToCart = async (req, res) => {
-  
+
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
     const user = await User.findById(userId);
     const itemType = req.params.itemType;
     const itemId = req.params.itemId;
@@ -33,7 +33,7 @@ const addToCart = async (req, res) => {
     const ItemModel = getItemModel(itemType);
     const item = await ItemModel.findById(itemId);
 
-    if(userId === item.sellerId.toString()) {
+    if (userId === item.sellerId.toString()) {
       return res.status(403).json({ message: 'You cannot add items from your own items.' });
     }
     const existingItem = user.cartItems.find(
@@ -57,9 +57,9 @@ const addToCart = async (req, res) => {
 
 
 const removeFromCart = async (req, res) => {
-  
+
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
     const user = await User.findById(userId);
     const itemId = req.params.itemId;
 
@@ -80,45 +80,46 @@ const removeFromCart = async (req, res) => {
   }
 };
 
-const getCartItems= async (req, res) => {
+const getCartItems = async (req, res) => {
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     const cartItems = await Promise.all(user.cartItems.map(async (cartItem) => {
-     console.log(cartItem.itemType);
+      console.log(cartItem.itemType);
       const ItemModel = getItemModel(cartItem.itemType);
       const item = await ItemModel.findById(cartItem.itemId);
       return { ...item._doc, itemType: cartItem.itemType };
     }));
+
     console.log(cartItems)
 
     res.status(200).json({ success: true, cartItems });
   } catch (error) {
-    
+
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
-const getCartSize = async(req, res) => {
-  try{
-   const userId = req.user._id;
+const getCartSize = async (req, res) => {
+  try {
+    const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
     res.status(200).json({ success: true, cartSize: user.cartItems.length });
-  
+
   }
   catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }
 }
-const deleteWholeCart = async(req, res) =>{
-  try{
+const deleteWholeCart = async (req, res) => {
+  try {
     const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
@@ -133,4 +134,4 @@ const deleteWholeCart = async(req, res) =>{
     res.status(500).json({ success: false, message: error.message });
   }
 }
-module.exports ={addToCart, removeFromCart, getCartItems, getCartSize, deleteWholeCart}
+module.exports = { addToCart, removeFromCart, getCartItems, getCartSize, deleteWholeCart }

@@ -19,9 +19,9 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Set loading to true when form is submitted
     try {
-      // http://localhost:8080/api/v1/auth/login
-      // http://localhost:8080/api/v1/auth/login
-      const res = await axios.post("http://localhost:8080/api/v1/auth/login", {
+      // https://valo-deal-backend.vercel.app/api/v1/auth/login
+      // https://valo-deal-backend.vercel.app/api/v1/auth/login
+      const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/login", {
         email,
         password,
       });
@@ -33,7 +33,7 @@ const Login = () => {
           token: res.data.token,
         });
         localStorage.setItem('auth', JSON.stringify(res.data));
-        
+
         console.log('<<<<<<<<<<<<<<')
         console.log(localStorage.auth.token)
         console.log('>>>>>>>>>>>>>>>>>>')
@@ -41,7 +41,7 @@ const Login = () => {
         console.log(res.data.token);
 
         // Save user to local storage
-       // localStorage.setItem("auth", JSON.stringify(res.data));
+        // localStorage.setItem("auth", JSON.stringify(res.data));
         navigate(location.state?.from || "/");
       } else {
         toast.error(res.data.message);

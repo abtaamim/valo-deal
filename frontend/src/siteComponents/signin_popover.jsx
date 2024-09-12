@@ -78,7 +78,7 @@ const SignInPopover = ({ className }) => {
               }}>
                 My Account
               </ListItemButton>
-              <ListItemButton component={RouterLink} to="/orders" underline="hover" onClick={popupState.close} sx={{
+              <ListItemButton component={RouterLink} to="/previous-orders" underline="hover" onClick={popupState.close} sx={{
                 fontSize: '20px',
                 color: 'aliceblue',
                 bgcolor: 'rgb(0, 6, 12)',

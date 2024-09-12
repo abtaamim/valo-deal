@@ -37,7 +37,7 @@ const RecentlyViewedItemPage = () => {
 
   const fetchSearchItems = async () => {
     try {
-      const res = await axios.get('http://localhost:8080/search/fetch/searched-items');
+      const res = await axios.get('https://valo-deal-backend.vercel.app/search/fetch/searched-items');
       const fetchedSearchItems = res.data.searchedItems;
       setSearchItems(fetchedSearchItems);
 
@@ -54,7 +54,7 @@ const RecentlyViewedItemPage = () => {
       if (!token) {
         throw new Error("No token found");
       }
-      const response = await axios.get('http://localhost:8080/recentlyViewed/fetchitems');
+      const response = await axios.get('https://valo-deal-backend.vercel.app/recentlyViewed/fetchitems');
       setrecentlyViewedItems(response.data.recentlyViewedItems);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -117,7 +117,7 @@ const RecentlyViewedItemPage = () => {
   //console.log(selectedForDelete);
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`http://localhost:8080/recentlyViewed/${itemId}`);
+      await axios.delete(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemId}`);
       fetchItems();
 
       handleClose();
@@ -128,19 +128,19 @@ const RecentlyViewedItemPage = () => {
   const deleteSearch = async () => {
     if (selectedForDelete.length > 0) {
       try {
-        await axios.delete('http://localhost:8080/search/delete', {
+        await axios.delete('https://valo-deal-backend.vercel.app/search/delete', {
           data: { selectedForDelete }
         });
         fetchSearchItems();
       } catch (error) {
         console.error('Error deleting searched item:', error);
       }
-      
+
     } else {
       console.warn('No items selected for deletion.');
     }
   };
-  
+
   return (
     <Box sx={{ bgcolor: 'rgba(32, 33, 36, 1)', p: '0', m: '0' }}>
       <Box display="flex" alignItems="center" justifyContent="center" flexDirection="column">
@@ -159,8 +159,8 @@ const RecentlyViewedItemPage = () => {
                   <Button onClick={deleteSearch} variant="contained" sx={{ justifyContent: 'end', color: 'rgb(255, 0, 0)', mr: '10px' }}>
                     Delete Selected
                   </Button>
-                  
-                  
+
+
                 ) : (null)}
               </Box>
               {searchItems?.map((searchItem) => (

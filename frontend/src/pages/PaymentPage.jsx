@@ -3,7 +3,7 @@ import { Box, Typography, TextField, Grid, Button, Paper, CircularProgress, Snac
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
-
+import { useAuth } from '../context/auth';
 
 const PaymentPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -14,11 +14,11 @@ const PaymentPage = () => {
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false); // State for error snackbar
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
-
+  const [auth] = useAuth();
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('http://localhost:8080/cart/fetchitems');
+        const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
         setCartItems(response.data.cartItems);
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -37,11 +37,22 @@ const PaymentPage = () => {
     }
     setLoading(true);
     try {
-      await axios.delete('http://localhost:8080/cart/clear');
-      //setCartItems([]);
+      cartItems.map(async (cartItem, i) => {
+        await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
+          buyerId: auth.user._id,
+          sellerId: cartItem.sellerId,
+          itemType: cartItem.itemType,
+          itemId: cartItem._id,
+          soldDate: new Date(),
+          deliveryAddress: address
+
+        })
+      })
+      await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
+
       await updateCartSize();
 
-      // const response = await axios.get('http://localhost:8080/cart/fetchitems');
+      // const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
       // setCartItems(response.data.cartItems);
 
       setSnackbarOpen(true);
@@ -108,8 +119,8 @@ const PaymentPage = () => {
           onChange={(e) => setAddress(e.target.value)}
           placeholder="Delivery Address"
           InputLabelProps={{
-            shrink: false, 
-            style: { display: 'none' }, 
+            shrink: false,
+            style: { display: 'none' },
           }}
           sx={{
             mt: 3,

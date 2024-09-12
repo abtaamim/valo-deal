@@ -27,7 +27,7 @@ const ShowDetailsPage = () => {
 
   const fetchItem = async () => {
     const res = await axios.get(
-      `http://localhost:8080/details/${itemType}/${itemId}`
+      `https://valo-deal-backend.vercel.app/details/${itemType}/${itemId}`
     );
     setItem(res.data);
   };
@@ -49,7 +49,7 @@ const ShowDetailsPage = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:8080/cart/add",
+        "https://valo-deal-backend.vercel.app/cart/add",
         {
           productId: itemId,
           productType: itemType,

@@ -1,5 +1,5 @@
 
-const mobAccModel=require('../models/mobileAccessoriesModel')
+const mobAccModel = require('../models/mobileAccessoriesModel')
 const mobAccessoriesCont = async (req, res) => {
   try {
     const { sellerId, brand, model, condition, authenticity, description, price, imgUrl, accessoryType } = req.body;
@@ -7,7 +7,7 @@ const mobAccessoriesCont = async (req, res) => {
     //const imagePaths = files.map(file => `/uploads/${file.filename}`);
 
     if (!sellerId || !brand || !model || !condition || !authenticity || !description || !price || !imgUrl) {
-      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price,imgUrl });
+      console.error('Validation failed:', { sellerId, brand, model, condition, authenticity, description, price, imgUrl });
       return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
@@ -35,10 +35,10 @@ const mobAccessoriesCont = async (req, res) => {
 
 const getAllMobAccessories = async (req, res) => {
   try {
-   // const userId = req.user._id; // Assuming user ID is available in req.user
+    // const userId = req.user._id; // Assuming user ID is available in req.user
 
     // Fetch mobileAccessories where sellerId is not equal to userId
-    const mobileAcc = await mobAccModel.find();//{ sellerId: { $ne: userId } }
+    const mobileAcc = await mobAccModel.find({ sold: false });//{ sellerId: { $ne: userId } }
 
     if (mobileAcc.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobileAccessories found for the user' });
@@ -55,7 +55,7 @@ const getAllMobAccessories = async (req, res) => {
 const getAddedMobileAccessories = async (req, res) => {
   try {
     const userId = req.user._id; // Assuming user ID is available in req.user
-    const mobileAccessories = await mobAccModel.find({ sellerId: userId });
+    const mobileAccessories = await mobAccModel.find({ sellerId: userId, sold: false });
     res.status(200).json({ success: true, mobileAccessories });
   } catch (error) {
     console.error('Error fetching user mobileAccessories:', error);
@@ -75,14 +75,14 @@ const deleteMobileAccessories = async (mobileId) => {
 
 const getLatestMobileAccesories = async (req, res) => {
   try {
-    const userId = req.user._id; 
-    const latestMobileAccessories = await mobAccModel.find({ sellerId:  {$ne: userId } })
-      .sort({ createdAt: -1 }).limit(6) .exec();
-     
+    const userId = req.user._id;
+    const latestMobileAccessories = await mobAccModel.find({ sellerId: { $ne: userId }, sold: false })
+      .sort({ createdAt: -1 }).limit(6).exec();
+
     if (!latestMobileAccessories) {
       return res.status(404).json({ success: false, message: 'No Mobiles found' });
     }
-    res.status(200).json({ success: true,  latestMobileAccessories });
+    res.status(200).json({ success: true, latestMobileAccessories });
   } catch (error) {
     console.error('Error fetching the latest Mobile:', error);
     res.status(500).json({ success: false, message: 'Internal Server Error' });

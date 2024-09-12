@@ -110,28 +110,28 @@ const HomeSlider = () => (
         <img
           src={image1}
           alt="Essentials for Gamers"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image2}
           alt="Deals in PCs"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image3}
           alt="Home décor under $50"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image4}
           alt="Shop deals in Fashion"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
     </Carousel>
@@ -263,7 +263,7 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
       transition: "transform 0.2s, box-shadow 0.2s",
       cursor: "pointer",
-      backgroundColor: "#1f232c", 
+      backgroundColor: "#1f232c",
       "&:hover": {
         transform: "scale(1.05)",
         boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
@@ -290,7 +290,7 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
         flexGrow: 1,
         overflow: "hidden",
         backgroundColor: "#222324",
-        color: "white", 
+        color: "white",
       }}
     >
       <Typography gutterBottom variant="h5" component="div" sx={{ color: "#eaeaea" }}>
@@ -316,7 +316,7 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       <Typography variant="body2" sx={{ color: "#cecdcd", fontWeight: "bold" }}>
         Price: ${item.price}
       </Typography>
-      
+
       <Tooltip title="Add this item to your cart">
         <IconButton
           onClick={(e) => {
@@ -358,16 +358,16 @@ const HomePage = () => {
   const fetchItems = async () => {
     try {
       const mobilesResponse = await axios.get(
-        "http://localhost:8080/sell/latest-mobiles"
+        "https://valo-deal-backend.vercel.app/sell/latest-mobiles"
       );
       const computersResponse = await axios.get(
-        "http://localhost:8080/sell/latest-computers"
+        "https://valo-deal-backend.vercel.app/sell/latest-computers"
       );
       const electronicResponse = await axios.get(
-        "http://localhost:8080/sell/latest-electronics"
+        "https://valo-deal-backend.vercel.app/sell/latest-electronics"
       );
       const vehicleResponse = await axios.get(
-        "http://localhost:8080/sell/latest-vehicles"
+        "https://valo-deal-backend.vercel.app/sell/latest-vehicles"
       );
       setItems({
         mobiles: mobilesResponse.data.latestMobile,
@@ -399,15 +399,15 @@ const HomePage = () => {
   const handleAddToCart = async (itemId, itemType) => {
     try {
       await axios.post(
-        `http://localhost:8080/cart/${itemType}/${itemId}`
+        `https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`
       );
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
     } catch (error) {
       auth.user
         ? toast.error("Already added item to the cart.", {
-            position: "top-right",
-          })
+          position: "top-right",
+        })
         : toast.error("Sign in to add to cart.", { position: "top-right" });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
@@ -428,7 +428,7 @@ const HomePage = () => {
       const sellerIds = new Set(allItems.map((item) => item.sellerId));
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
         axios.get(
-          `http://localhost:8080/api/v1/auth/seller-info/${sellerId}`
+          `https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`
         )
       );
       const sellerResponses = await Promise.all(sellerPromises);
@@ -478,10 +478,12 @@ const HomePage = () => {
     <>
       <ToastContainer />
       <>
-        <HomeSlider /> 
+        <HomeSlider />
         <CategorySection />
-        <Box sx={{ p: 2, bgcolor: "#373839" ,pl: 5,  
-                  pr: 0}}>
+        <Box sx={{
+          p: 2, bgcolor: "#373839", pl: 5,
+          pr: 0
+        }}>
           <Box
             sx={{
               display: "flex",
@@ -518,7 +520,7 @@ const HomePage = () => {
                 </MenuItem>
               </Select>
             </FormControl>
-            
+
           </Box>
           <Grid container spacing={3}>
             {currentPosts.map((item) => (
@@ -541,20 +543,20 @@ const HomePage = () => {
               onChange={handlePageChange}
               sx={{
                 "& .MuiPaginationItem-root": {
-                  color: "white", 
+                  color: "white",
                 },
                 "& .MuiPaginationItem-root.Mui-selected": {
                   backgroundColor: "grey",
-                  color: "white", 
+                  color: "white",
                 },
                 "& .MuiPaginationItem-root:hover": {
-                  backgroundColor: "grey", 
-                  color: "white", 
+                  backgroundColor: "grey",
+                  color: "white",
                 },
               }}
             />
           </Box>
-          
+
         </Box>
       </>
       {/* )} */}
