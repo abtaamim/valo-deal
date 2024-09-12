@@ -10,8 +10,9 @@ const electronicRoutes = require('./routes/electronicRoute.js')
 const vehicleRoutes = require('./routes/vehicleRoute.js')
 const cartRoutes = require('./routes/userCartRoute.js')
 const recentlyViewedRoutes = require('./routes/recentlyViewedRoute.js')
-const searchRoutes =require('./routes/searchRoute.js')
+const searchRoutes = require('./routes/searchRoute.js')
 const showDetails = require('./routes/showDetails.js')
+const soldItems = require('./routes/soldItemRoute.js')
 
 const cors = require('cors');
 const path = require('path');
@@ -27,7 +28,7 @@ connectDB();
 const app = express();
 
 // Middlewares
-app.use(cors( 
+app.use(cors(
   // {
   //   origin: ["https://valo-deal-frontend.vercel.app"],
   //   methods: ['POST', 'GET', 'PUT', 'DELETE'],
@@ -67,11 +68,12 @@ app.use("/sell", mobileRoutes); // "/api/v1/sell"
 app.use("/sell", computerRoutes); // 
 app.use("/sell", electronicRoutes)
 app.use("/sell", vehicleRoutes);
-app.use("/sell", mobAccessories);  
+app.use("/sell", mobAccessories);
 app.use("/cart", cartRoutes);
 app.use("/recentlyViewed", recentlyViewedRoutes)
 app.use("/search", searchRoutes);
 app.use("/details", showDetails);
+app.use("/order", soldItems);
 
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");

@@ -17,6 +17,7 @@ import RecentlyViewedItemPage from './pages/recentlyViewedItem';
 import AddedMobileList from './pages/showAddedItem';
 import SearchPage from './pages/SearchPage';
 import ShowDetailsPage from './pages/ShowDetails';
+import PreviousOrders from './pages/PreviousOrdersPage';
 //import ComputerSellPage from './pages/computerSell';
 
 import { ComputerSellPage, VehicleSellPage, ElectronicsSellPage } from './pages/sellDetailsPage';
@@ -38,50 +39,51 @@ import { PostDetails } from './siteComponents/PostDetails';
 import { Toaster } from 'react-hot-toast';
 
 const App = () => {
-  
+
 
   return (
     <>
       <CartProvider>
-      <Navbar />
-      <SecondNavbar />
-      <div className="container">
-        <Routes>
-          {/* <Route path="/" element={()=> <Navigate to='/posts' /> } />
+        <Navbar />
+        <SecondNavbar />
+        <div className="container">
+          <Routes>
+            {/* <Route path="/" element={()=> <Navigate to='/posts' /> } />
           <Route path="/posts" element={<Home />} />
           <Route path="/posts/search" element={<Home />} /> */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/posts/:id" element={<PostDetails />} />
-          <Route path="/pricing" element={<Pricing />} />
-          <Route path="/profile" element={<Profile />} />
+            <Route path="/" element={<HomePage />} />
+            <Route path="/posts/:id" element={<PostDetails />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/profile" element={<Profile />} />
 
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/sell" element={<Sell />} />
-          <Route path="/sell-mobile" element={<MobileSellDetailsPage />} />
-          <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />
-          <Route path="/sell/computers" element={< ComputerSellPage/>} />
-          <Route path="/sell/vehicles" element={< VehicleSellPage/>} />
-          <Route path="/sell/electronics" element={< ElectronicsSellPage/>} />
-          <Route path="/sub-category-item/:category/:subCat" element={<ShowSubCatItem/>} />
-          <Route path="/added-items" element={<AddedItemList/>}/>
-          <Route path="/recently-viewed" element={<RecentlyViewedItemPage/>} />
-          <Route path="/search/:keyword" element={<SearchPage />} />
-          <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
-          <Route path="/dashboard" element={<PrivateRoute />}>
-            <Route path="" element={<Dashboard />} />
-          </Route>
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/policy" element={<Policy />} />
-          <Route path="*" element={<Pagenotfound />} />
-        </Routes>
-      </div>
-      <Footer />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/sell" element={<Sell />} />
+            <Route path="/sell-mobile" element={<MobileSellDetailsPage />} />
+            <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />
+            <Route path="/sell/computers" element={< ComputerSellPage />} />
+            <Route path="/sell/vehicles" element={< VehicleSellPage />} />
+            <Route path="/sell/electronics" element={< ElectronicsSellPage />} />
+            <Route path="/sub-category-item/:category/:subCat" element={<ShowSubCatItem />} />
+            <Route path="/added-items" element={<AddedItemList />} />
+            <Route path="/recently-viewed" element={<RecentlyViewedItemPage />} />
+            <Route path="/search/:keyword" element={<SearchPage />} />
+            <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
+            <Route path='/previous-orders' element={<PreviousOrders />} />
+            <Route path="/dashboard" element={<PrivateRoute />}>
+              <Route path="" element={<Dashboard />} />
+            </Route>
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/policy" element={<Policy />} />
+            <Route path="*" element={<Pagenotfound />} />
+          </Routes>
+        </div>
+        <Footer />
       </CartProvider>
       <Toaster />
     </>

@@ -3,7 +3,7 @@ import { Box, Typography, TextField, Grid, Button, Paper, CircularProgress, Snac
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
-
+import { useAuth } from '../context/auth';
 
 const PaymentPage = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -14,7 +14,7 @@ const PaymentPage = () => {
   const [errorSnackbarOpen, setErrorSnackbarOpen] = useState(false); // State for error snackbar
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
-
+  const [auth] = useAuth();
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -37,8 +37,21 @@ const PaymentPage = () => {
     }
     setLoading(true);
     try {
+
+      cartItems.map(async (cartItem, i) => {
+        await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
+          buyerId: auth.user._id,
+          sellerId: cartItem.sellerId,
+          itemType: cartItem.itemType,
+          itemId: cartItem._id,
+          soldDate: new Date(),
+          deliveryAddress: address
+
+        })
+      })
       await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
-      //setCartItems([]);
+
+
       await updateCartSize();
 
       // const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
