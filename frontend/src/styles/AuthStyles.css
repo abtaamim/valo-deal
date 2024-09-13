@@ -1,36 +1,41 @@
-/* ===================================
-========= register page  */
-.form-container {
-  position: relative;
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* General Form Container */
+.form-container, .form-container1, .form-container2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-height: 70vh;
   width: 100%;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-image: url('../assets/background.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  flex-direction: column;
   position: relative;
+  animation: fadeIn 1s ease-in-out;
 }
-
-.loading-container {
-  position: relative;
-  margin-top: 20px; /* Adjust as needed */
-  text-align: center;
-}
-
-.loading-indicator {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  /* Add styles for your loading indicator (e.g., spinner, animated icon) */
-}
-
 
 .form-overlay {
   position: absolute;
@@ -38,158 +43,195 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(27, 37, 54, 0);
   z-index: 0;
 }
 
-.logo-container {
-  position: relative;
-  width: 100%;
-  text-align: center;
-  margin-bottom: 20px;
-  z-index: 1;
-}
-
-.logo-container img {
-  max-width: 90px;
-  cursor: pointer;
-}
-
-.auth-form {
-  position: relative;
+.auth-form, .form-container1 form, .form-container2 form {
   width: 100%;
   max-width: 400px;
-  padding: 20px;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  background-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
-  background-color: white;
+  position: relative;
   z-index: 1;
-  text-align: left; /* Ensures the form content is left-aligned */
+  text-align: left;
+  animation: slideIn 1s ease;
 }
 
-.auth-title {
-  margin-bottom: 20px;
+.auth-title, .form-container1 .title, .form-container2 .title {
+  margin-bottom: 25px;
   text-align: center;
   font-size: 24px;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 1px;
 }
 
-.form-group {
+.form-group, .form-container1 form .form-group, .form-container2 form .form-group {
   margin-bottom: 15px;
+  animation: fadeIn 1s ease forwards;
 }
 
-.form-control {
+.form-control, .form-container1 form input, .form-container2 form input {
   width: 100%;
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  border: none;
+  border-bottom: 2px solid #ccc;
+  outline: none;
+  transition: border-bottom 0.3s ease;
 }
 
-.btn-primary {
+.form-control:focus, .form-container1 form input:focus, .form-container2 form input:focus {
+  border-bottom: 2px solid #179740;
+}
+
+.btn-primary, .form-container1 form button, .form-container2 form button {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
   background-color: #179740;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.btn-primary:hover {
+.btn-primary:hover, .form-container1 form button:hover, .form-container2 form button:hover {
   background-color: #22fd3c;
-   color: rgb(24, 23, 23);
-   
+  color: rgb(24, 23, 23);
+  transform: translateY(-3px);
 }
 
-/* login page */
-.form-container1 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 70vh;
-  flex-direction: column;
-  max-width: 1600px;
-  
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat;
+.loading-container {
+  margin-top: 20px;
+  text-align: center;
 }
+
+.loading-indicator {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  animation: logoAnimation 10s ease-in-out infinite;
+}
+
+@keyframes logoAnimation {
+  /* Initial up-down motion */
+  0%, 12.5% {
+    transform: translateY(0);
+  }
+  6.25% {
+    transform: translateY(-20px);
+  }
+
+  /* Second up-down motion */
+  25%, 37.5% {
+    transform: translateY(0);
+  }
+  31.25% {
+    transform: translateY(-20px);
+  }
+
+  /* Rotation starts right after the second up-down motion */
+  50% {
+    transform: rotate(0deg);
+  }
+  62.5% {
+    transform: rotate(360deg);
+  }
+
+  /* Return to neutral position after rotation */
+  75%, 87.5% {
+    transform: translateY(0);
+  }
+  81.25% {
+    transform: translateY(-20px);
+  }
+
+  /* Final up-down motion before repeating */
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.logo-container img {
+  max-width: 80px;
+  cursor: pointer;
+  animation: fadeIn 1.5s ease;
+}
+
+
 
 .form-container1 form {
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  padding: 20px;
-  background-color: #fff;
-  margin-left: 100px;
+  margin-left: 50px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.form-container1 form .title {
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-family: "Playfair Display", serif;
-}
-
-.form-container1 form input {
-  border: none;
-  border-bottom: 1px solid #000;
-  border-radius: 0;
+.form-container1 form:hover {
+  transform: translateX(5px);
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.3);
 }
 
 .form-container1 form button {
-  border: 1px solid black;
-  border-radius: 0;
   background-color: #ff5757;
-  color: white;
-  width: 250px;
 }
 
 .form-container1 form button:hover {
-  border: 1px solid black;
   background-color: #FF3131;
 }
 
-/* forgot-password */
-.form-container2 {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 70vh;
-  flex-direction: column;
-  background-size: cover; 
-  background-position: center; 
-  background-repeat: no-repeat; 
-}
 
-.form-container2 form {
-  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  padding: 20px;
-  background-color: #fff;
-  margin-left: 100px;
-}
-
-.form-container2 form .title {
-  text-align: center;
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-family: "Playfair Display", serif;
-}
-
-.form-container2 form input {
-  border: none;
-  border-bottom: 1px solid #000;
-  border-radius: 0;
-}
 
 .form-container2 form button {
-  border: 1px solid black;
-  border-radius: 0;
-  background-color: #ff5757;
-  color: white;
-  width: 250px;
+  background-color: #179740;
 }
 
 .form-container2 form button:hover {
-  border: 1px solid black;
-  background-color: #FF3131;
+  background-color: #22fd3c;
 }
+.auth-form {
+  position: relative;
+  width: 100%;
+  max-width: 600px; /* Increased the max-width to make the form wider */
+  padding: 30px; /* Added more padding for a spacious layout */
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: white;
+  z-index: 1;
+  text-align: left;
+}
+
+/* Adjust the form-row layout to ensure the fields are spaced out properly */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.col-half {
+  width: 48%;
+}
+
+@media (max-width: 768px) {
+  .auth-form {
+    max-width: 100%; /* Make the form full-width on smaller screens */
+    padding: 20px;
+  }
+
+  .col-half {
+    width: 100%; /* Stack columns on smaller screens */
+  }
+}
+

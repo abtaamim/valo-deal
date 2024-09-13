@@ -4,7 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import Autosuggest from "react-autosuggest";
 import "../../styles/AuthStyles.css";
-import logo from "../../assests/logo.png";
+import logo from "../../assests/logo11.png";
 
 const bangladeshPlaces = [
   { name: "Dhaka" },
@@ -56,6 +56,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState(""); // Confirm password state
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [suggestions, setSuggestions] = useState([]);
@@ -65,13 +66,15 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Check if passwords match
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     setLoading(true);
     try {
-
-      // https://valo-deal-backend.vercel.app/api/v1/auth/register
-      // https://valo-deal-backend.vercel.app/api/v1/auth/register
-
-
       const res = await axios.post(
         "https://valo-deal-backend.vercel.app/api/v1/auth/register",
         {
@@ -113,9 +116,9 @@ const Register = () => {
       inputLength === 0
         ? []
         : bangladeshPlaces.filter(
-          (place) =>
-            place.name.toLowerCase().slice(0, inputLength) === inputValue
-        );
+            (place) =>
+              place.name.toLowerCase().slice(0, inputLength) === inputValue
+          );
 
     setSuggestions(filteredSuggestions);
   };
@@ -140,79 +143,101 @@ const Register = () => {
       </div>
       <form onSubmit={handleSubmit} className="auth-form">
         <h2 className="auth-title">Sign Up</h2>
-        <div className="form-group">
-          <label htmlFor="name">Name</label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="form-control"
-            placeholder="Enter your name"
-            required
-            autoFocus
-          />
+
+        <div className="form-row">
+          <div className="form-group col-half">
+            <label htmlFor="name">Name</label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="form-control"
+              placeholder="Enter your name"
+              required
+              autoFocus
+            />
+          </div>
+          <div className="form-group col-half">
+            <label htmlFor="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="form-control"
+              placeholder="Enter your email"
+              required
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control"
-            placeholder="Enter your email"
-            required
-          />
+
+        <div className="form-row">
+          <div className="form-group col-half">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="form-control"
+              placeholder="Enter your password"
+              required
+            />
+          </div>
+          <div className="form-group col-half">
+            <label htmlFor="confirmPassword">Confirm Password</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="form-control"
+              placeholder="Confirm your password"
+              required
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="form-control"
-            placeholder="Enter your password"
-            required
-          />
+
+        <div className="form-row">
+          <div className="form-group col-half">
+            <label htmlFor="phone">Phone</label>
+            <input
+              type="tel"
+              id="phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="form-control"
+              placeholder="Enter your phone number"
+              pattern="[0-9]{11}"
+              required
+            />
+            {!validatePhoneNumber(phone) && (
+              <small className="text-danger">
+                Please enter a valid 11-digit phone number starting with "01".
+              </small>
+            )}
+          </div>
+          <div className="form-group col-half">
+            <label htmlFor="address">Address</label>
+            <Autosuggest
+              suggestions={suggestions}
+              onSuggestionsFetchRequested={onSuggestionsFetchRequested}
+              onSuggestionsClearRequested={onSuggestionsClearRequested}
+              getSuggestionValue={getSuggestionValue}
+              renderSuggestion={renderSuggestion}
+              inputProps={{
+                id: "address",
+                value: address,
+                onChange: (e, { newValue }) => setAddress(newValue),
+                className: "form-control",
+                placeholder: "Enter your address",
+                required: true,
+              }}
+            />
+          </div>
         </div>
-        <div className="form-group">
-          <label htmlFor="phone">Phone</label>
-          <input
-            type="tel"
-            id="phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="form-control"
-            placeholder="Enter your phone number"
-            pattern="[0-9]{11}"
-            required
-          />
-          {!validatePhoneNumber(phone) && (
-            <small className="text-danger">
-              Please enter a valid 11-digit phone number starting with "01".
-            </small>
-          )}
-        </div>
-        <div className="form-group">
-          <label htmlFor="address">Address</label>
-          <Autosuggest
-            suggestions={suggestions}
-            onSuggestionsFetchRequested={onSuggestionsFetchRequested}
-            onSuggestionsClearRequested={onSuggestionsClearRequested}
-            getSuggestionValue={getSuggestionValue}
-            renderSuggestion={renderSuggestion}
-            inputProps={{
-              id: "address",
-              value: address,
-              onChange: (e, { newValue }) => setAddress(newValue),
-              className: "form-control",
-              placeholder: "Enter your address",
-              required: true,
-            }}
-          />
-        </div>
+
         <div className="form-group">
           <label htmlFor="answer">Unique Code</label>
           <input
@@ -225,6 +250,7 @@ const Register = () => {
             required
           />
         </div>
+
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? "Loading..." : "REGISTER"}
         </button>
