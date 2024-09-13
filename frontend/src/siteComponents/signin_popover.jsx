@@ -161,7 +161,7 @@ const SignInPopover = ({ className }) => {
               </ListItemButton>
               <ListItemButton
                 component={RouterLink}
-                to="/orders"
+                to="/previous-orders"
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
