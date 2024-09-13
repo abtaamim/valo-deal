@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, TextField, Grid, Button, Paper, CircularProgress, Snackbar, Radio, RadioGroup, FormControlLabel, FormControl } from '@mui/material';
+import { Box, Typography, TextField, Grid, Button, Paper, CircularProgress, Snackbar, Radio, RadioGroup, FormControlLabel, FormControl, Avatar } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
@@ -15,6 +15,7 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
   const [auth] = useAuth();
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
@@ -37,8 +38,7 @@ const PaymentPage = () => {
     }
     setLoading(true);
     try {
-
-      cartItems.map(async (cartItem, i) => {
+      await Promise.all(cartItems.map(async (cartItem) => {
         await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
           buyerId: auth.user._id,
           sellerId: cartItem.sellerId,
@@ -46,16 +46,10 @@ const PaymentPage = () => {
           itemId: cartItem._id,
           soldDate: new Date(),
           deliveryAddress: address
-
-        })
-      })
+        });
+      }));
       await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
-
-
       await updateCartSize();
-
-      // const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
-      // setCartItems(response.data.cartItems);
 
       setSnackbarOpen(true);
       setLoading(false);
@@ -87,11 +81,20 @@ const PaymentPage = () => {
       <Grid container spacing={2}>
         {cartItems.map((item) => (
           <Grid item xs={12} key={item._id}>
-            <Paper sx={{ p: 2, backgroundColor: 'grey', color: 'white', width: '100%', marginBottom: '8px' }}>
-              <Typography variant="body1">
-                {item.brand} {item.model}
-              </Typography>
-              <Typography variant="body1">
+            <Paper sx={{ p: 2, backgroundColor: 'grey', color: 'white', display: 'flex', alignItems: 'center', width: '100%', marginBottom: '8px', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Avatar
+                  src={item.imgUrl[1]} // Use item.imgUrl for the product image
+                  alt={`${item.brand} ${item.model}`}
+                  sx={{ width: 60, height: 60, marginRight: 2, objectFit: 'cover' }} // Adjust size and fit
+                />
+                <Box>
+                  <Typography variant="body1">
+                    {item.brand} {item.model}
+                  </Typography>
+                </Box>
+              </Box>
+              <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
                 ${item.price.toFixed(2)}
               </Typography>
             </Paper>
