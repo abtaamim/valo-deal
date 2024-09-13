@@ -28,7 +28,7 @@ router.post('/setOrder', async (req, res) => {
 
   try {
     const { buyerId, sellerId, itemType, itemId, soldDate, deliveryAddress } = req.body;
-    console.log(buyerId, sellerId, itemType, itemId, soldDate, deliveryAddress)
+    // console.log(buyerId, sellerId, itemType, itemId, soldDate, deliveryAddress)
     const soldItem = await new soldItemModel(
       {
         buyerId,

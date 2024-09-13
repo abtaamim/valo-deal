@@ -138,9 +138,11 @@ const CartPage = () => {
                   backgroundColor: "green",
                   color: "white",
 
+
                   width: "100%",
                   height: "60px",
                   fontSize: { xs: "1rem", sm: "1.3rem" },
+
 
                   "&:hover": {
                     backgroundColor: "darkgreen",
@@ -154,6 +156,7 @@ const CartPage = () => {
           </Grid>
         </Box>
       </Box>
+
 
       <CustomDialog
         handleClose={handleClose}

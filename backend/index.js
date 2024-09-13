@@ -13,7 +13,7 @@ const recentlyViewedRoutes = require('./routes/recentlyViewedRoute.js')
 const searchRoutes = require('./routes/searchRoute.js')
 const showDetails = require('./routes/showDetails.js')
 const soldItems = require('./routes/soldItemRoute.js')
-
+const sendMail = require('./routes/sendmail.js')
 const cors = require('cors');
 const path = require('path');
 
@@ -74,7 +74,7 @@ app.use("/recentlyViewed", recentlyViewedRoutes)
 app.use("/search", searchRoutes);
 app.use("/details", showDetails);
 app.use("/order", soldItems);
-
+app.use("/send", sendMail)
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");
 });
