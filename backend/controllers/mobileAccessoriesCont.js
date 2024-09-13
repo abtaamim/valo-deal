@@ -24,7 +24,7 @@ const mobAccessoriesCont = async (req, res) => {
     });
 
     await newMobile.save();
-    console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, imgUrl, accessoryType });
+    //console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, imgUrl, accessoryType });
 
     res.status(200).send('Product listed successfully');
   } catch (error) {

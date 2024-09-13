@@ -31,8 +31,8 @@ const ListingCard = (props) => {
           <Card
             sx={{
               display: 'flex',
-              flexDirection: { xs: 'column', sm: 'row' }, 
-              height: { xs: 'auto', sm: '260px' }, 
+              flexDirection: { xs: 'column', sm: 'row' },
+              height: { xs: 'auto', sm: '260px' },
               borderRadius: '10px',
               overflow: 'hidden',
               cursor: 'pointer',

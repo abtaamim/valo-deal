@@ -38,7 +38,7 @@ const PaymentPage = () => {
     setLoading(true);
     try {
 
-      cartItems.map(async (cartItem, i) => {
+      for (const cartItem of cartItems) {
         await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
           buyerId: auth.user._id,
           sellerId: cartItem.sellerId,
@@ -48,7 +48,35 @@ const PaymentPage = () => {
           deliveryAddress: address
 
         })
-      })
+        await axios.post('https://valo-deal-backend.vercel.app/send/mail', {
+          to: auth.user.email,
+          subject: "your order has been placed successfully",
+          mailBody: `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #4CAF50;">Your Order Confirmation</h2>
+      <p style="font-size: 16px;">Your order has been placed successfully.</p>
+      <p style="font-size: 16px;"><strong>Item:</strong> ${cartItem.brand ? cartItem.brand : ''} ${cartItem.model ? cartItem.model : ''}</p>
+      <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
+    </div>
+  `})
+        const res = await axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${cartItem.sellerId}`)
+        const sellerMail = res?.data.seller.email;
+        await axios.post('https://valo-deal-backend.vercel.app/send/mail', {
+          to: sellerMail,
+          subject: "one of your product has been sold",
+          mailBody: `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #4CAF50;">Product Sold Notification</h2>
+      <p style="font-size: 16px;">Your product has been sold successfully.</p>
+      <p style="font-size: 16px;"><strong>Item:</strong> ${cartItem.brand ? cartItem.brand : ''} ${cartItem.model ? cartItem.model : ''}</p>
+      <p style="font-size: 16px;"><strong>Buyer:</strong> ${auth.user.name}</p>
+      <p style="font-size: 16px;"><strong>Buyer Phone:</strong> ${auth.user.phone}</p>
+      <p style="font-size: 16px;"><strong>Delivery Address:</strong> ${address}</p>
+      <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
+    </div>
+  `
+        })
+      }
       await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
 
 

@@ -21,7 +21,7 @@ const electronicController = async (req, res) => {
     });
 
     await newElec.save();
-    console.log('Received data:', { sellerId, brand, model, condition, subCategory, description, price, imgUrl });
+    //console.log('Received data:', { sellerId, brand, model, condition, subCategory, description, price, imgUrl });
 
     res.status(200).send('Product listed successfully');
   } catch (error) {

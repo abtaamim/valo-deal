@@ -22,7 +22,7 @@ const vehicleController = async (req, res) => {
     });
 
     await newVehicle.save();
-    console.log('Received data:', { sellerId, brand, model, subCategory, description, price, imgUrl });
+    // console.log('Received data:', { sellerId, brand, model, subCategory, description, price, imgUrl });
 
     res.status(200).send('Product listed successfully');
   } catch (error) {

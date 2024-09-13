@@ -96,8 +96,8 @@ const CartPage = () => {
         </Typography>
 
 
-        <ListingCard 
-          items={cartItems} 
+        <ListingCard
+          items={cartItems}
           handleClickOpen={handleClickOpen}
 
           button={<RemoveShoppingCartOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
@@ -119,7 +119,7 @@ const CartPage = () => {
                   backgroundColor: 'green',
                   color: 'white',
 
-                  width: '100%', 
+                  width: '100%',
                   height: '60px',
                   fontSize: { xs: '1rem', sm: '1.3rem' },
 
@@ -137,10 +137,10 @@ const CartPage = () => {
       </Box>
 
 
-      <CustomDialog 
-        handleClose={handleClose} 
+      <CustomDialog
+        handleClose={handleClose}
         selectedItemId={selectedItemId}
-        handleDelete={handleDelete} 
+        handleDelete={handleDelete}
         dialog_title="This item will be removed from your cart"
 
         open={open}

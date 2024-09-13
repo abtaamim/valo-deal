@@ -23,7 +23,7 @@ const sellMobileController = async (req, res) => {
     });
 
     await newMobile.save();
-    console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, imgUrl });
+    //console.log('Received data:', { sellerId, brand, model, condition, authenticity, description, price, imgUrl });
 
     res.status(200).send('Product listed successfully');
   } catch (error) {
