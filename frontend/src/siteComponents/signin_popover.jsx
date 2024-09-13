@@ -141,6 +141,7 @@ const SignInPopover = ({ className }) => {
                 My Account
               </ListItemButton>
 
+
               <ListItemButton
                 component={RouterLink}
                 to="/cart"
@@ -160,7 +161,7 @@ const SignInPopover = ({ className }) => {
               </ListItemButton>
               <ListItemButton
                 component={RouterLink}
-                to="/orders"
+                to="/previous-orders"
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
@@ -173,6 +174,7 @@ const SignInPopover = ({ className }) => {
                   },
                 }}
               >
+
                 Previous Orders
               </ListItemButton>
 

@@ -73,8 +73,10 @@ const CartPage = () => {
         sx={{
           p: 2,
           pl: 0,
-          pr: 2, // Adjust padding for mobile screens
+
+          pr: 2,
           textAlign: 'center'
+
         }}
       >
         <Typography
@@ -85,15 +87,19 @@ const CartPage = () => {
             fontWeight: 'bold',
             padding: '8px',
             textAlign: 'center',
+
             fontSize: { xs: '1.5rem', sm: '2rem' } // Responsive font size
+
           }}
         >
           My Cart 🛒
         </Typography>
 
+
         <ListingCard 
           items={cartItems} 
           handleClickOpen={handleClickOpen}
+
           button={<RemoveShoppingCartOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
         />
 
@@ -112,9 +118,11 @@ const CartPage = () => {
                 sx={{
                   backgroundColor: 'green',
                   color: 'white',
+
                   width: '100%', 
                   height: '60px',
                   fontSize: { xs: '1rem', sm: '1.3rem' },
+
                   '&:hover': {
                     backgroundColor: 'darkgreen',
                   },
@@ -128,11 +136,13 @@ const CartPage = () => {
         </Box>
       </Box>
 
+
       <CustomDialog 
         handleClose={handleClose} 
         selectedItemId={selectedItemId}
         handleDelete={handleDelete} 
         dialog_title="This item will be removed from your cart"
+
         open={open}
       />
 
@@ -150,6 +160,7 @@ const CartPage = () => {
           },
         }}
       />
+
     </>
   );
 };
