@@ -163,7 +163,7 @@ const ShowDetailsPage = () => {
           <Typography variant="body2" sx={{ mt: "10px", fontSize: { xs: "0.9rem", sm: "1.2rem" } }}>
             Description: {item.description}
           </Typography>
-          {/* 
+
           <FormControl fullWidth sx={{ mt: "20px" }}>
             <InputLabel id="color-select-label">Select Color</InputLabel>
             <Select

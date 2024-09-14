@@ -1,38 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Snackbar, Alert, Tooltip, Box, Typography, Grid, Card, CardMedia, CardContent, CardActions, Button, IconButton, ListItemButton } from '@mui/material';
+import { Box, Grid, CircularProgress, Typography } from '@mui/material';
 import AddShoppingCartSharpIcon from '@mui/icons-material/AddShoppingCartSharp';
-import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
 import { useNavigate, useParams } from 'react-router-dom';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Pagination from '@mui/material/Pagination';
 import { useSearch } from "../context/SearchContext";
 import { Toaster, toast } from 'sonner';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import CustomDialog from './CustomDialog';
 import ListingCard from './CustomItemCard';
-const SearchPage = () => {
 
+const SearchPage = () => {
   const [values, setValues] = useSearch();
   const [auth] = useAuth();
-  const { updateCartSize } = useCart()
+  const { updateCartSize } = useCart();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-
-
   const { keyword } = useParams();
-  console.log("keyword+++", keyword);
+
+  const [loading, setLoading] = useState(false);
+  const [showLoading, setShowLoading] = useState(false);
 
   useEffect(() => {
     const fetchResults = async () => {
       if (keyword) {
+        setShowLoading(true);
+        setLoading(true);
         try {
           const res = await axiosPrivate.get(`/search/${keyword}`);
           setValues({ ...values, results: res.data.results });
         } catch (error) {
           console.log('Error:', error);
+        } finally {
+          setLoading(false);
+          setTimeout(() => setShowLoading(false), 300);
         }
       }
     };
@@ -40,77 +41,107 @@ const SearchPage = () => {
   }, [keyword, setValues]);
 
   const [allreadyincart, setAllreadyincart] = useState(0);
-  const [open, setOpen] = useState(false);
 
-
-  const handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpen(false);
-  };
   const handleCart = async (itemId, itemType) => {
     try {
       if (auth.user) {
         await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
-        // fetchItems(); // Refresh items after deletion
         updateCartSize();
-        toast.success('item added to your cart successfully')
+        toast.success('Item added to your cart successfully');
+      } else {
+        navigate('/login');
       }
-      else {
-        navigate('/login')
-      }
-      console.log(itemType)
     } catch (error) {
       setAllreadyincart(1);
       console.error(`Error adding to cart ${itemType}:`, error);
-      toast.error('this item is already in your cart')
+      toast.error('This item is already in your cart');
     }
   };
+
   const [sellerMap, setSellerMap] = useState(new Map());
   const fetchSellerInfo = async () => {
     try {
-
-      // Use a Set to avoid duplicate seller IDs
       const sellerIds = new Set(values.results.map((item) => item.sellerId));
-
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
         axiosPrivate.get(`/api/v1/auth/seller-info/${sellerId}`)
       );
-
       const sellerResponses = await Promise.all(sellerPromises);
-
       const newSellerMap = new Map();
       sellerResponses.forEach((response) => {
         const sellerData = response.data.seller;
         newSellerMap.set(sellerData.sellerId, sellerData);
       });
-      console.log(newSellerMap)
       setSellerMap(newSellerMap);
     } catch (error) {
       console.error('Error fetching seller info:', error);
     }
   };
+
   useEffect(() => {
     fetchSellerInfo();
+<
   }, [auth]);
+
   return (
     <>
       <Box sx={{ p: 2 }}>
-        <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-          <ListingCard items={values.results} button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
-            handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
-          />
-          < Toaster richColors />
-        </Grid>
+        {showLoading && (
+          <Box
+            sx={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              backgroundColor: "rgba(0, 0, 0, 0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 9999,
+            }}
+          >
+            <CircularProgress sx={{ color: "#ff8c00", size: 50 }} />
+          </Box>
+        )}
+        {!loading && !showLoading && (
+          <Box>
+            {values.results.length === 0 ? (
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: 'center',
+                  color: '#ff8c00',
+                  animation: 'fadeIn 1s ease-in-out',
+                }}
+              >
+                There are no products
+              </Typography>
+            ) : (
+              <Typography
+                variant="h6"
+                sx={{
+                  textAlign: 'center',
+                  color: '#ff8c00',
+                  animation: 'fadeIn 1s ease-in-out',
+                  mb: 2,
+                }}
+              >
+                {values.results.length} product{values.results.length > 1 ? 's' : ''} found
+              </Typography>
+            )}
+            <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+              <ListingCard
+                items={values.results}
+                button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+                handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
+              />
+            </Grid>
+          </Box>
+        )}
+        <Toaster richColors />
       </Box>
-
-
-
     </>
-
-  )
-}
+  );
+};
 
 export default SearchPage;
