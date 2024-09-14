@@ -28,6 +28,7 @@ const GenericForm = ({ category, endpoint }) => {
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [imgUrl, setImgUrl] = useState("");
   const [uploadState, setUploadState] = useState(UploadState.IDLE);
+const [isUploading, setIsUploading] = useState(false); // New state for tracking upload status
 
   const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
   const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
@@ -95,42 +96,44 @@ const GenericForm = ({ category, endpoint }) => {
 
   const [auth] = useAuth();
   const navigate = useNavigate();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const newErrors = validateForm();
+  if (Object.keys(newErrors).length === 0) {
+    setIsUploading(true); // Set uploading state to true
+    try {
+      const imageUrl = await handleMultipleImageUploads();
 
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length === 0) {
-      try {
+      const formData = new FormData();
+      formData.append('sellerId', auth.user._id);
+      formData.append('brand', brand);
+      formData.append('model', model);
+      formData.append('description', description);
+      formData.append('price', price);
+      formData.append('subCategory', subCategory);
+      formData.append('condition', condition);
+      imageUrl.forEach((img, index) => {
+        formData.append(`imgUrl[${index}]`, img);
+      });
 
-        const imageUrl = await handleMultipleImageUploads();
-
-        const formData = new FormData();
-        formData.append('sellerId', auth.user._id);
-        formData.append('brand', brand);
-        formData.append('model', model);
-        formData.append('description', description);
-        formData.append('price', price);
-        // formData.append('imgUrl', imgUrl);
-        formData.append('subCategory', subCategory);
-        formData.append('condition', condition);
-        imageUrl.forEach((img, index) => {
-          formData.append(`imgUrl[${index}]`, img);
-        })
-        const res = await axiosPrivate.post(`/sell/${endpoint}`, formData);
-        if (res.status === 200) {
-          setAlertMessage('Product uploaded successfully');
-          setSubmissionSuccess(true);
-        } else {
-          console.error(res.data.message);
-        }
-      } catch (error) {
-        console.error("Registration Error:", error.response ? error.response.data : error.message);
+      const res = await axiosPrivate.post(`/sell/${endpoint}`, formData);
+      if (res.status === 200) {
+        setAlertMessage('Product uploaded successfully');
+        setSubmissionSuccess(true);
+      } else {
+        console.error(res.data.message);
       }
-    } else {
-      setErrors(newErrors);
+    } catch (error) {
+      console.error("Registration Error:", error.response ? error.response.data : error.message);
+    } finally {
+      setIsUploading(false); // Reset uploading state after completion
     }
-  };
+  } else {
+    setErrors(newErrors);
+  }
+};
+
 
   useEffect(() => {
     if (submissionSuccess) {
@@ -287,9 +290,10 @@ const GenericForm = ({ category, endpoint }) => {
               </Grid>
               {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
             </FormControl>
-            <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
-              Submit
+            <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit} disabled={isUploading}>
+              {isUploading ? 'Uploading...' : 'Submit'}
             </Button>
+            
           </DialogContent>
         </Box>
       </Box>

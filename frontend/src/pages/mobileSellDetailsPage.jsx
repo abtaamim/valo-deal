@@ -31,6 +31,8 @@ const MobileSellDetailsPage = () => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
   const [brandId, setBrandId] = useState('');
   const axiosPrivate = useAxiosPrivate();
+  const [loading, setLoading] = useState(false);
+  
   const handleBrand = (event) => {
     const selectedBrandName = event.target.value;
     setBrand(selectedBrandName);
@@ -186,50 +188,48 @@ const MobileSellDetailsPage = () => {
   const [auth] = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    const newErrors = validateForm();
-    if (Object.keys(newErrors).length === 0) {
-      //here*****
-      try {
-        const imageUrl = await handleMultipleImageUploads();
-        console.log(imageUrl);
-        const formData = new FormData();
-        formData.append('sellerId', auth.user._id);
-        formData.append('brand', brand);
-        formData.append('model', model);
-        formData.append('condition', condition);
-        formData.append('authenticity', authenticity);
-        formData.append('description', description);
-        formData.append('price', price);
-        //formData.append('imgUrl', imgUrl);
-        //here********
-        imageUrl.forEach((img, index) => {
-          formData.append(`imgUrl[${index}]`, img);
-        })
-        // formData.append('imgUrl', imageUrl);
-
-        console.log('Form Data:', Array.from(formData.entries()));
-
-        const res = await axiosPrivate.post("/sell/mobile", formData);
-
-        if (res.status === 200) {
-          console.log('yayayay')
-          setAlertMessage('Product uploaded successfully');
-          setSubmissionSuccess(true);
-        } else {
-          toast.error(res.data.message);
-        }
-      } catch (error) {
-        console.log(error);
-        console.error("Registration Error:", error.response ? error.response.data : error.message);
-        //  toast.error("Something went wrong");
-      }
-    } else {
-      setErrors(newErrors);
-    }
-  };
+ const handleSubmit = async (e) => {
+   e.preventDefault();
+   setLoading(true); // Start loading
+ 
+   const newErrors = validateForm();
+   if (Object.keys(newErrors).length === 0) {
+     try {
+       const imageUrl = await handleMultipleImageUploads();
+       console.log(imageUrl);
+       const formData = new FormData();
+       formData.append('sellerId', auth.user._id);
+       formData.append('brand', brand);
+       formData.append('model', model);
+       formData.append('condition', condition);
+       formData.append('authenticity', authenticity);
+       formData.append('description', description);
+       formData.append('price', price);
+       imageUrl.forEach((img, index) => {
+         formData.append(`imgUrl[${index}]`, img);
+       });
+       console.log('Form Data:', Array.from(formData.entries()));
+ 
+       const res = await axiosPrivate.post("/sell/mobile", formData);
+ 
+       if (res.status === 200) {
+         console.log('Product uploaded successfully');
+         setAlertMessage('Product uploaded successfully');
+         setSubmissionSuccess(true);
+       } else {
+         toast.error(res.data.message);
+       }
+     } catch (error) {
+       console.error("Error uploading product:", error);
+     } finally {
+       setLoading(false); // Stop loading after request completes
+     }
+   } else {
+     setErrors(newErrors);
+     setLoading(false); // Stop loading if validation fails
+   }
+ };
+ 
 
   useEffect(() => {
     if (submissionSuccess) {
@@ -494,9 +494,10 @@ const MobileSellDetailsPage = () => {
                 </Grid>
                 {errors.images && <Typography variant="caption" color="error">{errors.images}</Typography>}
               </FormControl>
-              <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit}>
-                Submit
+              <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit} disabled={loading}>
+                {loading ? 'Uploading...' : 'Submit'}
               </Button>
+              
             </DialogContent>
           </Box>
         </Box>
