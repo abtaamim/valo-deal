@@ -1,5 +1,5 @@
 const computerModel = require('../models/computersModel');
-const mobileModel=require('../models/sellMobileModel')
+const mobileModel = require('../models/sellMobileModel')
 const electronicModel = require('../models/electronicsModel')
 const vehicleModel = require('../models/vehiclesModel');
 const User = require('../models/userModel')
@@ -14,9 +14,9 @@ const getItemModel = (itemType) => {
   }
 };
 
-const recentlyViewedItems= async(req, res)=>{
-  try{
-    const userId = req.user._id; 
+const recentlyViewedItems = async (req, res) => {
+  try {
+    const userId = req.user._id;
     const user = await User.findById(userId);
     const itemType = req.params.itemType;
     const itemId = req.params.itemId;
@@ -46,9 +46,9 @@ const recentlyViewedItems= async(req, res)=>{
 };
 
 const removeFromRecentlyViewed = async (req, res) => {
-  
+
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
     const user = await User.findById(userId);
     const itemId = req.params.itemId;
 
@@ -65,27 +65,44 @@ const removeFromRecentlyViewed = async (req, res) => {
   }
 };
 
-const getRecentlyViewedItems= async (req, res) => {
+const getRecentlyViewedItems = async (req, res) => {
   try {
-    const userId = req.user._id; 
+    const userId = req.user._id;
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const recentlyViewedItems = await Promise.all(user.recentlyViewedItems.map(async (recentlyViewed) => {
+
+    const recentlyViewedItemsPromises = user.recentlyViewedItems.map(async (recentlyViewed) => {
       const ItemModel = getItemModel(recentlyViewed.itemType);
-      const item = await ItemModel.findById(recentlyViewed.itemId);
+      const item = await ItemModel.findOne({ _id: recentlyViewed.itemId, sold: false }).exec();
+      if (!item) {
+        user.recentlyViewedItems = user.recentlyViewedItems.filter(
+          item => item.itemId.toString() !== recentlyViewed.itemId
+        );
+        await user.save();
+        return null;
+      }
       return { ...item._doc, itemType: recentlyViewed.itemType };
-    }));
+    });
+
+    const recentlyViewedItemsResults = await Promise.all(recentlyViewedItemsPromises);
+    const recentlyViewedItems = recentlyViewedItemsResults.filter(item => item !== null);
+
+    console.log("Recently viewed items after processing:", recentlyViewedItems);
 
     res.status(200).json({ success: true, recentlyViewedItems });
   } catch (error) {
+    console.error("Error retrieving recently viewed items:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };
 
 
 
-module.exports = { recentlyViewedItems, removeFromRecentlyViewed,
-   getRecentlyViewedItems };
+
+module.exports = {
+  recentlyViewedItems, removeFromRecentlyViewed,
+  getRecentlyViewedItems
+};

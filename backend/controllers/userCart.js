@@ -88,18 +88,31 @@ const getCartItems = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
-    const cartItems = await Promise.all(user.cartItems.map(async (cartItem) => {
-      // console.log(cartItem.itemType);
+    let itemGotSoldFlag = false;
+    const cartItemRes = await Promise.all(user.cartItems.map(async (cartItem) => {
       const ItemModel = getItemModel(cartItem.itemType);
-      const item = await ItemModel.findById(cartItem.itemId);
+      const item = await ItemModel.findOne({ _id: cartItem.itemId });
+
+      if (!item) {
+        user.cartItems = user.cartItems.filter(ci => ci.itemId.toString() !== cartItem.itemId.toString());
+        await user.save();
+        return null;
+      }
+
+      if (item.sold === true) {
+        itemGotSoldFlag = true;
+        user.cartItems = user.cartItems.filter(ci => ci.itemId.toString() !== cartItem.itemId.toString());
+        await user.save();
+        return null;
+      }
+
       return { ...item._doc, itemType: cartItem.itemType };
     }));
 
-    //console.log(cartItems)
+    const cartItems = cartItemRes.filter(item => item !== null);
 
-    res.status(200).json({ success: true, cartItems });
+    res.status(200).json({ success: true, cartItems, itemGotSoldFlag });
   } catch (error) {
-
     res.status(500).json({ success: false, message: error.message });
   }
 };

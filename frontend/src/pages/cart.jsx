@@ -9,6 +9,8 @@ import CustomDialog from "./CustomDialog";
 import ListingCard from "./CustomItemCard";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
+import { Toaster, toast } from 'sonner';
+
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [auth] = useAuth();
@@ -18,6 +20,9 @@ const CartPage = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const [itemGotSold, setItemGotSold] = useState(false);
+
   const [loading, setLoading] = useState(true); 
 
   const handleClickOpen = (itemId) => {
@@ -39,6 +44,7 @@ const CartPage = () => {
       }
       const response = await axiosPrivate.get("/cart/fetchitems");
       setCartItems(response.data.cartItems);
+      setItemGotSold(response.data.itemGotSoldFlag);
     } catch (error) {
       console.error("Error fetching items:", error);
     } finally {
@@ -49,6 +55,12 @@ const CartPage = () => {
   useEffect(() => {
     fetchItems();
   }, [auth]);
+
+  useEffect(() => {
+    if (itemGotSold) {
+      toast.error("Some items from your cart were bought by other users T_T");
+    }
+  }, [itemGotSold]);
 
   const handleDelete = async (itemId) => {
     try {
@@ -82,6 +94,7 @@ const CartPage = () => {
           textAlign: "center",
         }}
       >
+
         {loading ? (
           <Box
             sx={{
@@ -90,6 +103,7 @@ const CartPage = () => {
               alignItems: "center",
               height: "80vh",
             }}
+
           >
             <CircularProgress sx={{ color: "orange" }} />
           </Box>
@@ -185,12 +199,13 @@ const CartPage = () => {
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         ContentProps={{
           sx: {
-            backgroundColor: "grey",
+            backgroundColor: "rgb(24, 102, 219)",
             color: "white",
             fontWeight: "bold",
           },
         }}
       />
+      < Toaster richColors />
     </>
   );
 };
