@@ -89,13 +89,13 @@ const getCartItems = async (req, res) => {
     }
 
     const cartItems = await Promise.all(user.cartItems.map(async (cartItem) => {
-      console.log(cartItem.itemType);
+      // console.log(cartItem.itemType);
       const ItemModel = getItemModel(cartItem.itemType);
       const item = await ItemModel.findById(cartItem.itemId);
       return { ...item._doc, itemType: cartItem.itemType };
     }));
 
-    console.log(cartItems)
+    //console.log(cartItems)
 
     res.status(200).json({ success: true, cartItems });
   } catch (error) {

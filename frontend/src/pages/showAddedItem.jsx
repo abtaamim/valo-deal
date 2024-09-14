@@ -115,14 +115,14 @@ const AddedItemList = () => {
         gutterBottom
         sx={{
           textAlign: 'center',
-          color: '#ff8300', 
-          fontSize: '1.5rem', 
-          fontWeight: 'bold', 
+          color: '#ff8300',
+          fontSize: '1.5rem',
+          fontWeight: 'bold',
         }}
       >
         My added items
       </Typography>
-      
+
       {/* <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
         
         {Object.keys(items).map((key) => (
