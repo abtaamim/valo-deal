@@ -273,6 +273,7 @@ const ListingCard = ({
       backgroundColor: "#1f232c",
       position: "relative",
       overflow: "hidden",
+      transition: "transform 0.4s ease-in-out", // Smoother transition
       "&:hover": {
         transform: "scale(1.05)",
         boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
@@ -306,7 +307,7 @@ const ListingCard = ({
         alt={`${item.brand} ${item.model}`}
         src={item.imgUrl}
         sx={{
-          transition: "transform 0.6s ease-in-out",
+          transition: "transform 0.8s ease-in-out", // Longer duration for smoothness
           "&:hover": {
             transform: "scale(1.1)",
           },
@@ -372,6 +373,7 @@ const ListingCard = ({
     </CardActions>
   </Card>
 );
+
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -442,18 +444,30 @@ const HomePage = () => {
 
   const handleAddToCart = async (itemId, itemType) => {
     try {
+      const item = allItems.find((item) => item._id === itemId);
+  
+      if (item && item.sellerId === auth.user._id) {
+        // Product belongs to the current user
+        toast.error("You cannot add your own product to the cart.", {
+          position: "bottom-right",
+        });
+        return;
+      }
+  
+      // Proceed with adding the item to the cart
       await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       await updateCartSize();
-      toast.success("Item added to the cart!", { position: "top-right" });
+      toast.success("Item added to the cart!", { position: "bottom-right" });
     } catch (error) {
       auth.user
         ? toast.error(error, {
-            position: "top-right",
+            position: "bottom-right",
           })
-        : toast.error("Sign in to add to cart.", { position: "top-right" });
+        : toast.error("Sign in to add to cart.", { position: "bottom-right" });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
+  
 
   useEffect(() => {
     const allItems = [

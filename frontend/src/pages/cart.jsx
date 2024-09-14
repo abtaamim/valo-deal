@@ -196,7 +196,7 @@ const CartPage = () => {
         onClose={handleSnackbarClose}
         message="Item removed from cart"
         autoHideDuration={3000}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         ContentProps={{
           sx: {
             backgroundColor: "rgb(24, 102, 219)",
