@@ -73,6 +73,7 @@ const getRecentlyViewedItems = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
+
     const recentlyViewedItemsPromises = user.recentlyViewedItems.map(async (recentlyViewed) => {
       const ItemModel = getItemModel(recentlyViewed.itemType);
       const item = await ItemModel.findOne({ _id: recentlyViewed.itemId, sold: false }).exec();
@@ -89,8 +90,11 @@ const getRecentlyViewedItems = async (req, res) => {
     const recentlyViewedItemsResults = await Promise.all(recentlyViewedItemsPromises);
     const recentlyViewedItems = recentlyViewedItemsResults.filter(item => item !== null);
 
+    console.log("Recently viewed items after processing:", recentlyViewedItems);
+
     res.status(200).json({ success: true, recentlyViewedItems });
   } catch (error) {
+    console.error("Error retrieving recently viewed items:", error);
     res.status(500).json({ success: false, message: error.message });
   }
 };

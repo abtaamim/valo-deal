@@ -391,9 +391,10 @@ const HomePage = () => {
     updateCartSize();
   }, [auth]);
 
-  const handleViewDetails = (itemId, itemType) => {
+  const handleViewDetails = async (itemId, itemType) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate(`/details/${itemType}/${itemId}`);
+    await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
   };
 
   const handleAddToCart = async (itemId, itemType) => {

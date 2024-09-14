@@ -18,7 +18,7 @@ import AddedMobileList from './pages/showAddedItem';
 import SearchPage from './pages/SearchPage';
 import ShowDetailsPage from './pages/ShowDetails';
 import PreviousOrders from './pages/PreviousOrdersPage';
-import SellerInfo from './pages/SellerInfoPage';
+//import SellerInfo from './pages/SellerInfoPage';
 //import ComputerSellPage from './pages/computerSell';
 
 import { ComputerSellPage, VehicleSellPage, ElectronicsSellPage } from './pages/sellDetailsPage';
@@ -71,7 +71,7 @@ const App = () => {
             <Route path="/search/:keyword" element={<SearchPage />} />
             <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
             <Route path='/previous-orders' element={<PreviousOrders />} />
-            <Route path='/seller-info/:sellerId' element={<SellerInfo />} />
+            {/* <Route path='/seller-info/:sellerId' element={<SellerInfo />} /> */}
             <Route path="/dashboard" element={<PrivateRoute />}>
               <Route path="" element={<Dashboard />} />
             </Route>

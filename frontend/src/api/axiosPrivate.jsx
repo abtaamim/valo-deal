@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = 'https://valo-deal-backend.vercel.app';
+const BASE_URL = 'http://localhost:8080';
 //http://localhost:8080
 export const customAxios = axios.create({
   baseURL: BASE_URL, withCredentials: true
