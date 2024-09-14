@@ -22,11 +22,13 @@ const AddedItemList = () => {
     setOpen(true);
     setSelectedItemId(itemId);
     setSelectedItemType(itemType);
+
   };
 
   const handleClose = () => {
     setOpen(false);
     setSelectedItemId(null);
+    setSelectedItemType(null);
   };
 
   const fetchItems = async () => {
@@ -62,8 +64,10 @@ const AddedItemList = () => {
   const handleDelete = async (itemId, itemType) => {
     try {
       await axiosPrivate.delete(`/sell/${itemType}/${itemId}`);
+
       fetchItems(); 
       handleClose(); 
+
     } catch (error) {
       console.error(`Error deleting ${itemType}:`, error);
     }
@@ -86,6 +90,7 @@ const AddedItemList = () => {
       >
         My Added Items
       </Typography>
+
 
 {loading ? (
   <Box
@@ -136,6 +141,7 @@ const AddedItemList = () => {
       <CustomDialog
         handleClose={handleClose}
         selectedItemId={selectedItemId}
+
         handleDelete={(itemId, itemType) => handleDelete(itemId, itemType)}
         dialog_title="Delete this item from your list"
         open={open}

@@ -79,7 +79,8 @@ const SearchPage = () => {
 
   useEffect(() => {
     fetchSellerInfo();
-  }, []);
+<
+  }, [auth]);
 
   return (
     <>

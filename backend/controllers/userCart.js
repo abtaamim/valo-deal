@@ -87,17 +87,28 @@ const getCartItems = async (req, res) => {
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
-
-    const cartItems = await Promise.all(user.cartItems.map(async (cartItem) => {
-      // console.log(cartItem.itemType);
+    let itemGotSoldFlag = false
+    const cartItemRes = user.cartItems.map(async (cartItem) => {
       const ItemModel = getItemModel(cartItem.itemType);
-      const item = await ItemModel.findById(cartItem.itemId);
+      const item = await ItemModel.findOne(cartItem.itemId);
+      if (item.sold === true) {
+        itemGotSoldFlag = true;
+        user.cartItems = user.cartItems.filter(item => item.itemId.toString() !== cartItem.itemId.toString());
+        await user.save();
+        return null;
+      }
+      if (!item) {
+        user.cartItems = user.cartItems.filter(item => item.itemId.toString() !== cartItem.itemId.toString());
+        await user.save();
+        return null;
+      }
       return { ...item._doc, itemType: cartItem.itemType };
-    }));
-
+    });
+    const cartItemProm = await Promise.all(cartItemRes);
+    const cartItems = cartItemProm.filter(item => item != null);
     //console.log(cartItems)
 
-    res.status(200).json({ success: true, cartItems });
+    res.status(200).json({ success: true, cartItems, itemGotSoldFlag });
   } catch (error) {
 
     res.status(500).json({ success: false, message: error.message });
