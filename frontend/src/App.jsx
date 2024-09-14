@@ -71,7 +71,7 @@ const App = () => {
             <Route path="/search/:keyword" element={<SearchPage />} />
             <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
             <Route path='/previous-orders' element={<PreviousOrders />} />
-            {/* <Route path='/seller-info/:sellerId' element={<SellerInfo />} /> */}
+
             <Route path="/dashboard" element={<PrivateRoute />}>
               <Route path="" element={<Dashboard />} />
             </Route>
