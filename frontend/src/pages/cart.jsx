@@ -7,13 +7,13 @@ import { useAuth } from "../context/auth";
 import { useCart } from "../context/CartContext";
 import CustomDialog from "./CustomDialog";
 import ListingCard from "./CustomItemCard";
-
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [auth] = useAuth();
   const { updateCartSize } = useCart();
   const navigate = useNavigate();
-
+  const axiosPrivate = useAxiosPrivate();
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -34,8 +34,8 @@ const CartPage = () => {
       if (!token) {
         throw new Error("No token found");
       }
-      const response = await axios.get(
-        "https://valo-deal-backend.vercel.app/cart/fetchitems"
+      const response = await axiosPrivate.get(
+        "/cart/fetchitems"
       );
       setCartItems(response.data.cartItems);
     } catch (error) {
@@ -49,7 +49,7 @@ const CartPage = () => {
 
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`https://valo-deal-backend.vercel.app/cart/${itemId}`);
+      await axiosPrivate.delete(`/cart/${itemId}`);
       fetchItems();
       await updateCartSize();
       handleClose();

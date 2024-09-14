@@ -116,9 +116,9 @@ const Register = () => {
       inputLength === 0
         ? []
         : bangladeshPlaces.filter(
-            (place) =>
-              place.name.toLowerCase().slice(0, inputLength) === inputValue
-          );
+          (place) =>
+            place.name.toLowerCase().slice(0, inputLength) === inputValue
+        );
 
     setSuggestions(filteredSuggestions);
   };

@@ -16,6 +16,7 @@ const soldItems = require('./routes/soldItemRoute.js')
 const sendMail = require('./routes/sendmail.js')
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser')
 
 const cloudinary = require('cloudinary').v2;
 const multer = require('multer')
@@ -28,14 +29,20 @@ connectDB();
 const app = express();
 
 // Middlewares
-app.use(cors(
-  // {
-  //   origin: ["https://valo-deal-frontend.vercel.app"],
-  //   methods: ['POST', 'GET', 'PUT', 'DELETE'],
-  //   credentials: true
-  // }
-));
+const allowedOrigins = ['http://localhost:3000', 'https://valo-deal-frontend.vercel.app'];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(express.json());
+app.use(cookieParser());
 app.use(morgan("dev"));
 
 const storage = multer.memoryStorage();

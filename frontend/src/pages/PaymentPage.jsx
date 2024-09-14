@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { useAuth } from '../context/auth';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const PaymentPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [address, setAddress] = useState('');
@@ -16,10 +16,12 @@ const PaymentPage = () => {
   const { updateCartSize } = useCart();
   const [auth] = useAuth();
 
+  const axiosPrivate = useAxiosPrivate();
+
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
+        const response = await axiosPrivate.get('/cart/fetchitems');
         setCartItems(response.data.cartItems);
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -32,72 +34,72 @@ const PaymentPage = () => {
   const totalSum = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   const handleConfirmOrder = async () => {
-      if (!address) {
-        setErrorSnackbarOpen(true); // Open error snackbar if address is missing
-        return;
+
+    if (!address) {
+      setErrorSnackbarOpen(true); // Open error snackbar if address is missing
+      return;
+    }
+    setLoading(true);
+    try {
+
+      for (const cartItem of cartItems) {
+        await axiosPrivate.post('/order/setOrder', {
+          buyerId: auth.user._id,
+          sellerId: cartItem.sellerId,
+          itemType: cartItem.itemType,
+          itemId: cartItem._id,
+          soldDate: new Date(),
+          deliveryAddress: address
+
+        })
+        await axiosPrivate.post('/send/mail', {
+          to: auth.user.email,
+          subject: "your order has been placed successfully",
+          mailBody: `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #4CAF50;">Your Order Confirmation</h2>
+      <p style="font-size: 16px;">Your order has been placed successfully.</p>
+      <p style="font-size: 16px;"><strong>Item:</strong> ${cartItem.brand ? cartItem.brand : ''} ${cartItem.model ? cartItem.model : ''}</p>
+      <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
+    </div>
+  `})
+        const res = await axiosPrivate.get(`/api/v1/auth/seller-info/${cartItem.sellerId}`)
+        const sellerMail = res?.data.seller.email;
+        await axiosPrivate.post('/send/mail', {
+          to: sellerMail,
+          subject: "one of your product has been sold",
+          mailBody: `
+    <div style="font-family: Arial, sans-serif; color: #333;">
+      <h2 style="color: #4CAF50;">Product Sold Notification</h2>
+      <p style="font-size: 16px;">Your product has been sold successfully.</p>
+      <p style="font-size: 16px;"><strong>Item:</strong> ${cartItem.brand ? cartItem.brand : ''} ${cartItem.model ? cartItem.model : ''}</p>
+      <p style="font-size: 16px;"><strong>Buyer:</strong> ${auth.user.name}</p>
+      <p style="font-size: 16px;"><strong>Buyer Phone:</strong> ${auth.user.phone}</p>
+      <p style="font-size: 16px;"><strong>Delivery Address:</strong> ${address}</p>
+      <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
+    </div>
+  `
+        })
       }
-      setLoading(true);
-      try {
-  
-        for (const cartItem of cartItems) {
-          await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
-            buyerId: auth.user._id,
-            sellerId: cartItem.sellerId,
-            itemType: cartItem.itemType,
-            itemId: cartItem._id,
-            soldDate: new Date(),
-            deliveryAddress: address
-  
-          })
-          await axios.post('https://valo-deal-backend.vercel.app/send/mail', {
-            to: auth.user.email,
-            subject: "your order has been placed successfully",
-            mailBody: `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <h2 style="color: #4CAF50;">Your Order Confirmation</h2>
-        <p style="font-size: 16px;">Your order has been placed successfully.</p>
-        <p style="font-size: 16px;"><strong>Item:</strong> ${cartItem.brand ? cartItem.brand : ''} ${cartItem.model ? cartItem.model : ''}</p>
-        <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
-      </div>
-    `})
-          const res = await axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${cartItem.sellerId}`)
-          const sellerMail = res?.data.seller.email;
-          await axios.post('https://valo-deal-backend.vercel.app/send/mail', {
-            to: sellerMail,
-            subject: "one of your product has been sold",
-            mailBody: `
-      <div style="font-family: Arial, sans-serif; color: #333;">
-        <h2 style="color: #4CAF50;">Product Sold Notification</h2>
-        <p style="font-size: 16px;">Your product has been sold successfully.</p>
-        <p style="font-size: 16px;"><strong>Item:</strong> ${cartItem.brand ? cartItem.brand : ''} ${cartItem.model ? cartItem.model : ''}</p>
-        <p style="font-size: 16px;"><strong>Buyer:</strong> ${auth.user.name}</p>
-        <p style="font-size: 16px;"><strong>Buyer Phone:</strong> ${auth.user.phone}</p>
-        <p style="font-size: 16px;"><strong>Delivery Address:</strong> ${address}</p>
-        <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
-      </div>
-    `
-          })
-        }
-        await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
-  
-  
-        await updateCartSize();
-  
-        // const response = await axios.get('http://localhost:8080/cart/fetchitems');
-        // setCartItems(response.data.cartItems);
-  
-        setSnackbarOpen(true);
-        setLoading(false);
-  
-        setTimeout(() => {
-          navigate('/');
-        }, 1000);
-      } catch (error) {
-        console.error('Error clearing the cart:', error);
-        alert('There was an error processing your order. Please try again.');
-        setLoading(false);
-      }
-    };
+      await axiosPrivate.delete('/cart/clear');
+
+
+      await updateCartSize();
+
+
+      setSnackbarOpen(true);
+      setLoading(false);
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    } catch (error) {
+      console.error('Error clearing the cart:', error);
+      alert('There was an error processing your order. Please try again.');
+      setLoading(false);
+    }
+  };
+
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);

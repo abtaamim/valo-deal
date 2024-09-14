@@ -8,28 +8,29 @@ import { useCart } from '../context/CartContext';
 import { useParams } from 'react-router-dom';
 import ListingCard from './CustomItemCard';
 import { Toaster, toast } from 'sonner';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const ShowSubCatItem = () => {
   const [items, setItems] = useState([]);
   const [auth] = useAuth();
   const { category, subCat } = useParams();
   const { updateCartSize } = useCart();
+  const axiosPrivate = useAxiosPrivate();
   const fetchItems = async () => {
     try {
 
       let response = null;
       if (subCat.toLowerCase() === 'mobile phone accessories') {
-        response = await axios.get(`https://valo-deal-backend.vercel.app/sell/mobileAcc/${subCat}`);
+        response = await axiosPrivate.get(`/sell/mobileAcc/${subCat}`);
         setItems(response.data.mobileAcc);
       }
       else if (subCat.toLowerCase() === 'mobile phones') {
-        response = await axios.get(`https://valo-deal-backend.vercel.app/sell/${category.toLowerCase()}/${subCat}`);
+        response = await axiosPrivate.get(`/sell/${category.toLowerCase()}/${subCat}`);
         setItems(response.data.mobiles);
       }
 
 
       else {
-        response = await axios.get(`https://valo-deal-backend.vercel.app/sell/${category.toLowerCase()}/${subCat}`);
+        response = await axiosPrivate.get(`/sell/${category.toLowerCase()}/${subCat}`);
         setItems(response.data[category.toLowerCase()]);
       }
 
@@ -51,7 +52,7 @@ const ShowSubCatItem = () => {
   const catLow = category.toLowerCase();
   const handleRecentlyView = async (itemId, catLow) => {
     try {
-      await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${catLow}/${itemId}`);
+      await axiosPrivate.post(`/recentlyViewed/${catLow}/${itemId}`);
     } catch (error) {
       console.error(`Error viewing item:`, error);
     }
@@ -59,7 +60,7 @@ const ShowSubCatItem = () => {
 
   const handleCart = async (itemId, catLow) => {
     try {
-      await axios.post(`https://valo-deal-backend.vercel.app/cart/${catLow}/${itemId}`);
+      await axiosPrivate.post(`/cart/${catLow}/${itemId}`);
       // fetchItems(); // Refresh items after deletion
       await updateCartSize();
 

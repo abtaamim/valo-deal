@@ -7,6 +7,7 @@ import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import { useAuth } from '../context/auth';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const UploadState = {
   IDLE: 1,
   UPLOADING: 2,
@@ -29,7 +30,7 @@ const MobileAccessoriesSellDetailsPage = () => {
   const handleItemType = (event) => {
     setItemType(event.target.value);
   };
-
+  const axiosPrivate = useAxiosPrivate();
   const itemTypes = [
     'Power Banks', 'Chargers', 'Cables', 'Holder & Stands', 'Bags & Cases', 'Others'
   ]
@@ -89,10 +90,7 @@ const MobileAccessoriesSellDetailsPage = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
-        method: "POST",
-        body: formData,
-      });
+      const res = await axiosPrivate.post("/upload", formData);
       const data = await res.json();
       setImgUrl(data.secure_url);
       console.log(imgUrl)
@@ -127,7 +125,7 @@ const MobileAccessoriesSellDetailsPage = () => {
 
         console.log('Form Data:', Array.from(formData.entries()));
 
-        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/mobile-accessories", formData);
+        const res = await axiosPrivate.post("/sell/mobile-accessories", formData);
 
         if (res.status === 200) {
           console.log('yayayay')

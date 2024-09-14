@@ -2,14 +2,14 @@ import React from 'react';
 import axios from 'axios';
 import { Grid, Card, CardMedia, CardContent, CardActions, Typography, Box, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const ListingCard = (props) => {
   const { items, handleClickOpen, button } = props;
   const navigate = useNavigate();
-
+  const axiosPrivate = useAxiosPrivate();
   const handleRecentlyView = async (itemType, itemId) => {
     try {
-      await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
+      await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
     } catch (e) {
       console.error(`Error viewing item:`, e);
     } finally {

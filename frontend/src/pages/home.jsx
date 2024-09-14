@@ -32,7 +32,7 @@ import image3 from "../assests/h3.jpg";
 import image4 from "../assests/h4.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import "../siteComponents/styles.css";
 
 import image5 from "../assests/mobile.png";
@@ -354,7 +354,7 @@ const HomePage = () => {
   const [postsPerPage] = useState(12);
   const [sortOrder, setSortOrder] = useState("");
   const [allItems, setAllItems] = useState([]);
-
+  const axiosPrivate = useAxiosPrivate();
   const fetchItems = async () => {
     try {
       const mobilesResponse = await axios.get(
@@ -398,14 +398,14 @@ const HomePage = () => {
 
   const handleAddToCart = async (itemId, itemType) => {
     try {
-      await axios.post(
-        `https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`
+      await axiosPrivate.post(
+        `/cart/${itemType}/${itemId}`
       );
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
     } catch (error) {
       auth.user
-        ? toast.error("Already added item to the cart.", {
+        ? toast.error(error, {
           position: "top-right",
         })
         : toast.error("Sign in to add to cart.", { position: "top-right" });

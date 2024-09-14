@@ -8,7 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/auth';
 import Snackbar from '@mui/material/Snackbar';
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const UploadState = {
   IDLE: 1,
   UPLOADING: 2,
@@ -32,7 +32,7 @@ const GenericForm = ({ category, endpoint }) => {
   const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
   const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
 
-
+  const axiosPrivate = useAxiosPrivate();
   const location = useLocation();
   const { subCategory } = location.state || {};
 
@@ -57,11 +57,8 @@ const GenericForm = ({ category, endpoint }) => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+      const res = await axiosPrivate.post("/upload", formData);
+      const data = await res.data;
       setImgUrl(data.secure_url);
       setUploadState(UploadState.UPLOADED);
       return data.secure_url;
@@ -120,7 +117,7 @@ const GenericForm = ({ category, endpoint }) => {
         imageUrl.forEach((img, index) => {
           formData.append(`imgUrl[${index}]`, img);
         })
-        const res = await axios.post(`https://valo-deal-backend.vercel.app/sell/${endpoint}`, formData);
+        const res = await axiosPrivate.post(`/sell/${endpoint}`, formData);
         if (res.status === 200) {
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);

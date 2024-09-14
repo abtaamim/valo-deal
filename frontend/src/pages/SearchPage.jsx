@@ -10,7 +10,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Pagination from '@mui/material/Pagination';
 import { useSearch } from "../context/SearchContext";
 import { Toaster, toast } from 'sonner';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import CustomDialog from './CustomDialog';
 import ListingCard from './CustomItemCard';
 const SearchPage = () => {
@@ -19,14 +19,8 @@ const SearchPage = () => {
   const [auth] = useAuth();
   const { updateCartSize } = useCart()
   const navigate = useNavigate();
+  const axiosPrivate = useAxiosPrivate();
 
-  // const handleRecentlyView = async (itemId, itemType) => {
-  //   try {
-  //     await axios.post(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemType}/${itemId}`);
-  //   } catch (error) {
-  //     console.error(`Error viewing item:`, error);
-  //   }
-  // };
 
   const { keyword } = useParams();
   console.log("keyword+++", keyword);
@@ -35,7 +29,7 @@ const SearchPage = () => {
     const fetchResults = async () => {
       if (keyword) {
         try {
-          const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${keyword}`);
+          const res = await axiosPrivate.get(`/search/${keyword}`);
           setValues({ ...values, results: res.data.results });
         } catch (error) {
           console.log('Error:', error);
@@ -59,7 +53,7 @@ const SearchPage = () => {
   const handleCart = async (itemId, itemType) => {
     try {
       if (auth.user) {
-        await axios.post(`https://valo-deal-backend.vercel.app/cart/${itemType}/${itemId}`);
+        await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
         // fetchItems(); // Refresh items after deletion
         updateCartSize();
         toast.success('item added to your cart successfully')
@@ -82,7 +76,7 @@ const SearchPage = () => {
       const sellerIds = new Set(values.results.map((item) => item.sellerId));
 
       const sellerPromises = Array.from(sellerIds).map((sellerId) =>
-        axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`)
+        axiosPrivate.get(`/api/v1/auth/seller-info/${sellerId}`)
       );
 
       const sellerResponses = await Promise.all(sellerPromises);

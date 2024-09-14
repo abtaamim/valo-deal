@@ -78,12 +78,26 @@ exports.loginController = async (req, res) => {
       });
     }
 
-    // Generate token
+    // Generate Access token
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "5min",
+    });
+
+    // Generate Refresh token
+    const refreshToken = await JWT.sign({ _id: user._id }, process.env.REFRESH_SECRET, {
       expiresIn: "7d",
     });
 
-    // Return success response with user details and token
+    console.log(token, "\nrefresh:", refreshToken)
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'None',
+      maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+    user.refreshToken = refreshToken;
+    await user.save();
+
     res.status(200).send({
       success: true,
       message: "Login successful",
@@ -182,3 +196,41 @@ exports.updateProfileController = async (req, res) => {
     res.status(500).send({ success: false, message: "Something went wrong", error });
   }
 };
+const createAccessToken = (_id) => {
+  return JWT.sign({ _id }, process.env.JWT_SECRET, { expiresIn: '5m' })
+}
+exports.refresh = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  //user have to login again
+  if (!refreshToken) return res.status(401).json({ message: 'Unauthorized' })
+
+  JWT.verify(
+    refreshToken,
+    process.env.REFRESH_SECRET,
+    async (err, decoded) => {
+      if (err) return res.status(403).json({ message: 'Forbidden' })
+
+      const foundUser = await userModel.findById(decoded._id)
+      if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
+      const accessToken = createAccessToken(foundUser._id)
+      res.json({
+        accessToken,
+        user: {
+          _id: foundUser._id,
+          name: foundUser.name,
+          email: foundUser.email,
+          phone: foundUser.phone,
+          address: foundUser.address,
+        },
+      })
+    })
+
+}
+exports.logout = async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies.refreshToken) return res.sendStatus(204)// no content
+  const refreshToken = cookies.refreshToken;
+
+  res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'None', secure: true })
+  res.json({ message: 'Cookie cleared' })
+}

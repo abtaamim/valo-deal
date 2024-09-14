@@ -5,7 +5,8 @@ const {
   loginController,
   testController,
   forgotPasswordController,
-  updateProfileController // Add this line
+  updateProfileController,
+  refresh, logout
 } = require("../controllers/authController.js");
 const { isAdmin, requireSignIn } = require('../middlewares/authMiddleware.js');
 
@@ -16,6 +17,8 @@ router.post('/login', loginController);
 router.post('/forgot-password', forgotPasswordController);
 router.put('/profile', requireSignIn, updateProfileController); // Add this line
 router.get('/test', requireSignIn, isAdmin, testController);
+router.get('/refresh', refresh)
+router.post('/logout', logout)
 router.get('/user-auth', requireSignIn, (req, res) => {
   res.status(200).send({ ok: true });
 });
