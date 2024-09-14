@@ -13,6 +13,7 @@ import { useSearch } from '../context/SearchContext';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../context/auth';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const SearchBar = () => {
   const [isFocused, setIsFocused] = useState(false);
   const [values, setValues] = useSearch();
@@ -24,14 +25,14 @@ const SearchBar = () => {
   console.log("keyword+++", keyword);
   console.log("values.keyword", values.keyWord);
   const isXs = useMediaQuery('(max-width:450px)');
-
+  const axiosPrivate = useAxiosPrivate();
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!values.keyWord.trim()) return;
     try {
-      const res = await axios.get(`https://valo-deal-backend.vercel.app/search/${values.keyWord}`);
+      const res = await axiosPrivate.get(`/search/${values.keyWord}`);
       {
-        auth.user ? await axios.post('https://valo-deal-backend.vercel.app/search/searched-items', {
+        auth.user ? await axiosPrivate.post('/search/searched-items', {
           searchTerm: values.keyWord
         }) : null
       }

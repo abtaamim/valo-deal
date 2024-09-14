@@ -15,18 +15,18 @@ import {
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useAuth } from "../context/auth";
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const ShowDetailsPage = () => {
   const [item, setItem] = useState({});
   const [selectedColor, setSelectedColor] = useState("");
   const { itemType, itemId } = useParams();
   const { auth } = useAuth();
-
+  const axiosPrivate = useAxiosPrivate();
   const fixedColors = ["Red", "Blue", "White", "Black"];
 
   const fetchItem = async () => {
-    const res = await axios.get(
-      `https://valo-deal-backend.vercel.app/details/${itemType}/${itemId}`
+    const res = await axiosPrivate.get(
+      `/details/${itemType}/${itemId}`
     );
     setItem(res.data);
   };
@@ -47,8 +47,8 @@ const ShowDetailsPage = () => {
         throw new Error("No token found");
       }
 
-      const response = await axios.post(
-        "https://valo-deal-backend.vercel.app/cart/add",
+      const response = await axiosPrivate.post(
+        "/cart/add",
         {
           productId: itemId,
           productType: itemType,

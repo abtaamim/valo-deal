@@ -5,13 +5,13 @@ import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 import { useAuth } from "../../context/auth";
 import logo from "../../assests/logo11.png"; // Adjust the path as necessary
-
+import { customAxios } from "../../api/axiosPrivate.jsx";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
   const [loading, setLoading] = useState(false); // Add loading state
-
+  const [errMsg, setErrMsg] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,9 +19,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true); // Set loading to true when form is submitted
     try {
-      // https://valo-deal-backend.vercel.app/api/v1/auth/login
-      // https://valo-deal-backend.vercel.app/api/v1/auth/login
-      const res = await axios.post("https://valo-deal-backend.vercel.app/api/v1/auth/login", {
+      const res = await customAxios.post("/api/v1/auth/login", {
         email,
         password,
       });
@@ -33,21 +31,21 @@ const Login = () => {
           token: res.data.token,
         });
         localStorage.setItem('auth', JSON.stringify(res.data));
-
-        console.log('<<<<<<<<<<<<<<')
-        console.log(localStorage.auth.token)
-        console.log('>>>>>>>>>>>>>>>>>>')
-        console.log(localStorage.getItem('auth'));
-        console.log(res.data.token);
-
-        // Save user to local storage
-        // localStorage.setItem("auth", JSON.stringify(res.data));
+        console.log(auth.user, auth.token);
         navigate(location.state?.from || "/");
       } else {
         toast.error(res.data.message);
       }
-    } catch (error) {
-      console.error("Login Error:", error);
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg('No Server Response');
+      } else if (err.response?.status === 400) {
+        setErrMsg('Missing Username or Password');
+      } else if (err.response?.status === 401) {
+        setErrMsg('Unauthorized');
+      } else {
+        setErrMsg('Login Failed');
+      }
       toast.error("Something went wrong");
     } finally {
       setLoading(false); // Set loading to false when request is complete

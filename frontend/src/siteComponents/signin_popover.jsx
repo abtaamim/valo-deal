@@ -15,16 +15,18 @@ import { Divider, ListItemButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useMediaQuery } from "@mui/material";
 import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
-
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 const SignInPopover = ({ className }) => {
   const [auth, setAuth] = useAuth();
+  const axiosPrivate = useAxiosPrivate();
   const popupState = usePopupState({
     variant: "popover",
     popupId: "signInPopover",
   });
   const navigate = useNavigate();
   const isXs = useMediaQuery("(max-width:450px)");
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
+    await axiosPrivate.post("/api/v1/auth/logout");
     setAuth({ user: null, token: null });
     localStorage.removeItem("auth");
     navigate("/");
@@ -117,7 +119,7 @@ const SignInPopover = ({ className }) => {
                 </Typography>
                 <Typography
                   variant="body2"
-                  sx={{ mb: "2px", color: "rgba(230, 230, 230, 0.788)" }} 
+                  sx={{ mb: "2px", color: "rgba(230, 230, 230, 0.788)" }}
                 >
                   Email: {auth.user.email}
                 </Typography>
@@ -129,7 +131,7 @@ const SignInPopover = ({ className }) => {
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
-                  fontSize: "16px", 
+                  fontSize: "16px",
                   color: "aliceblue",
                   bgcolor: "rgb(0, 6, 12)",
                   "&:hover": {
@@ -148,7 +150,7 @@ const SignInPopover = ({ className }) => {
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
-                  fontSize: "16px", 
+                  fontSize: "16px",
                   color: "aliceblue",
                   bgcolor: "rgb(0, 6, 12)",
                   "&:hover": {
@@ -165,7 +167,7 @@ const SignInPopover = ({ className }) => {
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
-                  fontSize: "16px", 
+                  fontSize: "16px",
                   color: "aliceblue",
                   bgcolor: "rgb(0, 6, 12)",
                   "&:hover": {
@@ -184,7 +186,7 @@ const SignInPopover = ({ className }) => {
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
-                  fontSize: "16px", 
+                  fontSize: "16px",
                   color: "aliceblue",
                   bgcolor: "rgb(0, 6, 12)",
                   "&:hover": {
@@ -202,7 +204,7 @@ const SignInPopover = ({ className }) => {
                 underline="hover"
                 onClick={popupState.close}
                 sx={{
-                  fontSize: "16px", 
+                  fontSize: "16px",
                   color: "aliceblue",
                   bgcolor: "rgb(0, 6, 12)",
                   "&:hover": {
@@ -220,7 +222,7 @@ const SignInPopover = ({ className }) => {
                 underline="hover"
                 onClick={handleSignOut}
                 sx={{
-                  fontSize: "16px", 
+                  fontSize: "16px",
                   color: "aliceblue",
                   bgcolor: "rgb(0, 6, 12)",
                   "&:hover": {

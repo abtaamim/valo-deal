@@ -13,7 +13,7 @@ import { useAuth } from '../context/auth';
 //import { useCart } from '../context/CartContextContext';
 import CloseIcon from '@mui/icons-material/Close';
 import Column from 'antd/es/table/Column';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const RecentlyViewedItemPage = () => {
   const [recentlyViewedItems, setrecentlyViewedItems] = useState([]);
   const [auth] = useAuth();
@@ -22,7 +22,7 @@ const RecentlyViewedItemPage = () => {
   const [searchItems, setSearchItems] = useState([]);
   const [searchedIds, setSearchedIds] = useState([]);
   const [checkSelected, setCheckSelected] = useState([]);
-
+  const axiosPrivate = useAxiosPrivate();
   const handleClickOpen = (itemId) => {
     setOpen(true);
     setSelectedItemId(itemId);
@@ -37,7 +37,7 @@ const RecentlyViewedItemPage = () => {
 
   const fetchSearchItems = async () => {
     try {
-      const res = await axios.get('https://valo-deal-backend.vercel.app/search/fetch/searched-items');
+      const res = await axiosPrivate.get('/search/fetch/searched-items');
       const fetchedSearchItems = res.data.searchedItems;
       setSearchItems(fetchedSearchItems);
 
@@ -54,7 +54,7 @@ const RecentlyViewedItemPage = () => {
       if (!token) {
         throw new Error("No token found");
       }
-      const response = await axios.get('https://valo-deal-backend.vercel.app/recentlyViewed/fetchitems');
+      const response = await axiosPrivate.get('/recentlyViewed/fetchitems');
       setrecentlyViewedItems(response.data.recentlyViewedItems);
     } catch (error) {
       console.error('Error fetching items:', error);
@@ -117,7 +117,7 @@ const RecentlyViewedItemPage = () => {
   //console.log(selectedForDelete);
   const handleDelete = async (itemId) => {
     try {
-      await axios.delete(`https://valo-deal-backend.vercel.app/recentlyViewed/${itemId}`);
+      await axiosPrivate.delete(`/recentlyViewed/${itemId}`);
       fetchItems();
 
       handleClose();
@@ -128,7 +128,7 @@ const RecentlyViewedItemPage = () => {
   const deleteSearch = async () => {
     if (selectedForDelete.length > 0) {
       try {
-        await axios.delete('https://valo-deal-backend.vercel.app/search/delete', {
+        await axiosPrivate.delete('/search/delete', {
           data: { selectedForDelete }
         });
         fetchSearchItems();
@@ -152,11 +152,14 @@ const RecentlyViewedItemPage = () => {
           {searchItems.length > 0 ?
             (<>
               <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
-                <Button onClick={handleSelectAll} variant="contained" sx={{ justifyContent: 'flex-start', color: 'rgb(255, 0, 0)', ml: '10px' }}>
+                <Button onClick={handleSelectAll} variant="outlined" sx={{ justifyContent: 'flex-start', color: 'white', ml: '10px' }}>
                   select all
                 </Button>
                 {selectedForDelete.length > 0 ? (
-                  <Button onClick={deleteSearch} variant="contained" sx={{ justifyContent: 'end', color: 'rgb(255, 0, 0)', mr: '10px' }}>
+                  <Button onClick={deleteSearch} variant="outlined" sx={{
+                    justifyContent: 'end',
+                    color: 'rgb(255, 0, 0)', mr: '10px', borderColor: 'red'
+                  }}>
                     Delete Selected
                   </Button>
 
@@ -176,13 +179,12 @@ const RecentlyViewedItemPage = () => {
                     <Typography sx={{ mr: '30px', color: 'rgba(230, 230, 230, 0.788)' }}>
                       {format(searchItem.searchedAt, 'hh:mm a')}
                     </Typography>
-                    <Tooltip title={`click to search ${searchItem.searchTerm}`}>
-                      <ListItemButton>
-                        <Typography sx={{ color: 'rgb(227, 227, 227)' }}>
-                          {searchItem.searchTerm}
-                        </Typography>
-                      </ListItemButton>
-                    </Tooltip>
+                    <>
+                      <Typography sx={{ color: 'rgb(227, 227, 227)' }}>
+                        {searchItem.searchTerm}
+                      </Typography>
+                    </>
+
                   </ListItem>
                   {/* <Divider sx={{bgcolor:'grey'}} /> */}
                 </Box>

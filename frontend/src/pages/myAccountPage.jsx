@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import Layout from '../components/Layout/Layout';
 import { useAuth } from '../context/auth';
 import '../styles/ProfileStyles.css';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const Profile = () => {
   const [auth, setAuth] = useAuth();
   const [name, setName] = useState('');
@@ -14,7 +14,7 @@ const Profile = () => {
   const [address, setAddress] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const axiosPrivate = useAxiosPrivate();
   // Load the current user data from auth context
   useEffect(() => {
     if (auth.user) {
@@ -31,7 +31,7 @@ const Profile = () => {
 
     try {
 
-      const res = await axios.put('https://valo-deal-backend.vercel.app/api/v1/auth/profile', {
+      const res = await axiosPrivate.put('/api/v1/auth/profile', {
         name,
         email,
         phone,

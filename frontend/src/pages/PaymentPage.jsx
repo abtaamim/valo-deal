@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { useAuth } from '../context/auth';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const PaymentPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [address, setAddress] = useState('');
@@ -15,10 +15,11 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
   const [auth] = useAuth();
+  const axiosPrivate = useAxiosPrivate();
   useEffect(() => {
     const fetchCartItems = async () => {
       try {
-        const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
+        const response = await axiosPrivate.get('/cart/fetchitems');
         setCartItems(response.data.cartItems);
       } catch (error) {
         console.error('Error fetching cart items:', error);
@@ -39,7 +40,7 @@ const PaymentPage = () => {
     try {
 
       for (const cartItem of cartItems) {
-        await axios.post('https://valo-deal-backend.vercel.app/order/setOrder', {
+        await axiosPrivate.post('/order/setOrder', {
           buyerId: auth.user._id,
           sellerId: cartItem.sellerId,
           itemType: cartItem.itemType,
@@ -48,7 +49,7 @@ const PaymentPage = () => {
           deliveryAddress: address
 
         })
-        await axios.post('https://valo-deal-backend.vercel.app/send/mail', {
+        await axiosPrivate.post('/send/mail', {
           to: auth.user.email,
           subject: "your order has been placed successfully",
           mailBody: `
@@ -59,9 +60,9 @@ const PaymentPage = () => {
       <p style="font-size: 16px;"><strong>Price:</strong> <span style="color: #4CAF50;">${cartItem.price}</span></p>
     </div>
   `})
-        const res = await axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${cartItem.sellerId}`)
+        const res = await axiosPrivate.get(`/api/v1/auth/seller-info/${cartItem.sellerId}`)
         const sellerMail = res?.data.seller.email;
-        await axios.post('https://valo-deal-backend.vercel.app/send/mail', {
+        await axiosPrivate.post('/send/mail', {
           to: sellerMail,
           subject: "one of your product has been sold",
           mailBody: `
@@ -77,13 +78,11 @@ const PaymentPage = () => {
   `
         })
       }
-      await axios.delete('https://valo-deal-backend.vercel.app/cart/clear');
+      await axiosPrivate.delete('/cart/clear');
 
 
       await updateCartSize();
 
-      // const response = await axios.get('https://valo-deal-backend.vercel.app/cart/fetchitems');
-      // setCartItems(response.data.cartItems);
 
       setSnackbarOpen(true);
       setLoading(false);
