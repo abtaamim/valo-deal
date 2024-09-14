@@ -111,28 +111,28 @@ const HomeSlider = () => (
         <img
           src={image1}
           alt="Essentials for Gamers"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image2}
           alt="Deals in PCs"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image3}
           alt="Home décor under $50"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image4}
           alt="Shop deals in Fashion"
-          // style={{ height: "300px", objectFit: "cover" }}
+        // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
     </Carousel>
@@ -434,6 +434,9 @@ const HomePage = () => {
   }, [auth]);
 
   const handleViewDetails = async (itemId, itemType) => {
+    //window.scrollTo({ top: 0, behavior: "smooth" });
+    // navigate(`/details/${itemType}/${itemId}`);
+    await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
     setLoadingProduct(itemId);
 
     setTimeout(() => {
@@ -461,9 +464,11 @@ const HomePage = () => {
     } catch (error) {
       auth.user
         ? toast.error(error, {
+
             position: "bottom-right",
           })
         : toast.error("Sign in to add to cart.", { position: "bottom-right" });
+
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
