@@ -18,16 +18,18 @@ const AddedItemList = () => {
   const [selectedItemType, setSelectedItemType] = useState(null);
   const [open, setOpen] = useState(false);
   const axiosPrivate = useAxiosPrivate();
+
   const handleClickOpen = (itemId, itemType) => {
     setOpen(true);
     setSelectedItemId(itemId);
     setSelectedItemType(itemType);
-    handleDialog;
+    // handleDialog;
   };
 
   const handleClose = () => {
     setOpen(false);
     setSelectedItemId(null);
+    setSelectedItemType(null);
   };
 
   const fetchItems = async () => {
@@ -59,7 +61,8 @@ const AddedItemList = () => {
   const handleDelete = async (itemId, itemType) => {
     try {
       await axiosPrivate.delete(`/sell/${itemType}/${itemId}`);
-      fetchItems(); // Refresh items after deletion
+      fetchItems();
+      handleClose();
     } catch (error) {
       console.error(`Error deleting ${itemType}:`, error);
     }
@@ -90,9 +93,12 @@ const AddedItemList = () => {
           ))
         ))}
       </Grid> */}
-      <ListingCard items={allItems} handleClickOpen={handleClickOpen}
-        button={<DeleteOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
-      />
+      {allItems?.length > 0 ?
+        <ListingCard items={allItems} handleClickOpen={handleClickOpen}
+          button={<DeleteOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
+        />
+        : <Typography variant="h4" sx={{ textAlign: 'center', color: 'white' }}>No items added yet</Typography>
+      }
       <CustomDialog handleClose={handleClose} selectedItemId={selectedItemId}
         handleDelete={(itemId, itemType) => handleDelete(itemId, itemType)}
         dialog_title="delete this item from your list" open={open} selectedItemType={selectedItemType}

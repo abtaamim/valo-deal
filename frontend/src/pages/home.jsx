@@ -538,6 +538,8 @@ const HomePage = () => {
           </Grid>
           <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
             <Pagination
+              variant="outlined"
+              shape="rounded"
               count={Math.ceil(allItems.length / postsPerPage)}
               page={currentPage}
               onChange={handlePageChange}

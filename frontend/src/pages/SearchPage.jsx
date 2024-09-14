@@ -94,7 +94,7 @@ const SearchPage = () => {
   };
   useEffect(() => {
     fetchSellerInfo();
-  }, []);
+  }, [auth]);
   return (
     <>
       <Box sx={{ p: 2 }}>

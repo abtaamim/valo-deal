@@ -8,6 +8,7 @@ import { useCart } from "../context/CartContext";
 import CustomDialog from "./CustomDialog";
 import ListingCard from "./CustomItemCard";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { Toaster, toast } from 'sonner';
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const [auth] = useAuth();
@@ -17,7 +18,7 @@ const CartPage = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
-
+  const [itemGotSold, setItemGotSold] = useState(false);
   const handleClickOpen = (itemId) => {
     setOpen(true);
     setSelectedItemId(itemId);
@@ -38,6 +39,7 @@ const CartPage = () => {
         "/cart/fetchitems"
       );
       setCartItems(response.data.cartItems);
+      setItemGotSold(response.data.itemGotSoldFlag);
     } catch (error) {
       console.error("Error fetching items:", error);
     }
@@ -46,6 +48,12 @@ const CartPage = () => {
   useEffect(() => {
     fetchItems();
   }, [auth]);
+
+  useEffect(() => {
+    if (itemGotSold) {
+      toast.error("Some items from your cart were bought by other users T_T");
+    }
+  }, [itemGotSold]);
 
   const handleDelete = async (itemId) => {
     try {
@@ -95,13 +103,16 @@ const CartPage = () => {
           My Cart 🛒
         </Typography>
 
-        <ListingCard
-          items={cartItems}
-          handleClickOpen={handleClickOpen}
-          button={
-            <RemoveShoppingCartOutlinedIcon sx={{ color: "rgb(0, 6, 12)" }} />
-          }
-        />
+        {cartItems?.length > 0 ?
+          <ListingCard
+            items={cartItems}
+            handleClickOpen={handleClickOpen}
+            button={
+              <RemoveShoppingCartOutlinedIcon sx={{ color: "rgb(0, 6, 12)" }} />
+            }
+          /> :
+          <Typography variant="h4" sx={{ textAlign: 'center', color: 'white' }}>Your cart is empty</Typography>
+        }
 
         <Box
           sx={{
@@ -174,12 +185,13 @@ const CartPage = () => {
         anchorOrigin={{ vertical: "top", horizontal: "right" }}
         ContentProps={{
           sx: {
-            backgroundColor: "grey",
+            backgroundColor: "rgb(24, 102, 219)",
             color: "white",
             fontWeight: "bold",
           },
         }}
       />
+      < Toaster richColors />
     </>
   );
 };
