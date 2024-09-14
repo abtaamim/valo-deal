@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { Typography, Row, Col, Card, Tag } from "antd";
 import axios from "axios";
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const { Text, Title } = Typography;
 
 const PreviousOrders = () => {
   const [orders, setOrders] = useState([]);
   const [sellerMap, setSellerMap] = useState({});
-
+  const axiosPrivate = useAxiosPrivate();
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get(
-          "https://valo-deal-backend.vercel.app/order/boughtItem"
+        const res = await axiosPrivate.get(
+          "/order/boughtItem"
         );
         setOrders(res.data.items);
         fetchSellers(res.data.items);
@@ -24,7 +24,7 @@ const PreviousOrders = () => {
     const fetchSellers = async (items) => {
       const sellerIds = [...new Set(items.map((item) => item.sellerId))];
       const sellersPromises = sellerIds.map((sellerId) =>
-        axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`)
+        axiosPrivate.get(`/api/v1/auth/seller-info/${sellerId}`)
       );
 
       try {
@@ -45,8 +45,8 @@ const PreviousOrders = () => {
 
   return (
     <div style={{ padding: "30px", backgroundColor: "#232222" }}>
-     <Title level={2} style={{ textAlign: "center", marginBottom: "20px", marginTop: "1px", color: "#FF8C00" }}>
-     
+      <Title level={2} style={{ textAlign: "center", marginBottom: "20px", marginTop: "1px", color: "#FF8C00" }}>
+
         My Orders
       </Title>
       <Row gutter={[24, 24]}>
@@ -55,17 +55,17 @@ const PreviousOrders = () => {
             <Card
               hoverable
               style={{
-                width: "100%", 
-                height: "440px", 
+                width: "100%",
+                height: "440px",
                 borderRadius: "12px",
                 overflow: "hidden",
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                backgroundColor: "#333", 
+                backgroundColor: "#333",
               }}
               cover={
                 <div
                   style={{
-                    height: "200px", 
+                    height: "200px",
                     backgroundImage: `url(${order.imgUrl[1]})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
@@ -92,19 +92,19 @@ const PreviousOrders = () => {
                 style={{
                   display: "block",
                   fontSize: "14px",
-                  color: "#1890ff", 
+                  color: "#1890ff",
                   marginTop: "8px",
                 }}
               >
                 Buy from: {sellerMap[order.sellerId] || "Unknown"}
               </Text>
 
-             
+
               <Text
                 style={{
                   display: "block",
                   fontSize: "14px",
-                  color: "#ff6600", 
+                  color: "#ff6600",
                   fontWeight: "bold",
                   marginTop: "8px",
                 }}

@@ -9,7 +9,7 @@ import gsmarena from 'gsmarena-api';
 import Snackbar from '@mui/material/Snackbar';
 //const gsmarena = require('gsmarena-api');
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const UploadState = {
   IDLE: 1,
   UPLOADING: 2,
@@ -30,7 +30,7 @@ const MobileSellDetailsPage = () => {
   const [submissionSuccess, setSubmissionSuccess] = useState(false);
   const [imagePreviewUrl, setImagePreviewUrl] = useState([null, null, null, null, null]);
   const [brandId, setBrandId] = useState('');
-
+  const axiosPrivate = useAxiosPrivate();
   const handleBrand = (event) => {
     const selectedBrandName = event.target.value;
     setBrand(selectedBrandName);
@@ -63,7 +63,7 @@ const MobileSellDetailsPage = () => {
   const [gsmModelName, setGsmModelName] = useState([]);
   const getgsmBrand = async () => {
     try {
-      const res = await axios.get("https://valo-deal-backend.vercel.app/sell/gsmbrand")
+      const res = await axiosPrivate.get("/sell/gsmbrand")
       const brands = res.data.brands;
       console.log(res.data.brands);
 
@@ -79,7 +79,7 @@ const MobileSellDetailsPage = () => {
   }, [])
   const getgsmModel = async () => {
     try {
-      const res = await axios.get(`https://valo-deal-backend.vercel.app/sell/gsmmodel/${brandId}`)
+      const res = await axiosPrivate.get(`/sell/gsmmodel/${brandId}`)
       const models = res.data.models;
       console.log(res.data.models);
       setGsmModelName(models.map(model => (model.name)));
@@ -136,11 +136,9 @@ const MobileSellDetailsPage = () => {
     formData.append("file", file);
 
     try {
-      const res = await fetch("https://valo-deal-backend.vercel.app/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
+      const res = await axiosPrivate.post("/upload", formData);
+
+      const data = await res.data;
       setImgUrl(data.secure_url);
       console.log(imgUrl)
       setUploadState(UploadState.UPLOADED);
@@ -214,7 +212,7 @@ const MobileSellDetailsPage = () => {
 
         console.log('Form Data:', Array.from(formData.entries()));
 
-        const res = await axios.post("https://valo-deal-backend.vercel.app/sell/mobile", formData);
+        const res = await axiosPrivate.post("/sell/mobile", formData);
 
         if (res.status === 200) {
           console.log('yayayay')

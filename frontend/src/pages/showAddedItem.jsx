@@ -7,52 +7,8 @@ import { useCart } from '../context/CartContext';
 import { formatDistanceToNow } from 'date-fns';
 import CustomDialog from './CustomDialog';
 import ListingCard from './CustomItemCard';
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 
-// const ListingCard = ({ item, onDelete }) => {
-//   const imageUrls = item.imgUrl
-//   console.log(typeof item.imgUrl);
-//   console.log("000",typeof imageUrls[0]);
-//   console.log("next>>>",imageUrls);
-//   console.log("after>>>",imageUrls[0]);
-//   return(
-//   <Card sx={{ width: '300px' }}>
-
-//     <CardMedia
-//       component="img"
-//       height="240"
-//       image={imageUrls[0]}
-//       alt={`${item.brand} ${item.model}`}
-//       //src={item.imgUrl[0]}
-//     />
-//     <CardContent sx={{ display: 'flex', flexDirection: 'column', alignItems: 'start' }}>
-//       <Typography gutterBottom variant="h5" component="div">
-//         {item.brand} {item.model}
-//       </Typography>
-//       <Typography variant="body2" color="text.secondary">
-//         Condition: {item.condition}
-//       </Typography>
-//       <Typography variant="body2" color="text.secondary">
-//         {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
-//       </Typography>
-//       <Typography variant="body2" color="text.secondary">
-//         Price: ${item.price}
-//       </Typography>
-//       <Typography variant="body2" color="text.secondary">
-//         Description: {item.description}
-//       </Typography>
-//       <Typography variant="body2" color="text.secondary">
-//         {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
-//       </Typography>
-//     </CardContent>
-//     <CardActions sx={{ display: 'flex', justifyContent: 'space-between' }}>
-//       <Button size="small">View Details</Button>
-//       <IconButton onClick={() => onDelete(item._id)}>
-//         <DeleteOutlinedIcon />
-//       </IconButton>
-//     </CardActions>
-//   </Card>
-// );
-// }
 
 const AddedItemList = () => {
   const [items, setItems] = useState({ mobiles: [], computers: [], electronics: [], vehicles: [] });
@@ -61,6 +17,7 @@ const AddedItemList = () => {
   const [selectedItemId, setSelectedItemId] = useState(null);
   const [selectedItemType, setSelectedItemType] = useState(null);
   const [open, setOpen] = useState(false);
+  const axiosPrivate = useAxiosPrivate();
   const handleClickOpen = (itemId, itemType) => {
     setOpen(true);
     setSelectedItemId(itemId);
@@ -75,10 +32,10 @@ const AddedItemList = () => {
 
   const fetchItems = async () => {
     try {
-      const mobilesResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/mobiles');
-      const computersResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-computers');
-      const electronicResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-electronics');
-      const vehicleResponse = await axios.get('https://valo-deal-backend.vercel.app/sell/added-vehicles');
+      const mobilesResponse = await axiosPrivate.get('/sell/mobiles');
+      const computersResponse = await axiosPrivate.get('/sell/added-computers');
+      const electronicResponse = await axiosPrivate.get('/sell/added-electronics');
+      const vehicleResponse = await axiosPrivate.get('/sell/added-vehicles');
       setItems({
         mobiles: mobilesResponse.data.mobiles || [], computers: computersResponse?.data.computers || [],
         electronics: electronicResponse?.data.electronics || [], vehicles: vehicleResponse?.data.vehicles || []
@@ -101,7 +58,7 @@ const AddedItemList = () => {
   }, [items]);
   const handleDelete = async (itemId, itemType) => {
     try {
-      await axios.delete(`https://valo-deal-backend.vercel.app/sell/${itemType}/${itemId}`);
+      await axiosPrivate.delete(`/sell/${itemType}/${itemId}`);
       fetchItems(); // Refresh items after deletion
     } catch (error) {
       console.error(`Error deleting ${itemType}:`, error);
