@@ -1,18 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { Grid, Card, CardMedia, CardContent, CardActions, Typography, Box, IconButton } from '@mui/material';
+import { Grid, Card, CardMedia, CardContent, CardActions, Typography, Box, IconButton, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+
 const ListingCard = (props) => {
   const { items, handleClickOpen, button } = props;
+  const [loading, setLoading] = useState(null); // State to track loading for each item
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
+
   const handleRecentlyView = async (itemType, itemId) => {
+    setLoading(itemId); // Start loading when item is clicked
     try {
       await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
     } catch (e) {
       console.error(`Error viewing item:`, e);
     } finally {
+      setLoading(null); // Reset loading state
       navigate(`/details/${itemType}/${itemId}`);
     }
   };
@@ -37,11 +42,12 @@ const ListingCard = (props) => {
               overflow: 'hidden',
               cursor: 'pointer',
               boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-              transition: 'transform 0.3s ease, background-color 0.3s ease',
+              transition: 'transform 0.3s ease, backgroundColor 0.3s ease',
               '&:hover': {
                 transform: 'scale(1.03)',
                 backgroundColor: 'grey.300',
               },
+              position: 'relative', // For loading overlay
             }}
             onClick={() => handleRecentlyView(item.itemType, item._id)}
           >
@@ -92,8 +98,18 @@ const ListingCard = (props) => {
                 <Typography variant="body2" color="text.secondary">
                   {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {truncateText(item.description, 90)}
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                  }}
+                >
+                  {item.description}
                 </Typography>
               </CardContent>
               <CardActions sx={{ justifyContent: 'space-between' }}>
@@ -116,6 +132,25 @@ const ListingCard = (props) => {
                 </IconButton>
               </CardActions>
             </Box>
+
+            {/* Loading Spinner Overlay */}
+            {loading === item._id && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
+                <CircularProgress />
+              </Box>
+            )}
           </Card>
         </Grid>
       ))}

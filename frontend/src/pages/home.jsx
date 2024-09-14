@@ -18,6 +18,7 @@ import {
   InputLabel,
   Pagination,
 } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "../context/auth";
@@ -110,28 +111,28 @@ const HomeSlider = () => (
         <img
           src={image1}
           alt="Essentials for Gamers"
-        // style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image2}
           alt="Deals in PCs"
-        // style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image3}
           alt="Home décor under $50"
-        // style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
       <div class="image-container">
         <img
           src={image4}
           alt="Shop deals in Fashion"
-        // style={{ height: "300px", objectFit: "cover" }}
+          // style={{ height: "300px", objectFit: "cover" }}
         />
       </div>
     </Carousel>
@@ -177,18 +178,19 @@ const CategorySection = () => {
                   overflow: "hidden",
                   borderRadius: "20px",
                   position: "relative",
-                  transform: "perspective(1000px)", // Enabling 3D space
-                  transition: "transform 0.6s ease-in-out, box-shadow 0.6s ease-in-out",
+                  transform: "perspective(1000px)",
+                  transition:
+                    "transform 0.6s ease-in-out, box-shadow 0.6s ease-in-out",
                   boxShadow: "0 8px 24px rgba(0, 0, 0, 0.2)",
                   "&:hover": {
-                    transform: "scale(1.08) rotateY(6deg) rotateX(4deg)", // 3D tilt effect
+                    transform: "scale(1.08) rotateY(6deg) rotateX(4deg)",
                     boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
                   },
                   "&:hover .imageOverlay": {
                     opacity: 0.5,
                   },
                   "&:hover .title": {
-                    textShadow: "0px 0px 8px rgba(255, 255, 255, 0.8)", // Text glow effect
+                    textShadow: "0px 0px 8px rgba(255, 255, 255, 0.8)",
                   },
                 }}
               >
@@ -249,7 +251,13 @@ const CategorySection = () => {
   );
 };
 
-const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
+const ListingCard = ({
+  item,
+  onAddToCart,
+  onViewDetails,
+  sellerName,
+  isLoading,
+}) => (
   <Card
     onClick={onViewDetails}
     sx={{
@@ -261,15 +269,35 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       borderRadius: "16px",
       border: "1px solid #4d4d4d",
       boxShadow: "0 4px 10px rgba(0, 0, 0, 0.1)",
-      transition: "transform 0.2s, box-shadow 0.2s",
       cursor: "pointer",
       backgroundColor: "#1f232c",
+      position: "relative",
+      overflow: "hidden",
       "&:hover": {
         transform: "scale(1.05)",
         boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
       },
     }}
   >
+    {isLoading && (
+      <Box
+        sx={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "rgba(0, 0, 0, 0.3)",
+          zIndex: 2,
+          pointerEvents: "none",
+        }}
+      >
+        <CircularProgress size={30} sx={{ color: "white" }} />
+      </Box>
+    )}
     <Box sx={{ position: "relative", overflow: "hidden" }}>
       <CardMedia
         component="img"
@@ -280,7 +308,7 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
         sx={{
           transition: "transform 0.6s ease-in-out",
           "&:hover": {
-            transform: "scale(1.1)", // Apply zoom-out effect on hover
+            transform: "scale(1.1)",
           },
         }}
       />
@@ -293,7 +321,12 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
         color: "white",
       }}
     >
-      <Typography gutterBottom variant="h5" component="div" sx={{ color: "#eaeaea" }}>
+      <Typography
+        gutterBottom
+        variant="h5"
+        component="div"
+        sx={{ color: "#eaeaea" }}
+      >
         {item.brand} {item.model}
       </Typography>
       <Typography variant="body2" color="#7e7e7e">
@@ -308,15 +341,18 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
       <Typography variant="body2" color="#b1afac">
         {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
       </Typography>
-      <ListItemButton sx={{ padding: "0", mt: "10px", height: "32px", color: "#bebebe" }}>
+      <ListItemButton
+        sx={{ padding: "0", mt: "10px", height: "32px", color: "#bebebe" }}
+      >
         Seller : {sellerName}
       </ListItemButton>
     </CardContent>
-    <CardActions sx={{ justifyContent: "space-between", backgroundColor: "#222324" }}>
+    <CardActions
+      sx={{ justifyContent: "space-between", backgroundColor: "#222324" }}
+    >
       <Typography variant="body2" sx={{ color: "#cecdcd", fontWeight: "bold" }}>
         Price: ${item.price}
       </Typography>
-
       <Tooltip title="Add this item to your cart">
         <IconButton
           onClick={(e) => {
@@ -337,7 +373,6 @@ const ListingCard = ({ item, onAddToCart, onViewDetails, sellerName }) => (
   </Card>
 );
 
-
 const HomePage = () => {
   const navigate = useNavigate();
   const [items, setItems] = useState({
@@ -350,6 +385,8 @@ const HomePage = () => {
   const { updateCartSize } = useCart();
   const [sellerMap, setSellerMap] = useState(new Map());
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [loadingProduct, setLoadingProduct] = useState(null);
 
   const [postsPerPage] = useState(12);
   const [sortOrder, setSortOrder] = useState("");
@@ -357,6 +394,7 @@ const HomePage = () => {
   const axiosPrivate = useAxiosPrivate();
   const fetchItems = async () => {
     try {
+      setLoading(true);
       const mobilesResponse = await axios.get(
         "https://valo-deal-backend.vercel.app/sell/latest-mobiles"
       );
@@ -377,6 +415,8 @@ const HomePage = () => {
       });
     } catch (error) {
       console.error("Error fetching items:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -391,23 +431,25 @@ const HomePage = () => {
     updateCartSize();
   }, [auth]);
 
-  const handleViewDetails = (itemId, itemType) => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    navigate(`/details/${itemType}/${itemId}`);
+  const handleViewDetails = async (itemId, itemType) => {
+    setLoadingProduct(itemId);
+
+    setTimeout(() => {
+      navigate(`/details/${itemType}/${itemId}`);
+      setLoadingProduct(null);
+    }, 1500);
   };
 
   const handleAddToCart = async (itemId, itemType) => {
     try {
-      await axiosPrivate.post(
-        `/cart/${itemType}/${itemId}`
-      );
+      await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "top-right" });
     } catch (error) {
       auth.user
         ? toast.error(error, {
-          position: "top-right",
-        })
+            position: "top-right",
+          })
         : toast.error("Sign in to add to cart.", { position: "top-right" });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
@@ -477,89 +519,134 @@ const HomePage = () => {
   return (
     <>
       <ToastContainer />
-      <>
-        <HomeSlider />
-        <CategorySection />
-        <Box sx={{
-          p: 2, bgcolor: "#373839", pl: 5,
-          pr: 0
-        }}>
+      {loading ? (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "transparent",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 2,
+              textAlign: "center",
+              color: "white",
+              backgroundColor: "transparent",
             }}
           >
-            <FormControl sx={{ minWidth: 300 }}>
-              <InputLabel id="sort-label" sx={{ color: "white" }}>
-                Sort by
-              </InputLabel>
-              <Select
-                labelId="sort-label"
-                value={sortOrder}
-                onChange={handleSortChange}
-                label="Sort by"
-                sx={{
-                  color: "white",
-                  border: "1px solid grey",
-                  "& .MuiSelect-icon": {
-                    color: "white", // Dropdown icon color
-                  },
-                }}
-              >
-                <MenuItem value="">
-                  <em style={{ color: "black" }}>None</em>
-                </MenuItem>
-                <MenuItem value="lowToHigh" sx={{ color: "black" }}>
-                  Price: Low to High
-                </MenuItem>
-                <MenuItem value="highToLow" sx={{ color: "black" }}>
-                  Price: High to Low
-                </MenuItem>
-              </Select>
-            </FormControl>
-
-          </Box>
-          <Grid container spacing={3}>
-            {currentPosts.map((item) => (
-              <Grid item key={item._id} xs={12} sm={6} md={3}>
-                <ListingCard
-                  item={item}
-                  onAddToCart={() => handleAddToCart(item._id, item.itemType)}
-                  onViewDetails={() =>
-                    handleViewDetails(item._id, item.itemType)
-                  }
-                  sellerName={sellerMap.get(item.sellerId)?.name || ""}
-                />
-              </Grid>
-            ))}
-          </Grid>
-          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
-            <Pagination
-              count={Math.ceil(allItems.length / postsPerPage)}
-              page={currentPage}
-              onChange={handlePageChange}
+            <CircularProgress size={50} sx={{ color: "#ff8c00" }} />
+            <Typography
+              variant="h6"
+              gutterBottom
               sx={{
-                "& .MuiPaginationItem-root": {
-                  color: "white",
-                },
-                "& .MuiPaginationItem-root.Mui-selected": {
-                  backgroundColor: "grey",
-                  color: "white",
-                },
-                "& .MuiPaginationItem-root:hover": {
-                  backgroundColor: "grey",
-                  color: "white",
+                animation: "pulse 1.5s infinite",
+                "@keyframes pulse": {
+                  "0%": {
+                    transform: "scale(1)",
+                    opacity: 1,
+                  },
+                  "50%": {
+                    transform: "scale(1.1)",
+                    opacity: 0.7,
+                  },
+                  "100%": {
+                    transform: "scale(1)",
+                    opacity: 1,
+                  },
                 },
               }}
-            />
+            >
+              Please Wait...
+            </Typography>
           </Box>
-
         </Box>
-      </>
-      {/* )} */}
+      ) : (
+        <>
+          <HomeSlider />
+          <CategorySection />
+          <Box sx={{ p: 2, bgcolor: "#373839", pl: 5, pr: 0 }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                mb: 2,
+              }}
+            >
+              <FormControl sx={{ minWidth: 300 }}>
+                <InputLabel id="sort-label" sx={{ color: "white" }}>
+                  Sort by
+                </InputLabel>
+                <Select
+                  labelId="sort-label"
+                  value={sortOrder}
+                  onChange={handleSortChange}
+                  label="Sort by"
+                  sx={{
+                    color: "white",
+                    border: "1px solid grey",
+                    "& .MuiSelect-icon": {
+                      color: "white",
+                    },
+                  }}
+                >
+                  <MenuItem value="">
+                    <em style={{ color: "black" }}>None</em>
+                  </MenuItem>
+                  <MenuItem value="lowToHigh" sx={{ color: "black" }}>
+                    Price: Low to High
+                  </MenuItem>
+                  <MenuItem value="highToLow" sx={{ color: "black" }}>
+                    Price: High to Low
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+            <Grid container spacing={3}>
+              {currentPosts.map((item) => (
+                <Grid item key={item._id} xs={12} sm={6} md={3}>
+                  <ListingCard
+                    item={item}
+                    isLoading={loadingProduct === item._id}
+                    onAddToCart={() => handleAddToCart(item._id, item.itemType)}
+                    onViewDetails={() =>
+                      handleViewDetails(item._id, item.itemType)
+                    }
+                    sellerName={sellerMap.get(item.sellerId)?.name || ""}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+              <Pagination
+                count={Math.ceil(allItems.length / postsPerPage)}
+                page={currentPage}
+                onChange={handlePageChange}
+                sx={{
+                  "& .MuiPaginationItem-root": {
+                    color: "white",
+                  },
+                  "& .MuiPaginationItem-root.Mui-selected": {
+                    backgroundColor: "grey",
+                    color: "white",
+                  },
+                  "& .MuiPaginationItem-root:hover": {
+                    backgroundColor: "grey",
+                    color: "white",
+                  },
+                }}
+              />
+            </Box>
+          </Box>
+        </>
+      )}
     </>
   );
 };
