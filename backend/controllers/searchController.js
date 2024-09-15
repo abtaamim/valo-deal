@@ -7,59 +7,46 @@ const User = require('../models/userModel')
 const searchController = async (req, res) => {
   try {
     const { keyWord } = req.params;
-    const computers = await computerModel.find(
-      {
-        $or: [
-          { itemType: { $regex: keyWord, $options: "i" } },
-          { subCategory: { $regex: keyWord, $options: "i" } },
-          { brand: { $regex: keyWord, $options: "i" } },
-          { model: { $regex: keyWord, $options: "i" } },
-          { description: { $regex: keyWord, $options: "i" } }
-        ]
-      }
-    )
-    const vehicles = await vehicleModel.find(
-      {
-        $or: [
-          { itemType: { $regex: keyWord, $options: "i" } },
-          { subCategory: { $regex: keyWord, $options: "i" } },
-          { brand: { $regex: keyWord, $options: "i" } },
-          { model: { $regex: keyWord, $options: "i" } },
-          { description: { $regex: keyWord, $options: "i" } }
-        ]
-      }
-    )
-    const mobiles = await mobileModel.find(
-      {
-        $or: [
-          { itemType: { $regex: keyWord, $options: "i" } },
-          { subCategory: { $regex: keyWord, $options: "i" } },
-          { brand: { $regex: keyWord, $options: "i" } },
-          { model: { $regex: keyWord, $options: "i" } },
-          { description: { $regex: keyWord, $options: "i" } }
-        ]
-      }
-    )
-    const electronics = await electronicModel.find(
-      {
-        $or: [
-          { itemType: { $regex: keyWord, $options: "i" } },
-          { subCategory: { $regex: keyWord, $options: "i" } },
-          { brand: { $regex: keyWord, $options: "i" } },
-          { model: { $regex: keyWord, $options: "i" } },
-          { description: { $regex: keyWord, $options: "i" } }
-        ]
-      }
-    )
+    const searchQuery = {
+      $or: [
+        { itemType: { $regex: keyWord, $options: "i" } },
+        { subCategory: { $regex: keyWord, $options: "i" } },
+        { brand: { $regex: keyWord, $options: "i" } },
+        { model: { $regex: keyWord, $options: "i" } },
+        { description: { $regex: keyWord, $options: "i" } }
+      ]
+    };
+
+    const computers = await computerModel.find({
+      ...searchQuery,
+      sold: false
+    });
+    const electronics = await electronicModel.find({
+      ...searchQuery,
+      sold: false
+    });
+    const vehicles = await vehicleModel.find({
+      ...searchQuery,
+      sold: false
+    });
+    const mobiles = await mobileModel.find({
+      ...searchQuery,
+      sold: false
+    });
+
     const mobileAccs = await mobAcc.find(
       {
-        $or: [
-          { itemType: { $regex: keyWord, $options: "i" } },
-          { subCategory: { $regex: keyWord, $options: "i" } },
-          { brand: { $regex: keyWord, $options: "i" } },
-          { model: { $regex: keyWord, $options: "i" } },
-          { description: { $regex: keyWord, $options: "i" } },
-          { accessoryType: { $regex: keyWord, $options: "i" } }
+        $and: [{
+          $or: [
+            { itemType: { $regex: keyWord, $options: "i" } },
+            { subCategory: { $regex: keyWord, $options: "i" } },
+            { brand: { $regex: keyWord, $options: "i" } },
+            { model: { $regex: keyWord, $options: "i" } },
+            { description: { $regex: keyWord, $options: "i" } },
+            { accessoryType: { $regex: keyWord, $options: "i" } }
+          ]
+
+        }, { sold: false }
         ]
       }
     )
@@ -91,22 +78,7 @@ const postSearchedItems = async (req, res) => {
     res.status(500).json({ success: false, error });
   }
 };
-// const postSearch= async(req, res)=>{
-//   try{
-//     const userId = req.user._id; 
-//     const user = await User.findById(userId);
 
-
-
-//     user.searchedItems.push({ searchTerm: keyWord, searchedAt: new Date() });
-//     await user.save();
-
-//     res.status(201).json({ success: true, message: 'Item added to cart.', recentlyViewedItems: user.recentlyViewedItems });
-//   } catch (error) {
-//     console.error('Error adding item to recentlyviewed:', error);
-//     res.status(500).json({ success: false, message: 'Internal Server Error', error });
-//   }
-// };
 
 const getSearchedItems = async (req, res) => {
   //console.log('called')
