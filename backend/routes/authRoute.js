@@ -27,6 +27,7 @@ router.get('/user-auth', requireSignIn, (req, res) => {
 router.get('/seller-info/:id', async (req, res) => {
   try {
     const sellerId = req.params.id;
+    console.log(sellerId, typeof (sellerId));
     const response = await userModel.findById({ _id: sellerId });
     if (!response) {
       return res.status(404).json({ success: false, message: 'User not found' });  // add a 404 response for user not found

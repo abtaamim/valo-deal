@@ -93,14 +93,13 @@ const SignInPopover = ({ className }) => {
         <Box p={0} sx={{ width: "250px" }}>
           {!auth.user ? (
             <Box mt={2} p={2}>
-              <Link
+              <ListItemButton onClick={popupState.close}
                 component={RouterLink}
                 to="/login"
                 underline="hover"
-                onClick={popupState.close}
               >
                 Sign In
-              </Link>
+              </ListItemButton>
             </Box>
           ) : (
             <>

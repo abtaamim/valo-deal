@@ -11,11 +11,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  ListItemButton,
 } from "@mui/material";
+import { useCart } from "../context/CartContext";
+import { Toaster, toast } from "sonner";
+import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useAuth } from "../context/auth";
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import { useNavigate } from "react-router-dom";
 const ShowDetailsPage = () => {
   const [item, setItem] = useState({});
   const [selectedColor, setSelectedColor] = useState("");
@@ -23,7 +28,9 @@ const ShowDetailsPage = () => {
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const fixedColors = ["Red", "Blue", "White", "Black"];
-
+  const [sellerInfo, setSellerInfo] = useState({});
+  const navigate = useNavigate();
+  const { updateCartSize } = useCart();
   const fetchItem = async () => {
     const res = await axiosPrivate.get(
       `/details/${itemType}/${itemId}`
@@ -35,38 +42,46 @@ const ShowDetailsPage = () => {
     fetchItem();
   }, [itemId, itemType]);
 
-  const handleBuyNow = () => {
+  useEffect(() => {
+    const fetchSellerInfo = async () => {
+      const res = await axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${item.sellerId}`)
+      setSellerInfo(res.data.seller);
+    }
+    fetchSellerInfo();
+  }, [item.sellerId])
 
-    console.log("Buy Now clicked");
+  const handleNavigate = () => {
+    navigate('/seller-info', {
+      state: {
+        phone: `${sellerInfo.phone}`,
+        name: `${sellerInfo.name}`, email: `${sellerInfo.email}`, address: `${sellerInfo.address}`
+      }
+    });
+  };
+  const handleBuyNow = async () => {
+    try {
+      const res = await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
+      if (res.status === 201) {
+        await updateCartSize();
+        navigate("/payment");
+      }
+
+    } catch (error) { //axios take onle 200 status as success and others as error
+      if (error.response && error.response.status === 400) {
+        navigate("/payment");
+      }
+      console.log(error);
+    }
   };
 
   const handleAddToCart = async () => {
     try {
-      const token = auth?.token;
-      if (!token) {
-        throw new Error("No token found");
-      }
-
-      const response = await axiosPrivate.post(
-        "/cart/add",
-        {
-          productId: itemId,
-          productType: itemType,
-          color: selectedColor,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+      await axiosPrivate.post(
+        `/cart/${itemType}/${itemId}`
       );
-
-      if (response.status === 200) {
-        console.log("Item added to cart successfully");
-        // Optionally, you can display a toast notification here
-      } else {
-        console.error("Failed to add item to cart");
-      }
+      await updateCartSize();
+      toast.success("Item added to the cart!");
+      console.log('cart')
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -144,6 +159,7 @@ const ShowDetailsPage = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            alignItems: 'flex-start'
           }}
         >
           <Typography variant="h4" sx={{ mb: "20px", color: "orange", fontSize: { xs: "1.5rem", sm: "2rem" } }}>
@@ -163,7 +179,13 @@ const ShowDetailsPage = () => {
           <Typography variant="body2" sx={{ mt: "10px", fontSize: { xs: "0.9rem", sm: "1.2rem" } }}>
             Description: {item.description}
           </Typography>
-{/* 
+          <Button onClick={handleNavigate} sx={{ paddingLeft: '0', textTransform: 'none', color: 'brown' }} >
+            <Person2OutlinedIcon sx={{ color: 'brown' }} />
+            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+              Seller: {sellerInfo.name}
+            </Typography>
+          </Button>
+
           <FormControl fullWidth sx={{ mt: "20px" }}>
             <InputLabel id="color-select-label">Select Color</InputLabel>
             <Select
@@ -179,7 +201,7 @@ const ShowDetailsPage = () => {
                 </MenuItem>
               ))}
             </Select>
-          </FormControl> */}
+          </FormControl>
 
           <Box
             sx={{
@@ -191,9 +213,9 @@ const ShowDetailsPage = () => {
             }}
           >
             <Button
-              variant="contained"
+              variant="outlined"
               sx={{
-                backgroundColor: "green",
+                color: "green",
                 width: { xs: "100%", sm: "48%" },
               }}
               onClick={handleBuyNow}
@@ -203,7 +225,7 @@ const ShowDetailsPage = () => {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: "orange",
+                backgroundColor: "skyblue",
                 width: { xs: "100%", sm: "48%" },
               }}
               onClick={handleAddToCart}
@@ -213,6 +235,7 @@ const ShowDetailsPage = () => {
           </Box>
         </Grid>
       </Grid>
+      <Toaster richColors />
     </Card>
 
   );
