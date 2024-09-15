@@ -29,7 +29,11 @@ const useAxiosPrivate = () => {
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
           return axiosPrivate(prevRequest);
         }
-        // if (error?.response?.status === 401) {
+
+        if (error?.response?.status === 401) {
+          navigate('/login', { state: { from: location }, replace: true });
+        }
+
 
         //   navigate('/login', { state: { from: location }, replace: true });
         // }
