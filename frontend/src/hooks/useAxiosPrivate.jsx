@@ -22,15 +22,16 @@ const useAxiosPrivate = () => {
       response => response,
       async (error) => {
         const prevRequest = error?.config;
-        if (error?.response?.status === 401) {
-
-          navigate('/login', { state: { from: location }, replace: true });
-        }
+        
         if (error.response.status === 403 && !prevRequest?.sent) {
           prevRequest.sent = true;
           const newAccessToken = await refresh();
           prevRequest.headers['Authorization'] = `Bearer ${newAccessToken}`
           return axiosPrivate(prevRequest);
+        }
+        if (error?.response?.status === 401) {
+
+          navigate('/login', { state: { from: location }, replace: true });
         }
 
         return Promise.reject(error);
