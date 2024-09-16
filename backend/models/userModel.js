@@ -1,5 +1,5 @@
 //import mongoose from "mongoose";
-const mongoose=require('mongoose')
+const mongoose = require('mongoose')
 const Schema = mongoose.Schema;
 const userSchema = new Schema(
   {
@@ -25,9 +25,9 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    answer :{
-      type :String,
-      required :true,
+    answer: {
+      type: String,
+      required: true,
     },
     role: {
       type: Number,
@@ -36,25 +36,26 @@ const userSchema = new Schema(
     cartItems: [
       {
         itemId: { type: Schema.Types.ObjectId, required: true },
-        itemType: { 
-          type: String, 
-         // enum: ['mobile', 'computer', 'electronic', 'vehicle'], // Enum values for item types
+        itemType: {
+          type: String,
+          // enum: ['mobile', 'computer', 'electronic', 'vehicle'], // Enum values for item types
           required: true
-        }
+        },
+        addedTime: { type: Date, default: Date.now() },
       }
     ],
     recentlyViewedItems: [
       {
         itemId: { type: Schema.Types.ObjectId, required: true },
-        itemType: { 
-          type: String, 
+        itemType: {
+          type: String,
           //enum: ['mobiles', 'computers', 'electronics', 'vehicles'], // Enum values for item types
           required: true
         },
         viewedAt: { type: Date, default: Date.now }
       }
     ],
-    searchedItems:[
+    searchedItems: [
       {
         searchTerm: { type: String, required: true },
         searchedAt: { type: Date, default: Date.now }

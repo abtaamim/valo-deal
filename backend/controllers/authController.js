@@ -202,16 +202,17 @@ const createAccessToken = (_id) => {
 exports.refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   //user have to login again
-  if (!refreshToken) return res.status(401).json({ message: 'Unauthorized' })
+  if (!refreshToken) return res.status(401).json({ message: 'Unauthorized in refresh' })
 
   JWT.verify(
     refreshToken,
     process.env.REFRESH_SECRET,
     async (err, decoded) => {
-      if (err) return res.status(403).json({ message: 'Forbidden' })
 
-      const foundUser = await userModel.findById(decoded._id)
-      if (!foundUser) return res.status(401).json({ message: 'Unauthorized' })
+      if (err) return res.status(403).json({ message: 'Forbidden' })
+      const foundUser = await userModel.findById(decoded?._id)
+      if (!foundUser) return res.status(401).json({ message: 'Unauthorized no user found' })
+
       const accessToken = createAccessToken(foundUser._id)
       res.json({
         accessToken,

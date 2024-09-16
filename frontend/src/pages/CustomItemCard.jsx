@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Grid, Card, CardMedia, CardContent, CardActions, Typography, Box, IconButton, CircularProgress } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import { color } from 'framer-motion';
 
 const ListingCard = (props) => {
   const { items, handleClickOpen, button } = props;
@@ -38,14 +39,15 @@ const ListingCard = (props) => {
   };
 
   return (
-    <Grid container spacing={2} sx={{ justifyContent: 'center' }}>
+    <Grid container spacing={2} sx={{ justifyContent: 'flex-start' }}>
       {items.map((item) => (
-        <Grid item key={item._id} xs={12} sm={6} md={4}>
+        <Grid item key={item._id} xs={12} sm={6} lg={4} xl={3}>
           <Card
             sx={{
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
               height: { xs: 'auto', sm: '260px' },
+              width: { lg: '400px' },
               borderRadius: '10px',
               overflow: 'hidden',
               cursor: 'pointer',
@@ -59,7 +61,7 @@ const ListingCard = (props) => {
             }}
             onClick={() => handleRecentlyView(item.itemType, item._id)}
           >
-            <Box sx={{ position: 'relative', width: { xs: '100%', sm: '40%' }, height: { xs: '200px', sm: '100%' }, overflow: 'hidden' }}>
+            <Box sx={{ position: 'relative', width: { xs: '100%', sm: '40%', lg: '50%' }, height: { xs: '200px', sm: '100%' }, overflow: 'hidden' }}>
               <CardMedia
                 component="img"
                 sx={{
@@ -93,18 +95,25 @@ const ListingCard = (props) => {
                 <Typography variant="h6">View Details</Typography>
               </Box>
             </Box>
-            <Box sx={{ display: 'flex', flexDirection: 'column', width: { xs: '100%', sm: '60%' }, padding: '12px' }}>
-              <CardContent sx={{ flexGrow: 1 }}>
-                <Typography gutterBottom variant="h6" component="div">
+            <Box sx={{ display: 'flex', height: '100%', alignSelf: 'self-start', flexDirection: 'column', width: { xs: '100%', sm: '60%' }, padding: '12px' }}>
+              <CardContent sx={{ flexGrow: 1, alignItems: 'flex-start' }}>
+                <Typography gutterBottom variant="h6" component="div" sx={{ textAlign: 'left' }} >
                   {item.brand} {item.model}
                 </Typography>
                 {item.condition && (
-                  <Typography variant="body2" color="text.secondary">
-                    Condition: {item.condition}
+                  <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+                    Condition:{' '}
+                    <Box component="span" sx={{ color: item.condition === 'new' ? 'green' : 'red', fontWeight: 'bold' }}>
+                      {item.condition}
+                    </Box>
                   </Typography>
                 )}
-                <Typography variant="body2" color="text.secondary">
-                  {item.authenticity ? `Authenticity: ${item.authenticity}` : ''}
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'left' }}>
+                  {item.authenticity ? (<>Authenticity: {' '}
+                    <Box component="span" sx={{ color: 'black' }}>
+                      {item.authenticity}
+                    </Box> </>)
+                    : ''}
                 </Typography>
                 <Typography
                   variant="body2"
@@ -115,30 +124,36 @@ const ListingCard = (props) => {
                     WebkitBoxOrient: 'vertical',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
+                    textAlign: 'left',
+                    color: 'navy',
                   }}
                 >
                   {item.description}
                 </Typography>
               </CardContent>
-              <CardActions sx={{ justifyContent: 'space-between' }}>
-                <Typography variant="body2" sx={{ color: '#ff8300', fontWeight: 600 }}>
-                  Price: {formatPrice(item.price)}
-                </Typography>
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleClickOpen(item._id, item.itemType);
-                  }}
-                  sx={{
-                    color: 'inherit',
-                    '& .MuiSvgIcon-root': {
+
+              <Box sx={{}}>
+                <CardActions sx={{ justifyContent: 'space-between', }}>
+                  <Typography variant="body2" sx={{ color: '#ff8300', fontWeight: 600 }}>
+                    Price: {formatPrice(item.price)}
+                  </Typography>
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleClickOpen(item._id, item.itemType);
+                    }}
+                    sx={{
+
                       color: 'inherit',
-                    },
-                  }}
-                >
-                  {button}
-                </IconButton>
-              </CardActions>
+                      '& .MuiSvgIcon-root': {
+                        color: 'inherit',
+                      },
+                    }}
+                  >
+                    {button}
+                  </IconButton>
+                </CardActions>
+              </Box>
             </Box>
 
             {/* Loading Spinner Overlay */}

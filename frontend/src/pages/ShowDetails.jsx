@@ -63,8 +63,10 @@ const ShowDetailsPage = () => {
     });
   };
 
+
   const handleBuyNow = () => {
     navigate("/single-item-payment", { state: { item } });
+
   };
 
   const handleAddToCart = async () => {

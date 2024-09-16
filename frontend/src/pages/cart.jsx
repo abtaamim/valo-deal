@@ -23,7 +23,7 @@ const CartPage = () => {
 
   const [itemGotSold, setItemGotSold] = useState(false);
 
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   const handleClickOpen = (itemId) => {
     setOpen(true);
@@ -45,7 +45,7 @@ const formatPrice = (price) => {
 
   const fetchItems = async () => {
     try {
-      setLoading(true); 
+      setLoading(true);
       const token = auth?.token;
       if (!token) {
         throw new Error("No token found");
@@ -116,7 +116,10 @@ const formatPrice = (price) => {
             <CircularProgress sx={{ color: "orange" }} />
           </Box>
         ) : (
-          <>
+          <Box sx={{
+            minHeight: '80vh', display: 'flex',
+            flexDirection: 'column', p: 2, justifyContent: 'center'
+          }}>
             <Typography
               variant="h4"
               gutterBottom
@@ -125,7 +128,7 @@ const formatPrice = (price) => {
                 fontWeight: "bold",
                 padding: "8px",
                 textAlign: "center",
-                fontSize: { xs: "1.5rem", sm: "2rem" }, 
+                fontSize: { xs: "1.5rem", sm: "2rem" },
               }}
             >
               My Cart 🛒
@@ -141,10 +144,11 @@ const formatPrice = (price) => {
 
             <Box
               sx={{
-                mt: 4,
+                // mt: 4,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                flexGrow: '1'
               }}
             >
               <Grid
@@ -152,6 +156,7 @@ const formatPrice = (price) => {
                 spacing={2}
                 alignItems="center"
                 justifyContent="center"
+                sx={{ mt: 'auto', p: '2' }}
               >
                 <Grid item xs={12} sm={6} md={4}>
                   <Box sx={{ p: 2, border: "1px solid #ccc", borderRadius: "8px" }}>
@@ -188,7 +193,7 @@ const formatPrice = (price) => {
                 </Grid>
               </Grid>
             </Box>
-          </>
+          </Box>
         )}
       </Box>
 
