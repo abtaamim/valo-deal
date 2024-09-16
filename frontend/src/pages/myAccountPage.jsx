@@ -57,79 +57,84 @@ const Profile = () => {
   };
 
   return (
+
     <Layout>
-      <div className="profile-container">
-        <div className="profile-left">
-          <img
-            src="https://cdn.dribbble.com/users/3258568/screenshots/6815101/face.gif"
-            alt="Profile GIF"
-            className="profile-gif"
-          />
-        </div>
-        <div className="profile-right">
-          <form onSubmit={handleSubmit} className="profile-form styled-profile-form">
-            <h2 className="profile-title">My Profile</h2>
-
-            <div className="form-group">
-              <label htmlFor="name" className="form-label">Name</label>
-              <input
-                type="text"
-                id="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="form-control styled-input"
-                placeholder="Enter your name"
-                required
+      {auth?.loggedIn ?
+        <>
+          <div className="profile-container">
+            <div className="profile-left">
+              <img
+                src="https://cdn.dribbble.com/users/3258568/screenshots/6815101/face.gif"
+                alt="Profile GIF"
+                className="profile-gif"
               />
             </div>
+            <div className="profile-right">
+              <form onSubmit={handleSubmit} className="profile-form styled-profile-form">
+                <h2 className="profile-title">My Profile</h2>
 
-            <div className="form-group">
-              <label htmlFor="email" className="form-label">Email</label>
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="form-control styled-input"
-                placeholder="Enter your email"
-                required
-              />
+                <div className="form-group">
+                  <label htmlFor="name" className="form-label">Name</label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="form-control styled-input"
+                    placeholder="Enter your name"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="email" className="form-label">Email</label>
+                  <input
+                    type="email"
+                    id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="form-control styled-input"
+                    placeholder="Enter your email"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="phone" className="form-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="form-control styled-input"
+                    placeholder="Enter your phone number"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="address" className="form-label">Address</label>
+                  <input
+                    type="text"
+                    id="address"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    className="form-control styled-input"
+                    placeholder="Enter your address"
+                    required
+                  />
+                </div>
+
+                <button type="submit" className="btn btn-primary styled-btn" disabled={loading}>
+                  {loading ? 'Loading...' : 'Update Profile'}
+                </button>
+              </form>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="phone" className="form-label">Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="form-control styled-input"
-                placeholder="Enter your phone number"
-                required
-              />
-            </div>
-
-            <div className="form-group">
-              <label htmlFor="address" className="form-label">Address</label>
-              <input
-                type="text"
-                id="address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                className="form-control styled-input"
-                placeholder="Enter your address"
-                required
-              />
-            </div>
-
-            <button type="submit" className="btn btn-primary styled-btn" disabled={loading}>
-              {loading ? 'Loading...' : 'Update Profile'}
-            </button>
-          </form>
-        </div>
-      </div>
-
+          </div>
+        </>
+        : navigate('/login')}
     </Layout>
+
   );
 };
 

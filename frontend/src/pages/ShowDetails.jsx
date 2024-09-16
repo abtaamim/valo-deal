@@ -215,8 +215,8 @@ const ShowDetailsPage = () => {
             <Button
               variant="outlined"
               sx={{
-                color: "green",
-                width: { xs: "100%", sm: "48%" },
+                color: "green", height: "50px",
+                //width: { xs: "100%", sm: "48%", md: '100%' },
               }}
               onClick={handleBuyNow}
             >
@@ -226,7 +226,7 @@ const ShowDetailsPage = () => {
               variant="contained"
               sx={{
                 backgroundColor: "skyblue",
-                width: { xs: "100%", sm: "48%" },
+                //width: { xs: "100%", sm: "48%", md: '100%' },
               }}
               onClick={handleAddToCart}
             >

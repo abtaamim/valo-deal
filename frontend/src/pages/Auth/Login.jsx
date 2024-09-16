@@ -29,6 +29,7 @@ const Login = () => {
           ...auth,
           user: res.data.user,
           token: res.data.token,
+          loggedIn: true
         });
         localStorage.setItem('auth', JSON.stringify(res.data));
         console.log(auth.user, auth.token);

@@ -6,6 +6,7 @@ const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     user: null,
     token: "",
+    loggedIn: false
   });
   //axios.defaults.headers.common["Authorization"] = auth?.token;
 
