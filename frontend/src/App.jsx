@@ -26,7 +26,7 @@ import { CartProvider } from './context/CartContext';
 import ShowSubCatItem from './pages/showSubCatItem';
 import Profile from './pages/myAccountPage';
 import PaymentPage from './pages/PaymentPage';
-
+import PaymentForSingleBuy from './pages/PaymentForSingleBuy';
 //tahsin
 import Contact from "./pages/Contact";
 import Policy from "./pages/Policy";
@@ -59,6 +59,7 @@ const App = () => {
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/payment" element={<PaymentPage />} />
+          <Route path="/paymentForSingleBuy" element={<PaymentForSingleBuy />} />
           <Route path="/sell" element={<Sell />} />
           <Route path="/sell-mobile" element={<MobileSellDetailsPage />} />
           <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />

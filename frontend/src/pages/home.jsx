@@ -448,7 +448,7 @@ const HomePage = () => {
   const handleAddToCart = async (itemId, itemType) => {
     try {
       const item = allItems.find((item) => item._id === itemId);
-  
+
       if (item && item.sellerId === auth.user._id) {
         // Product belongs to the current user
         toast.error("You cannot add your own product to the cart.", {
@@ -456,7 +456,7 @@ const HomePage = () => {
         });
         return;
       }
-  
+
       // Proceed with adding the item to the cart
       await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       await updateCartSize();
@@ -465,14 +465,14 @@ const HomePage = () => {
       auth.user
         ? toast.error(error, {
 
-            position: "bottom-right",
-          })
+          position: "bottom-right",
+        })
         : toast.error("Sign in to add to cart.", { position: "bottom-right" });
 
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
-  
+
 
   useEffect(() => {
     const allItems = [
@@ -630,7 +630,7 @@ const HomePage = () => {
             </Box>
             <Grid container spacing={3}>
               {currentPosts.map((item) => (
-                <Grid item key={item._id} xs={12} sm={6} md={3}>
+                <Grid item key={item._id} xs={12} sm={6} md={4} xl={3}>
                   <ListingCard
                     item={item}
                     isLoading={loadingProduct === item._id}

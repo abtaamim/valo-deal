@@ -63,12 +63,12 @@ const ShowDetailsPage = () => {
       const res = await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       if (res.status === 201) {
         await updateCartSize();
-        navigate("/payment");
+        navigate("/paymentForSingleBuy");
       }
 
-    } catch (error) { //axios take onle 200 status as success and others as error
+    } catch (error) { //axios take only '200 status' as success and others as error
       if (error.response && error.response.status === 400) {
-        navigate("/payment");
+        navigate("/paymentForSingleBuy",);
       }
       console.log(error);
     }

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography, TextField, Grid, Button, Paper, CircularProgress, Snackbar, Radio, RadioGroup, FormControlLabel, FormControl, Avatar } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import axios from 'axios';
 import { useAuth } from '../context/auth';
@@ -15,8 +15,9 @@ const PaymentPage = () => {
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
   const [auth] = useAuth();
-
+  const location = useLocation();
   const axiosPrivate = useAxiosPrivate();
+
 
   useEffect(() => {
     const fetchCartItems = async () => {
