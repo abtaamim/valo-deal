@@ -30,6 +30,14 @@ const ListingCard = (props) => {
     return text;
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 0,
+    }).format(price).replace('BDT', '৳');
+  };
+
   return (
     <Grid container spacing={2} sx={{ justifyContent: 'flex-start' }}>
       {items.map((item) => (
@@ -123,10 +131,11 @@ const ListingCard = (props) => {
                   {item.description}
                 </Typography>
               </CardContent>
+
               <Box sx={{}}>
                 <CardActions sx={{ justifyContent: 'space-between', }}>
                   <Typography variant="body2" sx={{ color: '#ff8300', fontWeight: 600 }}>
-                    Price: ${item.price}
+                    Price: {formatPrice(item.price)}
                   </Typography>
                   <IconButton
                     onClick={(e) => {

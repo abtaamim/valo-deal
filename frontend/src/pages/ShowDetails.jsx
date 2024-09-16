@@ -11,30 +11,28 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  ListItemButton,
 } from "@mui/material";
 import { useCart } from "../context/CartContext";
 import { Toaster, toast } from "sonner";
-import Person2OutlinedIcon from '@mui/icons-material/Person2Outlined';
+import Person2OutlinedIcon from "@mui/icons-material/Person2Outlined";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useAuth } from "../context/auth";
-import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate } from "react-router-dom";
+
 const ShowDetailsPage = () => {
   const [item, setItem] = useState({});
   const [selectedColor, setSelectedColor] = useState("");
   const { itemType, itemId } = useParams();
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
-  const fixedColors = ["Red", "Blue", "White", "Black"];
   const [sellerInfo, setSellerInfo] = useState({});
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
+
   const fetchItem = async () => {
-    const res = await axiosPrivate.get(
-      `/details/${itemType}/${itemId}`
-    );
+    const res = await axiosPrivate.get(`/details/${itemType}/${itemId}`);
     setItem(res.data);
   };
 
@@ -44,44 +42,38 @@ const ShowDetailsPage = () => {
 
   useEffect(() => {
     const fetchSellerInfo = async () => {
-      const res = await axios.get(`https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${item.sellerId}`)
-      setSellerInfo(res.data.seller);
-    }
+      if (item.sellerId) {
+        const res = await axios.get(
+          `https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${item.sellerId}`
+        );
+        setSellerInfo(res.data.seller);
+      }
+    };
     fetchSellerInfo();
-  }, [item.sellerId])
+  }, [item.sellerId]);
 
   const handleNavigate = () => {
-    navigate('/seller-info', {
+    navigate("/seller-info", {
       state: {
         phone: `${sellerInfo.phone}`,
-        name: `${sellerInfo.name}`, email: `${sellerInfo.email}`, address: `${sellerInfo.address}`
-      }
+        name: `${sellerInfo.name}`,
+        email: `${sellerInfo.email}`,
+        address: `${sellerInfo.address}`,
+      },
     });
   };
-  const handleBuyNow = async () => {
-    try {
-      const res = await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
-      if (res.status === 201) {
-        await updateCartSize();
-        navigate("/paymentForSingleBuy");
-      }
 
-    } catch (error) { //axios take only '200 status' as success and others as error
-      if (error.response && error.response.status === 400) {
-        navigate("/paymentForSingleBuy",);
-      }
-      console.log(error);
-    }
+
+  const handleBuyNow = () => {
+    navigate("/single-item-payment", { state: { item } });
+
   };
 
   const handleAddToCart = async () => {
     try {
-      await axiosPrivate.post(
-        `/cart/${itemType}/${itemId}`
-      );
+      await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       await updateCartSize();
       toast.success("Item added to the cart!");
-      console.log('cart')
     } catch (error) {
       console.error("Error adding item to cart:", error);
     }
@@ -89,6 +81,15 @@ const ShowDetailsPage = () => {
 
   const handleColorChange = (event) => {
     setSelectedColor(event.target.value);
+  };
+
+  // Format price for Bangladeshi Taka
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 0,
+    }).format(price).replace('BDT', '৳');
   };
 
   return (
@@ -134,7 +135,16 @@ const ShowDetailsPage = () => {
                 sx={{ width: "100%", height: "100%" }}
               >
                 {item.imgUrl.map((url, index) => (
-                  <div key={index} style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <div
+                    key={index}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
                     <img
                       src={url}
                       alt={`Product ${index}`}
@@ -159,14 +169,14 @@ const ShowDetailsPage = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
-            alignItems: 'flex-start'
+            alignItems: "flex-start",
           }}
         >
           <Typography variant="h4" sx={{ mb: "20px", color: "orange", fontSize: { xs: "1.5rem", sm: "2rem" } }}>
             {item.brand} {item.model}
           </Typography>
           <Typography variant="h6" sx={{ fontSize: { xs: "1.2rem", sm: "1.5rem" } }}>
-            Price: ${item.price}
+            Price: {formatPrice(item.price)}
           </Typography>
           <Typography variant="body1" sx={{ mt: "10px", fontSize: { xs: "1rem", sm: "1.2rem" } }}>
             Condition: {item.condition}
@@ -179,65 +189,53 @@ const ShowDetailsPage = () => {
           <Typography variant="body2" sx={{ mt: "10px", fontSize: { xs: "0.9rem", sm: "1.2rem" } }}>
             Description: {item.description}
           </Typography>
-          <Button onClick={handleNavigate} sx={{ paddingLeft: '0', textTransform: 'none', color: 'brown' }} >
-            <Person2OutlinedIcon sx={{ color: 'brown' }} />
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+          <Button onClick={handleNavigate} sx={{ paddingLeft: "0", textTransform: "none", color: "brown" }}>
+            <Person2OutlinedIcon sx={{ color: "brown" }} />
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
               Seller: {sellerInfo.name}
             </Typography>
           </Button>
 
-          <FormControl fullWidth sx={{ mt: "20px" }}>
-            <InputLabel id="color-select-label">Select Color</InputLabel>
-            <Select
-              labelId="color-select-label"
-              id="color-select"
-              value={selectedColor}
-              label="Select Color"
-              onChange={handleColorChange}
-            >
-              {fixedColors.map((color, index) => (
-                <MenuItem key={index} value={color}>
-                  {color}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
           <Box
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: "space-between",
-              mt: "20px",
-              gap: "10px",
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between',
+              mt: '20px',
+              gap: '10px',
             }}
           >
             <Button
-              variant="outlined"
+              variant="contained"
               sx={{
+
                 color: "green", height: "50px",
                 //width: { xs: "100%", sm: "48%", md: '100%' },
+
               }}
               onClick={handleBuyNow}
             >
               Buy Now
             </Button>
+          
             <Button
               variant="contained"
               sx={{
+
                 backgroundColor: "skyblue",
                 //width: { xs: "100%", sm: "48%", md: '100%' },
+
               }}
               onClick={handleAddToCart}
             >
               Add to Cart
             </Button>
           </Box>
+          
         </Grid>
       </Grid>
       <Toaster richColors />
     </Card>
-
   );
 };
 
