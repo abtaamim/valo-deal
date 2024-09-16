@@ -208,9 +208,10 @@ const ShowDetailsPage = () => {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: 'green', 
-                color: 'white', 
-                width: { xs: '100%', sm: '48%' },
+
+                color: "green", height: "50px",
+                //width: { xs: "100%", sm: "48%", md: '100%' },
+
               }}
               onClick={handleBuyNow}
             >
@@ -220,9 +221,10 @@ const ShowDetailsPage = () => {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: 'orange', 
-                color: 'black', 
-                width: { xs: '100%', sm: '48%' }, 
+
+                backgroundColor: "skyblue",
+                //width: { xs: "100%", sm: "48%", md: '100%' },
+
               }}
               onClick={handleAddToCart}
             >

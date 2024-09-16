@@ -54,7 +54,7 @@ const SignInPopover = ({ className }) => {
             ) : (
               <Person2OutlinedIcon />
             )
-          ) : auth.user ? (
+          ) : auth.loggedIn ? (
             `Hello, ${auth.user.name}`
           ) : (
             "Hello, SignIn"
