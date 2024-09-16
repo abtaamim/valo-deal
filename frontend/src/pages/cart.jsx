@@ -35,6 +35,14 @@ const CartPage = () => {
     setSelectedItemId(null);
   };
 
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'BDT',
+    minimumFractionDigits: 0,
+  }).format(price).replace('BDT', '৳');
+};
+
   const fetchItems = async () => {
     try {
       setLoading(true); 
@@ -155,8 +163,9 @@ const CartPage = () => {
                         fontSize: { xs: "1rem", sm: "1.2rem" },
                       }}
                     >
-                      Total: ${totalSum.toFixed(2)}
+                      Total: {formatPrice(totalSum)}
                     </Typography>
+                    
                   </Box>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>

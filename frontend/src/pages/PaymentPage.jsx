@@ -109,6 +109,14 @@ const PaymentPage = () => {
     setErrorSnackbarOpen(false); // Close error snackbar
   };
 
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 0,
+    }).format(price).replace('BDT', '৳');
+  };
+
   return (
     <Box sx={{ p: 4 }}>
       <Typography variant="h4" gutterBottom sx={{ textAlign: 'center', color: 'orange' }}>
@@ -132,8 +140,9 @@ const PaymentPage = () => {
                 </Box>
               </Box>
               <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
-                ${item.price.toFixed(2)}
+                {formatPrice(item.price)}
               </Typography>
+              
             </Paper>
           </Grid>
         ))}
@@ -151,8 +160,9 @@ const PaymentPage = () => {
             borderRadius: '4px',
           }}
         >
-          Total: ${totalSum.toFixed(2)}
+          Total: {formatPrice(totalSum)}
         </Typography>
+        
 
         <TextField
           fullWidth
@@ -196,7 +206,7 @@ const PaymentPage = () => {
           </RadioGroup>
         </FormControl>
 
-        <Box sx={{ textAlign: 'center', mt: 2 }}> {/* New line for confirm button */}
+        <Box sx={{ textAlign: 'center', mt: 2 }}> 
           <Button
             variant="contained"
             sx={{
@@ -207,12 +217,20 @@ const PaymentPage = () => {
               '&:hover': {
                 backgroundColor: 'red',
               },
+              marginRight: 2,
             }}
             onClick={handleConfirmOrder}
             disabled={loading}
           >
             {loading ? <CircularProgress size={24} /> : 'Confirm'}
           </Button>
+          <Button
+                    variant="contained"
+                    color="error"
+                    onClick={() => navigate(-1)}
+                  >
+                    Cancel
+                  </Button>
         </Box>
       </Box>
 

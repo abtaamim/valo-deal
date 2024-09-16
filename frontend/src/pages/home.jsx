@@ -162,6 +162,14 @@ const categories = [
   },
 ];
 
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'BDT',
+    minimumFractionDigits: 0,
+  }).format(price).replace('BDT', '৳');
+};
+
 const CategorySection = () => {
   return (
     <Box sx={{ p: 2 }}>
@@ -203,7 +211,7 @@ const CategorySection = () => {
                     sx={{
                       transition: "transform 0.6s ease-in-out",
                       "&:hover": {
-                        transform: "scale(1.3)", // More pronounced zoom on hover
+                        transform: "scale(1.3)", 
                       },
                     }}
                   />
@@ -352,7 +360,7 @@ const ListingCard = ({
       sx={{ justifyContent: "space-between", backgroundColor: "#222324" }}
     >
       <Typography variant="body2" sx={{ color: "#cecdcd", fontWeight: "bold" }}>
-        Price: ${item.price}
+        Price: {formatPrice(item.price)}
       </Typography>
       <Tooltip title="Add this item to your cart">
         <IconButton
