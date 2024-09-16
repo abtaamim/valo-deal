@@ -73,15 +73,13 @@ const getRecentlyViewedItems = async (req, res) => {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
+    const itemsToRemove = [];
 
     const recentlyViewedItemsPromises = user.recentlyViewedItems.map(async (recentlyViewed) => {
       const ItemModel = getItemModel(recentlyViewed.itemType);
       const item = await ItemModel.findOne({ _id: recentlyViewed.itemId, sold: false }).exec();
       if (!item) {
-        user.recentlyViewedItems = user.recentlyViewedItems.filter(
-          item => item.itemId.toString() !== recentlyViewed.itemId
-        );
-        await user.save();
+        itemsToRemove.push(recentlyViewed.itemId.toString());
         return null;
       }
       return { ...item._doc, itemType: recentlyViewed.itemType };
@@ -89,6 +87,13 @@ const getRecentlyViewedItems = async (req, res) => {
 
     const recentlyViewedItemsResults = await Promise.all(recentlyViewedItemsPromises);
     const recentlyViewedItems = recentlyViewedItemsResults.filter(item => item !== null);
+
+    if (itemsToRemove.length > 0) {
+      user.recentlyViewedItems = user.recentlyViewedItems.filter(
+        item => !itemsToRemove.includes(item.itemId.toString())
+      );
+      await user.save();
+    }
 
     console.log("Recently viewed items after processing:", recentlyViewedItems);
 
@@ -98,6 +103,7 @@ const getRecentlyViewedItems = async (req, res) => {
     res.status(500).json({ success: false, message: error.message });
   }
 };
+
 
 
 

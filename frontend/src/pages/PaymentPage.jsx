@@ -29,14 +29,14 @@ const PaymentPage = () => {
     };
 
     fetchCartItems();
-  }, []);
+  }, [auth]);
 
   const totalSum = cartItems.reduce((acc, item) => acc + item.price, 0);
 
   const handleConfirmOrder = async () => {
 
     if (!address) {
-      setErrorSnackbarOpen(true); // Open error snackbar if address is missing
+      setErrorSnackbarOpen(true);
       return;
     }
     setLoading(true);
