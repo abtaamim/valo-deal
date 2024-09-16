@@ -206,7 +206,7 @@ const ShowDetailsPage = () => {
             }}
           >
             <Button
-              variant="contained"
+              variant="outlined"
               sx={{
 
                 color: "green", height: "50px",
@@ -217,7 +217,7 @@ const ShowDetailsPage = () => {
             >
               Buy Now
             </Button>
-          
+
             <Button
               variant="contained"
               sx={{
@@ -231,7 +231,7 @@ const ShowDetailsPage = () => {
               Add to Cart
             </Button>
           </Box>
-          
+
         </Grid>
       </Grid>
       <Toaster richColors />
