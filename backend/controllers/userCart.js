@@ -45,7 +45,7 @@ const addToCart = async (req, res) => {
     }
 
     // Add item to the cart
-    user.cartItems.push({ itemId: itemId, itemType: itemType });
+    user.cartItems.push({ itemId: itemId, itemType: itemType, addedTime: new Date() });
     await user.save();
 
     res.status(201).json({ success: true, message: 'Item added to cart.', cartItems: user.cartItems });
@@ -89,9 +89,10 @@ const getCartItems = async (req, res) => {
     }
 
     let itemGotSoldFlag = false;
-    const cartItemRes = await Promise.all(user.cartItems.map(async (cartItem) => {
+    const sortedCartItems = user.cartItems.sort((a, b) => new Date(b.addedTime) - new Date(a.addedTime));
+    const cartItemRes = await Promise.all(sortedCartItems.map(async (cartItem) => {
       const ItemModel = getItemModel(cartItem.itemType);
-      const item = await ItemModel.findOne({ _id: cartItem.itemId });
+      const item = await ItemModel.findOne({ _id: cartItem.itemId })
 
       if (!item) {
         user.cartItems = user.cartItems.filter(ci => ci.itemId.toString() !== cartItem.itemId.toString());
