@@ -46,6 +46,15 @@ const PreviousOrders = () => {
     fetchOrders();
   }, [axiosPrivate]);
 
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'BDT',
+      minimumFractionDigits: 0,
+    }).format(price).replace('BDT', '৳');
+  };
+
   return (
     <div style={{ padding: "30px", backgroundColor: "#232222" }}>
       <Title level={2} style={{ textAlign: "center", marginBottom: "20px", marginTop: "1px", color: "#FF8C00" }}>
@@ -92,8 +101,9 @@ const PreviousOrders = () => {
                   strong
                   style={{ display: "block", fontSize: "16px", marginBottom: "8px", color: "#fff" }}
                 >
-                  {`Price: $${order.price}`}
+                  {`Price: ${formatPrice(order.price)}`}
                 </Text>
+                
                 <Text
                   style={{
                     display: "block",
