@@ -211,7 +211,7 @@ const CategorySection = () => {
                     sx={{
                       transition: "transform 0.6s ease-in-out",
                       "&:hover": {
-                        transform: "scale(1.3)", 
+                        transform: "scale(1.3)",
                       },
                     }}
                   />
@@ -433,9 +433,9 @@ const HomePage = () => {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (!token) {
-      console.log("User is not authenticated.");
+      // console.log("User is not authenticated.");
     } else {
-      console.log("User is authenticated.");
+      // console.log("User is authenticated.");
     }
     fetchItems();
     updateCartSize();
