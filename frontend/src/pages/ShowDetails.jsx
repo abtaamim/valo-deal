@@ -19,7 +19,7 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useAuth } from "../context/auth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const ShowDetailsPage = () => {
   const [item, setItem] = useState({});
@@ -30,7 +30,8 @@ const ShowDetailsPage = () => {
   const [sellerInfo, setSellerInfo] = useState({});
   const navigate = useNavigate();
   const { updateCartSize } = useCart();
-
+  const location = useLocation();
+  const { prevUrl } = location.state || '';
   const fetchItem = async () => {
     const res = await axiosPrivate.get(`/details/${itemType}/${itemId}`);
     setItem(res.data);
@@ -38,6 +39,7 @@ const ShowDetailsPage = () => {
 
   useEffect(() => {
     fetchItem();
+    console.log(prevUrl);
   }, [itemId, itemType]);
 
   useEffect(() => {
@@ -50,6 +52,7 @@ const ShowDetailsPage = () => {
       }
     };
     fetchSellerInfo();
+
   }, [item.sellerId]);
 
   const handleNavigate = () => {
@@ -217,19 +220,21 @@ const ShowDetailsPage = () => {
             >
               Buy Now
             </Button>
+            {prevUrl !== '/cart' ?
+              <Button
+                variant="contained"
+                sx={{
 
-            <Button
-              variant="contained"
-              sx={{
+                  backgroundColor: "skyblue",
+                  //width: { xs: "100%", sm: "48%", md: '100%' },
 
-                backgroundColor: "skyblue",
-                //width: { xs: "100%", sm: "48%", md: '100%' },
-
-              }}
-              onClick={handleAddToCart}
-            >
-              Add to Cart
-            </Button>
+                }}
+                onClick={handleAddToCart}
+              >
+                Add to Cart
+              </Button>
+              : null
+            }
           </Box>
 
         </Grid>
