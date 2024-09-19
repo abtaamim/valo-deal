@@ -30,7 +30,7 @@ const useAxiosPrivate = () => {
           return axiosPrivate(prevRequest);
         }
         if (error?.response?.status === 401) {
-          setAuth({ ...auth, loggedIn: false });
+          setAuth({ ...auth, user:{}, token:'', loggedIn: false });
           navigate('/login', { state: { from: location }, replace: true });
         }
         return Promise.reject(error);

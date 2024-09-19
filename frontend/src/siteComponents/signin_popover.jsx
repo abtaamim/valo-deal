@@ -162,6 +162,24 @@ const SignInPopover = ({ className }) => {
               </ListItemButton>
               <ListItemButton
                 component={RouterLink}
+                to="/previous-sold"
+                underline="hover"
+                onClick={popupState.close}
+                sx={{
+                  fontSize: "16px",
+                  color: "aliceblue",
+                  bgcolor: "rgb(0, 6, 12)",
+                  "&:hover": {
+                    backgroundColor: "rgb(27, 37, 54)",
+                    color: "rgb(5, 205, 255)",
+                  },
+                }}
+              >
+
+                Previous Sold
+              </ListItemButton>
+              <ListItemButton
+                component={RouterLink}
                 to="/previous-orders"
                 underline="hover"
                 onClick={popupState.close}

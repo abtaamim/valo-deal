@@ -19,6 +19,7 @@ import SearchPage from './pages/SearchPage';
 import ShowDetailsPage from './pages/ShowDetails';
 import PreviousOrders from './pages/PreviousOrdersPage';
 import SellerInfo from './pages/SellerInfoPage';
+import PreviousSold from './pages/mySoldProduct';
 //import ComputerSellPage from './pages/computerSell';
 
 import { ComputerSellPage, VehicleSellPage, ElectronicsSellPage } from './pages/sellDetailsPage';
@@ -73,6 +74,7 @@ const App = () => {
             <Route path="/added-items" element={<AddedItemList />} />
             <Route path="/recently-viewed" element={<RecentlyViewedItemPage />} />
             <Route path='/previous-orders' element={<PreviousOrders />} />
+            <Route path="/previous-sold" element={<PreviousSold />} />
           </Route>
 
           <Route path="/search/:keyword" element={<SearchPage />} />
