@@ -62,6 +62,7 @@ const ShowDetailsPage = () => {
         name: `${sellerInfo.name}`,
         email: `${sellerInfo.email}`,
         address: `${sellerInfo.address}`,
+        id: item.sellerId
       },
     });
   };
