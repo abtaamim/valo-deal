@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Grid, Card, CardMedia, CardContent, CardActions, Typography, Box, IconButton, CircularProgress } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
 import { color } from 'framer-motion';
 
@@ -10,7 +11,7 @@ const ListingCard = (props) => {
   const [loading, setLoading] = useState(null); // State to track loading for each item
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-
+  const location = useLocation();
   const handleRecentlyView = async (itemType, itemId) => {
     setLoading(itemId); // Start loading when item is clicked
     try {
@@ -18,8 +19,9 @@ const ListingCard = (props) => {
     } catch (e) {
       console.error(`Error viewing item:`, e);
     } finally {
-      setLoading(null); // Reset loading state
-      navigate(`/details/${itemType}/${itemId}`);
+      setLoading(null);
+      console.log("path", location.pathname)
+      navigate(`/details/${itemType}/${itemId}`, { state: { prevUrl: location.pathname } });
     }
   };
 
@@ -39,7 +41,7 @@ const ListingCard = (props) => {
   };
 
   return (
-    <Grid container spacing={2} sx={{ justifyContent: 'flex-start' }}>
+    <Grid container spacing={10} sx={{ justifyContent: 'flex-start' }}>
       {items.map((item) => (
         <Grid item key={item._id} xs={12} sm={6} lg={4} xl={3}>
           <Card
@@ -47,7 +49,7 @@ const ListingCard = (props) => {
               display: 'flex',
               flexDirection: { xs: 'column', sm: 'row' },
               height: { xs: 'auto', sm: '260px' },
-              width: { lg: '400px' },
+              width: { lg: '360px' },
               borderRadius: '10px',
               overflow: 'hidden',
               cursor: 'pointer',
@@ -95,7 +97,7 @@ const ListingCard = (props) => {
                 <Typography variant="h6">View Details</Typography>
               </Box>
             </Box>
-            <Box sx={{ display: 'flex', height: '100%', alignSelf: 'self-start', flexDirection: 'column', width: { xs: '100%', sm: '60%' }, padding: '12px' }}>
+            <Box sx={{ display: 'flex', height: '100%', alignSelf: 'self-start', flexDirection: 'column', width: { xs: '100%', sm: '60%' }, padding: '2px' }}>
               <CardContent sx={{ flexGrow: 1, alignItems: 'flex-start' }}>
                 <Typography gutterBottom variant="h6" component="div" sx={{ textAlign: 'left' }} >
                   {item.brand} {item.model}

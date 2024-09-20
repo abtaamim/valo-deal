@@ -22,8 +22,8 @@ const SearchBar = () => {
   const theme = useTheme();
   const lessThan850px = useMediaQuery('(max-width:1000px)');
   const { keyword } = useParams();
-  console.log("keyword+++", keyword);
-  console.log("values.keyword", values.keyWord);
+  //console.log("keyword+++", keyword);
+  //console.log("values.keyword", values.keyWord);
   const isXs = useMediaQuery('(max-width:450px)');
   const axiosPrivate = useAxiosPrivate();
   const handleSubmit = async (e) => {

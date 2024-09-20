@@ -5,7 +5,7 @@ import { useAuth } from "../context/auth";
 import { useNavigate, useLocation } from "react-router-dom";
 const useAxiosPrivate = () => {
   const refresh = useRefreshToken();
-  const [auth] = useAuth();
+  const [auth, setAuth] = useAuth();
   const navigate = useNavigate()
   const location = useLocation();
   useEffect(() => {
@@ -30,7 +30,7 @@ const useAxiosPrivate = () => {
           return axiosPrivate(prevRequest);
         }
         if (error?.response?.status === 401) {
-
+          setAuth({ ...auth, user:{}, token:'', loggedIn: false });
           navigate('/login', { state: { from: location }, replace: true });
         }
         return Promise.reject(error);

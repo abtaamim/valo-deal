@@ -50,14 +50,48 @@ router.post('/setOrder', async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 })
-
+router.get('/ItemType/:id', requireSignIn, async (req, res) => {
+  const sellerId = req.params.id;
+  const soldItemTypes = [{ name: 'mobiles', number: 0 }, { name: 'electronics', number: 0 },
+  { name: 'computers', number: 0 }, { name: 'vehicles', number: 0 }
+  ]
+  const user = await User.findById(sellerId);
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });  // add a 404 response for user not found
+  }
+  console.log(user)
+  try {
+    const soldItems = await soldItemModel.find({ sellerId: sellerId }).exec();
+    console.log(soldItems)
+    const items = await Promise.all(soldItems.map(async (cur_item) => {
+      const ItemModel = getItemModel(cur_item.itemType);
+      if (cur_item.itemType === 'mobiles' || cur_item.itemType === 'mobile') {
+        soldItemTypes[0].number++
+      }
+      else if (cur_item.itemType === 'electronics' || cur_item.itemType === 'electronic') {
+        soldItemTypes[1].number++
+      }
+      else if (cur_item.itemType === 'computers' || cur_item.itemType === 'computer') {
+        soldItemTypes[2].number++
+      }
+      else if (cur_item.itemType === 'vehicles' || cur_item.itemType === 'vehicle') {
+        soldItemTypes[3].number++
+      }
+      const item = await ItemModel.findById(cur_item.itemId);
+      return { soldItemTypes: soldItemTypes };
+    }));
+    console.log(soldItemTypes)
+    res.status(200).json({ soldItemTypes: soldItemTypes })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
 router.get('/soldItem', requireSignIn, async (req, res) => {
   const userId = req.user._id;
+
   try {
     const soldItems = await soldItemModel.find({ sellerId: userId }).exec();
-
-
-    const items = await Promise.all(boughtItems.map(async (cur_item) => {
+    const items = await Promise.all(soldItems.map(async (cur_item) => {
       const ItemModel = getItemModel(cur_item.itemType);
       const item = await ItemModel.findById(cur_item.itemId);
       return { ...item._doc, soldDate: cur_item.soldDate };
@@ -67,6 +101,7 @@ router.get('/soldItem', requireSignIn, async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 })
+
 router.get('/boughtItem', requireSignIn, async (req, res) => {
 
   try {

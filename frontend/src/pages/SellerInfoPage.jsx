@@ -1,12 +1,25 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Typography, Button } from '@mui/material';
-
+import useAxiosPrivate from '../hooks/useAxiosPrivate';
 const SellerInfo = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { name, phone, address, email } = location.state || {};
-
+  const { name, phone, address, email, id } = location.state || {};
+  const axiosPrivate = useAxiosPrivate();
+  const [itemType, setItemType] = useState([]);
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await axiosPrivate.get(`/order/ItemType/${id}`);
+        setItemType(res.data.soldItemTypes)
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    }
+    fetchOrders();
+  }, [id, axiosPrivate]);
   return (
     <Box
       sx={{
@@ -87,13 +100,44 @@ const SellerInfo = () => {
         }}
       >
         <span>Email:</span> {email}
+      </Typography >
+      {/* <Box sx={{ display: 'flex', flexDirection: 'row' }}> */}
+      <Typography sx={{
+        fontSize: '1.1rem',
+        color: '#ffa500',
+        fontWeight: 'bold',
+        mt: '10px'
+      }}>
+        Items sold:
       </Typography>
+      <Box sx={{ display: 'flex', flexDirection: 'column', paddingLeft: '10px' }}>
+        {itemType.map((item, index) => (
+          item.number > 0 ? <>
+            <Typography
+              sx={{
+                fontSize: '1.1rem',
+                color: '#e0e0e0',
+                marginTop: '10px',
+                '& span': {
+                  fontWeight: 'bold',
+                  color: 'violet',
+                },
+              }}
+            >
+              <span>{item.name}: </span> {item.number}
+            </Typography>
+
+          </> : null
+
+        ))}
+      </Box>
+      {/* </Box> */}
       <Box sx={{ textAlign: 'center', marginTop: '20px' }}>
         <Button
           variant="contained"
           color="primary"
           onClick={() => navigate(-1)}
-          sx={{ backgroundColor: '#09c231', '&:hover': { backgroundColor: '#096a1e' } }}
+          sx={{ backgroundColor: 'skyblue', '&:hover': { backgroundColor: '#096a1e' } }}
         >
           Back
         </Button>

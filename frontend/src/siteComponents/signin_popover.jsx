@@ -54,7 +54,7 @@ const SignInPopover = ({ className }) => {
             ) : (
               <Person2OutlinedIcon />
             )
-          ) : auth.user ? (
+          ) : auth.loggedIn ? (
             `Hello, ${auth.user.name}`
           ) : (
             "Hello, SignIn"
@@ -91,7 +91,7 @@ const SignInPopover = ({ className }) => {
         }}
       >
         <Box p={0} sx={{ width: "250px" }}>
-          {!auth.user ? (
+          {!auth.loggedIn ? (
             <Box mt={2} p={2}>
               <ListItemButton onClick={popupState.close}
                 component={RouterLink}
@@ -159,6 +159,24 @@ const SignInPopover = ({ className }) => {
                 }}
               >
                 Cart
+              </ListItemButton>
+              <ListItemButton
+                component={RouterLink}
+                to="/previous-sold"
+                underline="hover"
+                onClick={popupState.close}
+                sx={{
+                  fontSize: "16px",
+                  color: "aliceblue",
+                  bgcolor: "rgb(0, 6, 12)",
+                  "&:hover": {
+                    backgroundColor: "rgb(27, 37, 54)",
+                    color: "rgb(5, 205, 255)",
+                  },
+                }}
+              >
+
+                Previous Sold
               </ListItemButton>
               <ListItemButton
                 component={RouterLink}
