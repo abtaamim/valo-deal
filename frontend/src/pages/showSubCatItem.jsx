@@ -77,9 +77,9 @@ const ShowSubCatItem = () => {
   return (
     <>
       <Box sx={{ p: 2 }}>
-        <Typography variant="h4" gutterBottom>
+        {/* <Typography variant="h4" gutterBottom>
           {subCat}
-        </Typography>
+        </Typography> */}
         <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
           {/* Render both mobiles and computers */}
           {items?.length === 0 ? (

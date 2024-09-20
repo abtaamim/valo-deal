@@ -9,7 +9,6 @@ import {
   CardMedia,
   CardContent,
   CardActions,
-  Button,
   IconButton,
   ListItemButton,
   MenuItem,
@@ -17,9 +16,11 @@ import {
   Select,
   InputLabel,
   Pagination,
+  Modal,
 } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import AddShoppingCartSharpIcon from "@mui/icons-material/AddShoppingCartSharp";
+import CloseIcon from "@mui/icons-material/Close";
 import { formatDistanceToNow } from "date-fns";
 import { useAuth } from "../context/auth";
 import { useCart } from "../context/CartContext";
@@ -27,19 +28,28 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import image1 from "../assests/h1.jpg";
-import image2 from "../assests/h2.jpg";
-import image3 from "../assests/h3.jpg";
-import image4 from "../assests/h4.jpg";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import "../siteComponents/styles.css";
 
+import image1 from "../assests/h1.jpg";
+import image2 from "../assests/h2.jpg";
+import image3 from "../assests/h3.jpg";
+import image4 from "../assests/h4.jpg";
 import image5 from "../assests/mobile.png";
 import image6 from "../assests/pc.png";
 import image7 from "../assests/car.jpg";
 import image8 from "../assests/camera.png";
+import offerImage from "../assests/offer.jpg";
+
+const getTodayDate = () => {
+  const today = new Date();
+  const yyyy = today.getFullYear();
+  const mm = String(today.getMonth() + 1).padStart(2, "0");
+  const dd = String(today.getDate()).padStart(2, "0");
+  return `${yyyy}-${mm}-${dd}`;
+};
 
 const HomeSlider = () => (
   <Box sx={{ marginBottom: "1px" }}>
@@ -107,33 +117,17 @@ const HomeSlider = () => (
         )
       }
     >
-      <div class="image-container">
-        <img
-          src={image1}
-          alt="Essentials for Gamers"
-        // style={{ height: "300px", objectFit: "cover" }}
-        />
+      <div className="image-container">
+        <img src={image1} alt="Essentials for Gamers" />
       </div>
-      <div class="image-container">
-        <img
-          src={image2}
-          alt="Deals in PCs"
-        // style={{ height: "300px", objectFit: "cover" }}
-        />
+      <div className="image-container">
+        <img src={image2} alt="Deals in PCs" />
       </div>
-      <div class="image-container">
-        <img
-          src={image3}
-          alt="Home décor under $50"
-        // style={{ height: "300px", objectFit: "cover" }}
-        />
+      <div className="image-container">
+        <img src={image3} alt="Home décor under $50" />
       </div>
-      <div class="image-container">
-        <img
-          src={image4}
-          alt="Shop deals in Fashion"
-        // style={{ height: "300px", objectFit: "cover" }}
-        />
+      <div className="image-container">
+        <img src={image4} alt="Shop deals in Fashion" />
       </div>
     </Carousel>
   </Box>
@@ -163,11 +157,13 @@ const categories = [
 ];
 
 const formatPrice = (price) => {
-  return new Intl.NumberFormat('en-IN', {
-    style: 'currency',
-    currency: 'BDT',
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "BDT",
     minimumFractionDigits: 0,
-  }).format(price).replace('BDT', '৳');
+  })
+    .format(price)
+    .replace("BDT", "৳");
 };
 
 const CategorySection = () => {
@@ -215,7 +211,7 @@ const CategorySection = () => {
                       },
                     }}
                   />
-                  {/* Gradient overlay */}
+
                   <Box
                     className="imageOverlay"
                     sx={{
@@ -281,7 +277,7 @@ const ListingCard = ({
       backgroundColor: "#1f232c",
       position: "relative",
       overflow: "hidden",
-      transition: "transform 0.4s ease-in-out", // Smoother transition
+      transition: "transform 0.4s ease-in-out",
       "&:hover": {
         transform: "scale(1.05)",
         boxShadow: "0 6px 20px rgba(0, 0, 0, 0.15)",
@@ -382,9 +378,14 @@ const ListingCard = ({
   </Card>
 );
 
-
 const HomePage = () => {
   const navigate = useNavigate();
+
+  const handleCloseModalAndNavigate = () => {
+    setOpenModal(false);
+    navigate("/sub-category-item/Electronics/Laptops");
+  };
+
   const [items, setItems] = useState({
     mobiles: [],
     computers: [],
@@ -402,21 +403,25 @@ const HomePage = () => {
   const [sortOrder, setSortOrder] = useState("");
   const [allItems, setAllItems] = useState([]);
   const axiosPrivate = useAxiosPrivate();
+
+  const [openModal, setOpenModal] = useState(false);
+
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const mobilesResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-mobiles"
-      );
-      const computersResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-computers"
-      );
-      const electronicResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-electronics"
-      );
-      const vehicleResponse = await axios.get(
-        "https://valo-deal-backend.vercel.app/sell/latest-vehicles"
-      );
+      const [
+        mobilesResponse,
+        computersResponse,
+        electronicResponse,
+        vehicleResponse,
+      ] = await Promise.all([
+        axios.get("https://valo-deal-backend.vercel.app/sell/latest-mobiles"),
+        axios.get("https://valo-deal-backend.vercel.app/sell/latest-computers"),
+        axios.get(
+          "https://valo-deal-backend.vercel.app/sell/latest-electronics"
+        ),
+        axios.get("https://valo-deal-backend.vercel.app/sell/latest-vehicles"),
+      ]);
       setItems({
         mobiles: mobilesResponse.data.latestMobile,
         computers: computersResponse.data.latestComputer,
@@ -425,71 +430,70 @@ const HomePage = () => {
       });
     } catch (error) {
       console.error("Error fetching items:", error);
+      toast.error("Failed to fetch items. Please try again later.", {
+        position: "bottom-right",
+      });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      // console.log("User is not authenticated.");
-    } else {
-      // console.log("User is authenticated.");
-    }
     fetchItems();
     updateCartSize();
-  }, [auth]);
+  }, []);
 
   const handleViewDetails = async (itemId, itemType) => {
-    //window.scrollTo({ top: 0, behavior: "smooth" });
-    // navigate(`/details/${itemType}/${itemId}`);
-    await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
-    setLoadingProduct(itemId);
+    try {
+      await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
+      setLoadingProduct(itemId);
 
-    setTimeout(() => {
-      navigate(`/details/${itemType}/${itemId}`);
-      setLoadingProduct(null);
-    }, 1500);
+      setTimeout(() => {
+        navigate(`/details/${itemType}/${itemId}`);
+        setLoadingProduct(null);
+      }, 1500);
+    } catch (error) {
+      console.error("Error viewing details:", error);
+      toast.error("Failed to load details. Please try again.", {
+        position: "bottom-right",
+      });
+    }
   };
 
   const handleAddToCart = async (itemId, itemType) => {
     try {
       const item = allItems.find((item) => item._id === itemId);
 
-      if (item && item.sellerId === auth.user._id) {
-        // Product belongs to the current user
+      if (item && item.sellerId === auth.user?._id) {
         toast.error("You cannot add your own product to the cart.", {
           position: "bottom-right",
         });
         return;
       }
 
-      // Proceed with adding the item to the cart
       await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       await updateCartSize();
       toast.success("Item added to the cart!", { position: "bottom-right" });
     } catch (error) {
-      auth.user
-        ? toast.error(error, {
-
+      if (auth.user) {
+        toast.error("Failed to add item to cart. Please try again.", {
           position: "bottom-right",
-        })
-        : toast.error("Sign in to add to cart.", { position: "bottom-right" });
-
+        });
+      } else {
+        toast.error("Sign in to add to cart.", { position: "bottom-right" });
+      }
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
 
-
   useEffect(() => {
-    const allItems = [
+    const combinedItems = [
       ...(items.mobiles || []),
       ...(items.computers || []),
       ...(items.electronics || []),
       ...(items.vehicles || []),
     ];
-    setAllItems(allItems);
+    setAllItems(combinedItems);
   }, [items]);
 
   const fetchSellerInfo = async () => {
@@ -509,22 +513,26 @@ const HomePage = () => {
       setSellerMap(newSellerMap);
     } catch (error) {
       console.error("Error fetching seller info:", error);
+      toast.error("Failed to fetch seller information.", {
+        position: "bottom-right",
+      });
     }
   };
 
   useEffect(() => {
-    fetchSellerInfo();
-  }, [items]);
+    if (allItems.length > 0) {
+      fetchSellerInfo();
+    }
+  }, [allItems]);
 
-  // Handle Sorting
   const handleSortChange = (event) => {
-    const sortOrder = event.target.value;
-    setSortOrder(sortOrder);
+    const selectedSortOrder = event.target.value;
+    setSortOrder(selectedSortOrder);
 
     const sortedItems = [...allItems].sort((a, b) => {
-      if (sortOrder === "lowToHigh") {
+      if (selectedSortOrder === "lowToHigh") {
         return a.price - b.price;
-      } else if (sortOrder === "highToLow") {
+      } else if (selectedSortOrder === "highToLow") {
         return b.price - a.price;
       } else {
         return 0;
@@ -534,13 +542,56 @@ const HomePage = () => {
     setAllItems(sortedItems);
   };
 
-  // Get current posts
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = allItems.slice(indexOfFirstPost, indexOfLastPost);
 
   const handlePageChange = (event, pageNumber) => {
     setCurrentPage(pageNumber);
+  };
+  useEffect(() => {
+    if (!auth.user) {
+      const modalShownDate = localStorage.getItem("modalShownDate");
+      const today = getTodayDate();
+
+      if (modalShownDate !== today) {
+        console.log("Non-signed-in user: Setting timer to show modal.");
+        const timer = setTimeout(() => {
+          setOpenModal(true);
+          localStorage.setItem("modalShownDate", today);
+          console.log("Modal shown for non-signed-in user.");
+        }, 5000);
+
+        return () => clearTimeout(timer);
+      } else {
+        console.log("Non-signed-in user: Modal already shown today.");
+      }
+    }
+  }, [auth.user]);
+
+  useEffect(() => {
+    if (auth.user) {
+      const modalShownSignedIn = localStorage.getItem("modalShownSignedIn");
+      if (!modalShownSignedIn) {
+        console.log("Signed-in user: Setting timer to show modal.");
+        const timer = setTimeout(() => {
+          setOpenModal(true);
+          localStorage.setItem("modalShownSignedIn", "true");
+          console.log("Modal shown for signed-in user.");
+        }, 5000);
+
+        return () => clearTimeout(timer);
+      } else {
+        console.log("Signed-in user: Modal already shown this session.");
+      }
+    } else {
+      localStorage.removeItem("modalShownSignedIn");
+      console.log("User signed out: Removed modalShownSignedIn flag.");
+    }
+  }, [auth.user]);
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
   };
 
   return (
@@ -672,10 +723,77 @@ const HomePage = () => {
               />
             </Box>
           </Box>
+
+          <Modal
+            open={openModal}
+            onClose={handleCloseModal}
+            aria-labelledby="offer-modal-title"
+            aria-describedby="offer-modal-description"
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              backdropFilter: "blur(2px)",
+            }}
+          >
+            <Box
+              sx={{
+                position: "relative",
+                bgcolor: "#fff",
+                boxShadow: 24,
+                borderRadius: "16px",
+                p: 0,
+                width: {
+                  xs: "90%",
+                  sm: "80%",
+                  md: "60%",
+                  lg: "50%",
+                  xl: "40%",
+                },
+                maxWidth: "800px",
+                height: "auto",
+                maxHeight: "90vh",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            >
+              <IconButton
+                onClick={handleCloseModal}
+                sx={{
+                  position: "absolute",
+                  top: 8,
+                  right: 8,
+                  color: "grey.500",
+                  backgroundColor: "rgba(255, 255, 255, 0.7)",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 1)",
+                  },
+                  zIndex: 2,
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
+
+              {/* OfferImage */}
+              <img
+                src={offerImage}
+                alt="Special Offer"
+                style={{
+                  width: "100%",
+                  height: "85%",
+                  objectFit: "contain",
+                  borderRadius: "16px",
+                  cursor: "pointer",
+                }}
+                onClick={handleCloseModalAndNavigate}
+              />
+            </Box>
+          </Modal>
         </>
       )}
     </>
   );
 };
-
 export default HomePage;

@@ -80,7 +80,7 @@ exports.loginController = async (req, res) => {
 
     // Generate Access token
     const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "10s",
+      expiresIn: "5m",
     });
 
     // Generate Refresh token
@@ -197,7 +197,7 @@ exports.updateProfileController = async (req, res) => {
   }
 };
 const createAccessToken = (_id) => {
-  return JWT.sign({ _id }, process.env.JWT_SECRET, { expiresIn: '10s' })
+  return JWT.sign({ _id }, process.env.JWT_SECRET, { expiresIn: '5m' })
 }
 exports.refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
