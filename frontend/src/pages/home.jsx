@@ -439,9 +439,10 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
     fetchItems();
     updateCartSize();
-  }, []);
+  }, [auth]);
 
   const handleViewDetails = async (itemId, itemType) => {
     try {
