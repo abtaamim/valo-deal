@@ -439,9 +439,10 @@ const HomePage = () => {
   };
 
   useEffect(() => {
+    const token = localStorage.getItem("authToken");
     fetchItems();
     updateCartSize();
-  }, []);
+  }, [auth]);
 
   const handleViewDetails = async (itemId, itemType) => {
     try {
@@ -473,7 +474,13 @@ const HomePage = () => {
 
       await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
       await updateCartSize();
-      toast.success("Item added to the cart!", { position: "bottom-right" });
+      //toast.success("Item added to the cart!", { position: "bottom-right" });
+      toast.success(
+      <div onClick={() => navigate("/cart")}>
+        Item added to the cart! Click here to view your cart.
+      </div>,
+      { position: "bottom-right", autoClose: false } // Prevent auto close to allow interaction
+    );
     } catch (error) {
       if (auth.user) {
         toast.error("Failed to add item to cart. Please try again.", {
