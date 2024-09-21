@@ -383,7 +383,7 @@ const HomePage = () => {
 
   const handleCloseModalAndNavigate = () => {
     setOpenModal(false);
-    navigate("/sub-category-item/Electronics/Laptops");
+    navigate("/sub-category-item/Electronics/Other%20Electronics");
   };
 
   const [items, setItems] = useState({
