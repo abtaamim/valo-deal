@@ -246,7 +246,7 @@ const Register = () => {
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             className="form-control"
-            placeholder="Enter unique code for password reset"
+            placeholder="Enter secret code for password reset"
             required
           />
         </div>
