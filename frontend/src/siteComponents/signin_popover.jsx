@@ -30,6 +30,8 @@ const SignInPopover = ({ className }) => {
     setAuth({ user: null, token: null });
     localStorage.removeItem("auth");
     navigate("/");
+    localStorage.removeItem('modalShownSignedIn')
+    localStorage.removeItem('modalShownDate')
     popupState.close();
   };
 

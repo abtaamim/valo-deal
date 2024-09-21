@@ -476,11 +476,11 @@ const HomePage = () => {
       await updateCartSize();
       //toast.success("Item added to the cart!", { position: "bottom-right" });
       toast.success(
-      <div onClick={() => navigate("/cart")}>
-        Item added to the cart! Click here to view your cart.
-      </div>,
-      { position: "bottom-right", autoClose: false } // Prevent auto close to allow interaction
-    );
+        <div onClick={() => navigate("/cart")}>
+          Item added to the cart! Click here to view your cart.
+        </div>,
+        { position: "bottom-right", autoClose: false } // Prevent auto close to allow interaction
+      );
     } catch (error) {
       if (auth.user) {
         toast.error("Failed to add item to cart. Please try again.", {
@@ -557,23 +557,24 @@ const HomePage = () => {
     setCurrentPage(pageNumber);
   };
   useEffect(() => {
-    if (!auth.user) {
-      const modalShownDate = localStorage.getItem("modalShownDate");
-      const today = getTodayDate();
+    // if (!auth.user) {
+    const modalShownDate = localStorage.getItem("modalShownDate");
+    const today = getTodayDate();
+    console.log('date', modalShownDate)
+    if (modalShownDate !== today || !modalShownDate) {
+      console.log("Non-signed-in user: Setting timer to show modal.");
+      const timer = setTimeout(() => {
+        setOpenModal(true);
+        localStorage.setItem("modalShownDate", today);
+        //localStorage.setItem('modalShownSignedIn', true);
+        console.log("Modal shown for non-signed-in user.");
+      }, 5000);
 
-      if (modalShownDate !== today) {
-        console.log("Non-signed-in user: Setting timer to show modal.");
-        const timer = setTimeout(() => {
-          setOpenModal(true);
-          localStorage.setItem("modalShownDate", today);
-          console.log("Modal shown for non-signed-in user.");
-        }, 5000);
-
-        return () => clearTimeout(timer);
-      } else {
-        console.log("Non-signed-in user: Modal already shown today.");
-      }
+      return () => clearTimeout(timer);
+    } else {
+      console.log("Non-signed-in user: Modal already shown today.");
     }
+    // }
   }, [auth.user]);
 
   useEffect(() => {
@@ -591,10 +592,11 @@ const HomePage = () => {
       } else {
         console.log("Signed-in user: Modal already shown this session.");
       }
-    } else {
-      localStorage.removeItem("modalShownSignedIn");
-      console.log("User signed out: Removed modalShownSignedIn flag.");
     }
+    //  else {
+    //   localStorage.removeItem("modalShownSignedIn");
+    //   console.log("User signed out: Removed modalShownSignedIn flag.");
+    // }
   }, [auth.user]);
 
   const handleCloseModal = () => {
