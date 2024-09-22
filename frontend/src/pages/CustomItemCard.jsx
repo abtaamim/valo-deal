@@ -20,7 +20,7 @@ const ListingCard = (props) => {
       console.error(`Error viewing item:`, e);
     } finally {
       setLoading(null);
-      console.log("path", location.pathname)
+      //console.log("path", location.pathname)
       navigate(`/details/${itemType}/${itemId}`, { state: { prevUrl: location.pathname } });
     }
   };

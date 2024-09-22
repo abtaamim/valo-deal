@@ -560,19 +560,19 @@ const HomePage = () => {
     // if (!auth.user) {
     const modalShownDate = localStorage.getItem("modalShownDate");
     const today = getTodayDate();
-    console.log('date', modalShownDate)
+   // console.log('date', modalShownDate)
     if (modalShownDate !== today || !modalShownDate) {
-      console.log("Non-signed-in user: Setting timer to show modal.");
+    //  console.log("Non-signed-in user: Setting timer to show modal.");
       const timer = setTimeout(() => {
         setOpenModal(true);
         localStorage.setItem("modalShownDate", today);
         //localStorage.setItem('modalShownSignedIn', true);
-        console.log("Modal shown for non-signed-in user.");
+     //   console.log("Modal shown for non-signed-in user.");
       }, 5000);
 
       return () => clearTimeout(timer);
     } else {
-      console.log("Non-signed-in user: Modal already shown today.");
+     // console.log("Non-signed-in user: Modal already shown today.");
     }
     // }
   }, [auth.user]);
@@ -581,16 +581,16 @@ const HomePage = () => {
     if (auth.user) {
       const modalShownSignedIn = localStorage.getItem("modalShownSignedIn");
       if (!modalShownSignedIn) {
-        console.log("Signed-in user: Setting timer to show modal.");
+       // console.log("Signed-in user: Setting timer to show modal.");
         const timer = setTimeout(() => {
           setOpenModal(true);
           localStorage.setItem("modalShownSignedIn", "true");
-          console.log("Modal shown for signed-in user.");
+        //  console.log("Modal shown for signed-in user.");
         }, 5000);
 
         return () => clearTimeout(timer);
       } else {
-        console.log("Signed-in user: Modal already shown this session.");
+       // console.log("Signed-in user: Modal already shown this session.");
       }
     }
     //  else {

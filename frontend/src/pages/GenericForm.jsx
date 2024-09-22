@@ -77,7 +77,7 @@ const [isUploading, setIsUploading] = useState(false); // New state for tracking
         uploadedImageUrls.push(imageUrl);
       }
     }
-    console.log('All uploaded image URLs:', uploadedImageUrls);
+    //console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
 
   };

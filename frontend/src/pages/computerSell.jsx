@@ -52,10 +52,10 @@ const ComputerSellPage = () => {
       });
       const data = await res.json();
       setImgUrl(data.secure_url);
-      console.log(imgUrl)
+    //  console.log(imgUrl)
       setUploadState(UploadState.UPLOADED);
     } catch (error) {
-      console.log(imgUrl)
+   //   console.log(imgUrl)
       console.error("Error uploading file:", error);
       setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
     }
@@ -93,7 +93,7 @@ const ComputerSellPage = () => {
       // selectedImages.forEach((image, index) => {
       //   formData.append('images', image, image.name);
       // });
-      console.log('Form Data:', Array.from(formData.entries()));
+     // console.log('Form Data:', Array.from(formData.entries()));
       try {
         const res = await axios.post("https://valo-deal-backend.vercel.app/sell/computer", formData);
         // headers: {
@@ -101,14 +101,14 @@ const ComputerSellPage = () => {
         // },
 
         if (res.status === 200) {
-          console.log('yayayay')
+        //  console.log('yayayay')
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
         } else {
           toast.error(res.data.message);
         }
       } catch (error) {
-        console.log(error);
+      //  console.log(error);
         console.error("Registration Error:", error.response ? error.response.data : error.message);
         //  toast.error("Something went wrong");
       }

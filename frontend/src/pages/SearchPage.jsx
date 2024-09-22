@@ -30,7 +30,7 @@ const SearchPage = () => {
           const res = await axiosPrivate.get(`/search/${keyword}`);
           setValues({ ...values, results: res.data.results });
         } catch (error) {
-          console.log('Error:', error);
+       //   console.log('Error:', error);
         } finally {
           setLoading(false);
           setTimeout(() => setShowLoading(false), 300);
