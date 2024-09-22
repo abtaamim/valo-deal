@@ -75,11 +75,12 @@ const App = () => {
             <Route path="/recently-viewed" element={<RecentlyViewedItemPage />} />
             <Route path='/previous-orders' element={<PreviousOrders />} />
             <Route path="/previous-sold" element={<PreviousSold />} />
+            <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
+            <Route path="/seller-info" element={<SellerInfo />} />
           </Route>
 
           <Route path="/search/:keyword" element={<SearchPage />} />
-          <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
-          <Route path="/seller-info" element={<SellerInfo />} />
+          
           <Route path="/dashboard" element={<PrivateRoute />}>
             <Route path="" element={<Dashboard />} />
           </Route>
