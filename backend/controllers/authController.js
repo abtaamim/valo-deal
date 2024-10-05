@@ -209,7 +209,7 @@ exports.refresh = async (req, res) => {
     process.env.REFRESH_SECRET,
     async (err, decoded) => {
 
-      if (err) return res.status(403).json({ message: 'Forbidden' })
+      if (err) return res.status(401).json({ message: 'Forbidden in ref' })
       const foundUser = await userModel.findById(decoded?._id)
       if (!foundUser) return res.status(401).json({ message: 'Unauthorized no user found' })
 

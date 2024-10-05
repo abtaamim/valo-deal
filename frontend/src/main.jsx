@@ -9,16 +9,21 @@ import './siteComponents/styles.css';
 import reportWebVitals from './reportWebVitals';
 import { SearchProvider } from './context/SearchContext';
 import { CartProvider } from './context/CartContext';
+import { QueryClientProvider, QueryClient } from 'react-query';
+const queryClient = new QueryClient();
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
-      <SearchProvider>
-        <AuthProvider>
-          <CartProvider>
-            <App />
-          </CartProvider>
-        </AuthProvider>
-      </SearchProvider>
+      <QueryClientProvider client={queryClient}>
+        <SearchProvider>
+          <AuthProvider>
+            <CartProvider>
+              <App />
+            </CartProvider>
+          </AuthProvider>
+        </SearchProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
