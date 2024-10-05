@@ -74,7 +74,7 @@ const MobileAccessoriesSellDetailsPage = () => {
         uploadedImageUrls.push(imageUrl);
       }
     }
-    console.log('All uploaded image URLs:', uploadedImageUrls);
+   // console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
 
   };
@@ -93,11 +93,11 @@ const MobileAccessoriesSellDetailsPage = () => {
       const res = await axiosPrivate.post("/upload", formData);
       const data = await res.json();
       setImgUrl(data.secure_url);
-      console.log(imgUrl)
+    //  console.log(imgUrl)
       setUploadState(UploadState.UPLOADED);
       return data.secure_url;
     } catch (error) {
-      console.log(imgUrl)
+    //  console.log(imgUrl)
       console.error("Error uploading file:", error);
       setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
     }
@@ -123,23 +123,23 @@ const MobileAccessoriesSellDetailsPage = () => {
         formData.append('price', price);
         formData.append('imgUrl', imageUrl);
 
-        console.log('Form Data:', Array.from(formData.entries()));
+       // console.log('Form Data:', Array.from(formData.entries()));
 
         const res = await axiosPrivate.post("/sell/mobile-accessories", formData);
 
         if (res.status === 200) {
-          console.log('yayayay')
+        //  console.log('yayayay')
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
         } else {
           toast.error(res.data.message);
         }
       } catch (error) {
-        console.log(error);
+     //   console.log(error);
         console.error("Registration Error:", error.response ? error.response.data : error.message);
         //  toast.error("Something went wrong");
       }
-      console.log('Form submitted');
+    //  console.log('Form submitted');
     } else {
       setErrors(newErrors);
     }

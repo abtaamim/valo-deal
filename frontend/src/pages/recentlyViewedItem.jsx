@@ -26,8 +26,8 @@ const RecentlyViewedItemPage = () => {
   const handleClickOpen = (itemId) => {
     setOpen(true);
     setSelectedItemId(itemId);
-    console.log(selectedItemId)
-    console.log(open)
+  //  console.log(selectedItemId)
+ //   console.log(open)
   };
 
   const handleClose = () => {
@@ -44,7 +44,7 @@ const RecentlyViewedItemPage = () => {
       const ids = fetchedSearchItems.map(item => item.id);
       setSearchedIds(ids);
     } catch (e) {
-      console.log(e);
+   //   console.log(e);
     }
   };
 
@@ -81,7 +81,7 @@ const RecentlyViewedItemPage = () => {
     );
     setSelectAll(false);
     setSelectedForDelete(prevSelectedForDelete => {
-      console.log('Previous selectedForDelete:', prevSelectedForDelete);
+   //   console.log('Previous selectedForDelete:', prevSelectedForDelete);
 
       if (Array.isArray(prevSelectedForDelete)) {
         if (prevSelectedForDelete.includes(id)) {

@@ -39,7 +39,7 @@ const SearchBar = () => {
       setValues({ ...values, results: res.data.results });
       navigate(`/search/${values.keyWord}`); // Update the URL
     } catch (error) {
-      console.log('Error:', error);
+    //  console.log('Error:', error);
     }
   };
 

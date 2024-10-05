@@ -40,7 +40,7 @@ const MobileSellDetailsPage = () => {
 
 
     const selectedBrand = gsmBrandName.find(brand => brand.name === selectedBrandName);
-    console.log(selectedBrandName);
+   // console.log(selectedBrandName);
     if (selectedBrand) {
       setBrandId(selectedBrand.id);
     }
@@ -67,26 +67,26 @@ const MobileSellDetailsPage = () => {
     try {
       const res = await axiosPrivate.get("/sell/gsmbrand")
       const brands = res.data.brands;
-      console.log(res.data.brands);
+     // console.log(res.data.brands);
 
       setGsmBrandName(brands.map(brand => ({ name: brand.name, id: brand.id })))
 
     } catch (error) {
-      console.log("Error gsm: ", error);
+     // console.log("Error gsm: ", error);
     }
   }
   useEffect(() => {
     getgsmBrand();
-    console.log(gsmBrandName);
+   // console.log(gsmBrandName);
   }, [])
   const getgsmModel = async () => {
     try {
       const res = await axiosPrivate.get(`/sell/gsmmodel/${brandId}`)
       const models = res.data.models;
-      console.log(res.data.models);
+     // console.log(res.data.models);
       setGsmModelName(models.map(model => (model.name)));
     } catch (error) {
-      console.log("Error gsm model: ", error);
+    //  console.log("Error gsm model: ", error);
     }
   }
   useEffect(() => {
@@ -142,11 +142,11 @@ const MobileSellDetailsPage = () => {
 
       const data = await res.data;
       setImgUrl(data.secure_url);
-      console.log(imgUrl)
+     // console.log(imgUrl)
       setUploadState(UploadState.UPLOADED);
       return data.secure_url;
     } catch (error) {
-      console.log(imgUrl)
+     // console.log(imgUrl)
       console.error("Error uploading file:", error);
       setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
     }
@@ -163,7 +163,7 @@ const MobileSellDetailsPage = () => {
         uploadedImageUrls.push(imageUrl);
       }
     }
-    console.log('All uploaded image URLs:', uploadedImageUrls);
+  //  console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
 
   };
@@ -196,7 +196,7 @@ const MobileSellDetailsPage = () => {
    if (Object.keys(newErrors).length === 0) {
      try {
        const imageUrl = await handleMultipleImageUploads();
-       console.log(imageUrl);
+    //   console.log(imageUrl);
        const formData = new FormData();
        formData.append('sellerId', auth.user._id);
        formData.append('brand', brand);
@@ -208,12 +208,12 @@ const MobileSellDetailsPage = () => {
        imageUrl.forEach((img, index) => {
          formData.append(`imgUrl[${index}]`, img);
        });
-       console.log('Form Data:', Array.from(formData.entries()));
+     //  console.log('Form Data:', Array.from(formData.entries()));
  
        const res = await axiosPrivate.post("/sell/mobile", formData);
  
        if (res.status === 200) {
-         console.log('Product uploaded successfully');
+     //    console.log('Product uploaded successfully');
          setAlertMessage('Product uploaded successfully');
          setSubmissionSuccess(true);
        } else {

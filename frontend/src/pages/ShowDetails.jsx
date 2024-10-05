@@ -39,7 +39,7 @@ const ShowDetailsPage = () => {
 
   useEffect(() => {
     fetchItem();
-    console.log(prevUrl);
+  //  console.log(prevUrl);
   }, [itemId, itemType]);
 
   useEffect(() => {

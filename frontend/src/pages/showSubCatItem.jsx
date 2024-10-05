@@ -34,7 +34,7 @@ const ShowSubCatItem = () => {
         setItems(response.data[category.toLowerCase()]);
       }
 
-      console.log('Mobiles Response:', response.data);
+    //  console.log('Mobiles Response:', response.data);
 
 
 

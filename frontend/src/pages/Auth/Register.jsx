@@ -239,14 +239,14 @@ const Register = () => {
         </div>
 
         <div className="form-group">
-          <label htmlFor="answer">Unique Code</label>
+          <label htmlFor="answer">Secret Code 🔒</label>
           <input
             type="text"
             id="answer"
             value={answer}
             onChange={(e) => setAnswer(e.target.value)}
             className="form-control"
-            placeholder="Enter unique code for password reset"
+            placeholder="Enter secret code for password reset"
             required
           />
         </div>

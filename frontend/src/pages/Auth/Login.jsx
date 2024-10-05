@@ -32,7 +32,7 @@ const Login = () => {
           loggedIn: true
         });
         localStorage.setItem('auth', JSON.stringify(res.data));
-        console.log(auth.user, auth.token);
+    //    console.log(auth.user, auth.token);
         navigate(location.state?.from || "/");
       } else {
         toast.error(res.data.message);
