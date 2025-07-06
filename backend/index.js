@@ -29,7 +29,7 @@ connectDB();
 const app = express();
 
 // Middlewares
-const allowedOrigins = ['http://localhost:3000', 'https://valo-deal-frontend.vercel.app'];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173', 'https://valo-deal-frontend.vercel.app'];
 
 app.use(cors({
   origin: function (origin, callback) {

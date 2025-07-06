@@ -22,7 +22,7 @@ exports.registerController = async (req, res) => {
 
     // Hash password
     const hashedPassword = await hashPassword(password);
-
+    console.log(hashedPassword);
     // Save user
     const user = await new userModel({
       name,
@@ -107,6 +107,7 @@ exports.loginController = async (req, res) => {
         email: user.email,
         phone: user.phone,
         address: user.address,
+        role: user.role,
       },
       token,
     });

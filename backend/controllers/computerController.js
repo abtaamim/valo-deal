@@ -30,10 +30,14 @@ const computerController = async (req, res) => {
   }
 };
 
+const waitingComputer = async (req, res) => {
+
+}
+
 const getAllComputersController = async (req, res) => {
   try {
     const userId = req.user._id;
-    const computers = await computerModel.find({ sellerId: { $ne: userId }, sold: false });
+    const computers = await computerModel.find({ sellerId: { $ne: userId }, sold: false, request: 'accepted' });
 
     if (computers.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
@@ -50,7 +54,7 @@ const getSubcatComputersController = async (req, res) => {
   try {
     //const userId = req.user._id; 
     const subCategory = req.params.subCategory;
-    const computers = await computerModel.find({ subCategory: subCategory, sold: false });//, sellerId: { $ne: userId } 
+    const computers = await computerModel.find({ subCategory: subCategory, sold: false, request: 'accepted' });//, sellerId: { $ne: userId } 
     if (computers.length === 0) {
       return res.status(404).json({ success: false, message: 'No mobiles found for the user' });
     }
@@ -91,7 +95,7 @@ const deleteComputer = async (compId) => {
 const getLatestComputer = async (req, res) => {
   try {
     //const userId = req.user._id; 
-    const latestComputer = await computerModel.find({ sold: false })//{ sellerId: {$ne:userId}  }
+    const latestComputer = await computerModel.find({ sold: false, request: 'accepted' })//{ sellerId: {$ne:userId}  }
       .sort({ createdAt: -1 }).limit(6).exec();
 
     if (!latestComputer) {
@@ -103,4 +107,24 @@ const getLatestComputer = async (req, res) => {
     res.status(500).json({ success: false, message: 'Internal Server Error' });
   }
 };
-module.exports = { computerController, getAllComputersController, getSubcatComputersController, getAddedComputer, deleteComputer, getLatestComputer };
+
+const getUnacceptedComputer = async (req, res) => {
+  try {
+    const comp = await computerModel.find({ request: 'unaccepted' });
+    res.status(200).json({ success: true, computers: comp });
+  } catch (e) {
+    console.error('Error fetching unaccepted Computers:', error);
+    res.status(500).json({ success: false, message: 'error fetching unaccepted computers' });
+  }
+}
+const acceptComputer = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const comp = await computerModel.findByIdAndUpdate(id, { request: 'accepted' });
+    res.status(200).json({ success: true, message: 'Computer accepted successfully' });
+  } catch (e) {
+    console.error('Error accepting computer:', error);
+    res.status(500).json({ success: false, message: 'Error accepting computer' });
+  }
+}
+module.exports = { getUnacceptedComputer, computerController, getAllComputersController, getSubcatComputersController, getAddedComputer, deleteComputer, getLatestComputer };

@@ -10,6 +10,7 @@ const vehilesSchema = new Schema({
   subCategory: { type: String, required: true },
   description: { type: String, required: true },
   price: { type: Number, required: true },
+  request: { type: String, default: 'notaccepted' },
   imgUrl:
   {
     type: [String],
