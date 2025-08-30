@@ -5,17 +5,30 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './page/auth/signIn.jsx'
 import Home from './page/home.jsx'
+import UserPage from './page/UserPage.jsx'
+import ProductPage from './page/ProductPage.jsx'
+import OrderPage from './page/OrderPage.jsx'
 import { AuthProvider } from '../../frontend/src/context/auth.jsx'
+
 const router = createBrowserRouter([
   {
     path: '/',
     element: <App />,
     children: [
-      { path: '/signIn', element: <SignIn /> },
-      { path: '/', element: <Home /> },
+      {
+        path: '/',
+        element: <Home />,
+        children: [
+          { path: '/users', element: <UserPage /> },
+          { path: '/products', element: <ProductPage /> },
+          { path: '/orders', element: <OrderPage /> },
+        ]
+      }
     ],
-  }
+  },
+  { path: '/signIn', element: <SignIn /> }
 ])
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
