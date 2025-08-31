@@ -7,6 +7,7 @@ const {
   softDeleteProduct,
   getSellerProducts
 } = require('../controllers/productController');
+const {changeProductStatus, getPendingProducts} = require('../controllers/adminController/productManage')
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
@@ -20,6 +21,7 @@ router.get('/product/:id', getProductById);
 router.put('/update/:id', requireSignIn, updateProduct);
 router.delete('/delete/:id', requireSignIn, softDeleteProduct);
 router.get('/my-products', requireSignIn, getSellerProducts);
-// router.put('/change-status/:id', requireSignIn, isAdmin, changeProductStatus);
+router.put('/change-status/:id', requireSignIn, isAdmin, changeProductStatus);
+router.get('/pending', requireSignIn, isAdmin, getPendingProducts);
 
 module.exports = router;

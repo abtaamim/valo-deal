@@ -40,6 +40,13 @@ const Home = () => {
         </button>
 
         <button
+          onClick={() => navigate("/create-offer")}
+          className={`text-left px-4 py-2 rounded mt-2 transition ${isActive("/create-offer") ? "bg-blue-600" : "hover:bg-gray-700"
+            }`}
+        >
+          Create Offer
+        </button>
+        <button
           onClick={() => navigate("/orders")}
           className={`text-left px-4 py-2 rounded mt-2 transition ${
             isActive("/orders") ? "bg-blue-600" : "hover:bg-gray-700"

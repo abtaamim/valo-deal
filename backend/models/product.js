@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const { PRODUCT_CONDITION, PRODUCT_STATUS } = require('./enums');
 
 const productSchema = new mongoose.Schema({
-  seller_id: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  seller_id: { type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true },
   product_name: { type: String, required: true },
   product_description: { type: String, required: true },
   brand: { type: String, required: true },

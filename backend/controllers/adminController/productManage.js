@@ -1,4 +1,16 @@
 const Product = require("../../models/product")
+const getPendingProducts = async (req, res) => {
+  try {
+    const products = await Product.find({
+      deleted_at: null,
+      product_status: 'pending'
+    }).populate('category_id').populate('seller_id', 'email');
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 const changeProductStatus = async (req, res) => {
   try {
     const { status } = req.body;
@@ -24,4 +36,4 @@ const changeProductStatus = async (req, res) => {
 }
 
 
-module.exports={changeProductStatus}
+module.exports={changeProductStatus, getPendingProducts}

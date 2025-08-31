@@ -12,23 +12,40 @@ import { AuthProvider } from '../../frontend/src/context/auth.jsx'
 import CreateOffer from './page/createOffer.jsx'
 
 const router = createBrowserRouter([
+  // {
+  //   path: '/',
+  //   element: <App />,
+  //   children: [
+  //     {
+  //       path: '/',
+  //       element: <Home />,
+  //       children: [
+  //         { path: 'users', element: <UserPage /> },
+  //         { path: 'products', element: <ProductPage /> },
+  //         { path: 'orders', element: <OrderPage /> },
+  //       ],
+  //     },
+  //     { path: 'signIn', element: <SignIn /> },
+  //     { path: 'create-offer', element: <CreateOffer /> },
+  //   ],
+  // },
+  { path: '/signIn', element: <SignIn /> },
+  { path: '/create-offer', element: <CreateOffer /> },
   {
     path: '/',
     element: <App />,
     children: [
       {
-        path: '/',
-        element: <Home />,
+        path: '/', element: <Home />,
         children: [
           { path: 'users', element: <UserPage /> },
           { path: 'products', element: <ProductPage /> },
           { path: 'orders', element: <OrderPage /> },
-        ],
+        ]
       },
-      { path: 'signIn', element: <SignIn /> },
-      { path: 'create-offer', element: <CreateOffer /> },
+      
     ],
-  },
+  }
 ])
 
 createRoot(document.getElementById('root')).render(
