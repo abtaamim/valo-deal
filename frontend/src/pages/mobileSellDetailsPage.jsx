@@ -7,9 +7,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from '../context/auth';
 import gsmarena from 'gsmarena-api';
 import Snackbar from '@mui/material/Snackbar';
+import { useLocation } from 'react-router-dom';
 //const gsmarena = require('gsmarena-api');
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
+import { customAxios, axiosPrivate } from '../api/axiosPrivate';
 const UploadState = {
   IDLE: 1,
   UPLOADING: 2,
@@ -19,11 +21,12 @@ const UploadState = {
 Object.freeze(UploadState);
 const MobileSellDetailsPage = () => {
   const [brand, setBrand] = useState('');
-  const [model, setModel] = useState('');
+  const [product_name, setModel] = useState('');
   const [condition, setCondition] = useState('');
   const [authenticity, setAuthenticity] = useState('');
-  const [description, setDescription] = useState('');
+  const [product_description, setDescription] = useState('');
   const [price, setPrice] = useState('');
+  const [stock, setStock] = useState('')
   const [selectedImages, setSelectedImages] = useState([null, null, null, null, null]);
   const [errors, setErrors] = useState({});
   const [alertMessage, setAlertMessage] = useState('');
@@ -32,7 +35,8 @@ const MobileSellDetailsPage = () => {
   const [brandId, setBrandId] = useState('');
   const axiosPrivate = useAxiosPrivate();
   const [loading, setLoading] = useState(false);
-  
+  const location = useLocation();
+  const { subCategoryId, subCategoryName } = location.state || {};
   const handleBrand = (event) => {
     const selectedBrandName = event.target.value;
     setBrand(selectedBrandName);
@@ -40,7 +44,7 @@ const MobileSellDetailsPage = () => {
 
 
     const selectedBrand = gsmBrandName.find(brand => brand.name === selectedBrandName);
-   // console.log(selectedBrandName);
+    // console.log(selectedBrandName);
     if (selectedBrand) {
       setBrandId(selectedBrand.id);
     }
@@ -67,31 +71,31 @@ const MobileSellDetailsPage = () => {
     try {
       const res = await axiosPrivate.get("/sell/gsmbrand")
       const brands = res.data.brands;
-     // console.log(res.data.brands);
+      // console.log(res.data.brands);
 
       setGsmBrandName(brands.map(brand => ({ name: brand.name, id: brand.id })))
 
     } catch (error) {
-     // console.log("Error gsm: ", error);
+      // console.log("Error gsm: ", error);
     }
   }
   useEffect(() => {
-    getgsmBrand();
-   // console.log(gsmBrandName);
+    // getgsmBrand();
+    // console.log(gsmBrandName);
   }, [])
   const getgsmModel = async () => {
     try {
-      const res = await axiosPrivate.get(`/sell/gsmmodel/${brandId}`)
+      const res = await customAxios.get(`/sell/gsmmodel/${brandId}`)
       const models = res.data.models;
-     // console.log(res.data.models);
-      setGsmModelName(models.map(model => (model.name)));
+      // console.log(res.data.models);
+      setGsmModelName(models.map(product_name => (product_name.name)));
     } catch (error) {
-    //  console.log("Error gsm model: ", error);
+      //  console.log("Error gsm product_name: ", error);
     }
   }
   useEffect(() => {
     if (brandId) {
-      getgsmModel();
+      // getgsmModel();
     }
 
   }, [brand])
@@ -142,11 +146,11 @@ const MobileSellDetailsPage = () => {
 
       const data = await res.data;
       setImgUrl(data.secure_url);
-     // console.log(imgUrl)
+      // console.log(imgUrl)
       setUploadState(UploadState.UPLOADED);
       return data.secure_url;
     } catch (error) {
-     // console.log(imgUrl)
+      // console.log(imgUrl)
       console.error("Error uploading file:", error);
       setUploadState(UploadState.IDLE); // reset to IDLE state in case of an error
     }
@@ -157,13 +161,13 @@ const MobileSellDetailsPage = () => {
   const handleMultipleImageUploads = async () => {
     const uploadedImageUrls = [];
 
-    for (let i = 0; i < selectedImages.length; i++) {
+    for (let i = 0; i < selectedImages.length && selectedImages[i]!= null; i++) {
       const imageUrl = await handleFormData(selectedImages[i]);
       if (imageUrl) {
         uploadedImageUrls.push(imageUrl);
       }
     }
-  //  console.log('All uploaded image URLs:', uploadedImageUrls);
+    //  console.log('All uploaded image URLs:', uploadedImageUrls);
     return uploadedImageUrls;
 
   };
@@ -172,10 +176,10 @@ const MobileSellDetailsPage = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!condition) newErrors.condition = 'Condition is required';
-    if (!authenticity) newErrors.authenticity = 'Authenticity is required';
+
     if (!brand) newErrors.brand = 'Brand is required';
-    if (!model) newErrors.model = 'Model is required';
-    if (!description) newErrors.description = 'Description is required';
+    if (!product_name) newErrors.product_name = 'Model is required';
+    if (!product_description) newErrors.product_description = 'Description is required';
     if (!price) newErrors.price = 'Price is required';
 
     const checkImage = selectedImages.filter(img => (img !== null))
@@ -188,48 +192,66 @@ const MobileSellDetailsPage = () => {
   const [auth] = useAuth();
   const navigate = useNavigate();
 
- const handleSubmit = async (e) => {
-   e.preventDefault();
-   setLoading(true); // Start loading
- 
-   const newErrors = validateForm();
-   if (Object.keys(newErrors).length === 0) {
-     try {
-       const imageUrl = await handleMultipleImageUploads();
-    //   console.log(imageUrl);
-       const formData = new FormData();
-       formData.append('sellerId', auth.user._id);
-       formData.append('brand', brand);
-       formData.append('model', model);
-       formData.append('condition', condition);
-       formData.append('authenticity', authenticity);
-       formData.append('description', description);
-       formData.append('price', price);
-       imageUrl.forEach((img, index) => {
-         formData.append(`imgUrl[${index}]`, img);
-       });
-     //  console.log('Form Data:', Array.from(formData.entries()));
- 
-       const res = await axiosPrivate.post("/sell/mobile", formData);
- 
-       if (res.status === 200) {
-     //    console.log('Product uploaded successfully');
-         setAlertMessage('Product uploaded successfully');
-         setSubmissionSuccess(true);
-       } else {
-         toast.error(res.data.message);
-       }
-     } catch (error) {
-       console.error("Error uploading product:", error);
-     } finally {
-       setLoading(false); // Stop loading after request completes
-     }
-   } else {
-     setErrors(newErrors);
-     setLoading(false); // Stop loading if validation fails
-   }
- };
- 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true); // Start loading
+
+    const newErrors = validateForm();
+    if (Object.keys(newErrors).length === 0) {
+      try {
+        const imageUrl = await handleMultipleImageUploads();
+        const formData = new FormData();
+        //  formData.append('sellerId', auth.user._id);
+        //  formData.append('brand', brand);
+        //  formData.append('product_name', product_name);
+        //  formData.append('condition', condition);
+        //  formData.append('authenticity', authenticity);
+        // //  change
+        //  formData.append('product_description', product_description);
+        //  formData.append('price', price);
+        //  imageUrl.forEach((img, index) => {
+        //    formData.append(`imgUrl[${index}]`, img);
+        //  });
+
+        formData.append('brand', brand);
+        formData.append('product_name', product_name);
+        formData.append('category_id', subCategoryId);
+        formData.append('condition', condition);
+        formData.append('product_description', product_description);
+        formData.append('price', price);
+        formData.append('stock', stock);
+        imageUrl.forEach((img, index) => {
+          formData.append(`img_urls[${index}]`, img);
+        });
+        //  console.log('Form Data:', Array.from(formData.entries()));
+        //  product_name,
+        //  product_description,
+        //  brand,
+        //  category_id,
+        //  price,
+        //  stock,
+        //  condition,
+        //  img_urls
+        //  const res = await axiosPrivate.post("/sell/mobile", formData);
+        const res = await axiosPrivate.post("/product/create", formData);
+        if (res.status === 200) {
+          //    console.log('Product uploaded successfully');
+          setAlertMessage('Product uploaded successfully');
+          setSubmissionSuccess(true);
+        } else {
+          toast.error(res.data.message);
+        }
+      } catch (error) {
+        console.error("Error uploading product:", error);
+      } finally {
+        setLoading(false); // Stop loading after request completes
+      }
+    } else {
+      setErrors(newErrors);
+      setLoading(false); // Stop loading if validation fails
+    }
+  };
+
 
   useEffect(() => {
     if (submissionSuccess) {
@@ -241,20 +263,20 @@ const MobileSellDetailsPage = () => {
     }
   }, [submissionSuccess, navigate]);
 
-  const brands_models = {
-    samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],
-    iphone: ["iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone SE (2022)"],
-    xiaomi: ["13 Pro", "13", "12T Pro", "12T", "Redmi Note 12 Pro"],
-    realme: ["GT Neo 5", "10 Pro+", "10 Pro", "10", "Narzo 50"],
-    vivo: ["X90 Pro+", "X90 Pro", "V27 Pro", "V27", "Y56"],
-    oppo: ["Find X6 Pro", "Find X6", "Reno 9 Pro+", "Reno 9 Pro", "A98"],
-    nothingphone: ["Phone (1)"],
-    google: ["Pixel 7 Pro", "Pixel 7", "Pixel 6a"],
-    oneplus: ["11", "10 Pro", "Nord 2T"],
-    motorola: ["Edge 40 Pro", "Edge 30 Fusion", "Moto G Stylus 5G (2023)"],
-    sony: ["Xperia 1 V", "Xperia 5 IV", "Xperia 10 IV"],
-    asus: ["ROG Phone 7", "Zenfone 10", "ROG Phone 6"]
-  };
+  // const brands_models = {
+  //   samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],
+  //   iphone: ["iPhone 14 Pro Max", "iPhone 14 Pro", "iPhone 14 Plus", "iPhone 14", "iPhone SE (2022)"],
+  //   xiaomi: ["13 Pro", "13", "12T Pro", "12T", "Redmi Note 12 Pro"],
+  //   realme: ["GT Neo 5", "10 Pro+", "10 Pro", "10", "Narzo 50"],
+  //   vivo: ["X90 Pro+", "X90 Pro", "V27 Pro", "V27", "Y56"],
+  //   oppo: ["Find X6 Pro", "Find X6", "Reno 9 Pro+", "Reno 9 Pro", "A98"],
+  //   nothingphone: ["Phone (1)"],
+  //   google: ["Pixel 7 Pro", "Pixel 7", "Pixel 6a"],
+  //   oneplus: ["11", "10 Pro", "Nord 2T"],
+  //   motorola: ["Edge 40 Pro", "Edge 30 Fusion", "Moto G Stylus 5G (2023)"],
+  //   sony: ["Xperia 1 V", "Xperia 5 IV", "Xperia 10 IV"],
+  //   asus: ["ROG Phone 7", "Zenfone 10", "ROG Phone 6"]
+  // };
 
   const handleClose = () => {
     setSubmissionSuccess(false)
@@ -302,7 +324,7 @@ const MobileSellDetailsPage = () => {
                 </RadioGroup>
                 {errors.condition && <Typography variant="caption" color="error">{errors.condition}</Typography>}
               </FormControl>
-              <FormControl error={!!errors.authenticity}>
+              {/* <FormControl error={!!errors.authenticity}>
                 <FormLabel sx={{ textAlign: 'left', mb: 1 }}>
                   Authenticity
                 </FormLabel>
@@ -311,13 +333,22 @@ const MobileSellDetailsPage = () => {
                   <FormControlLabel sx={{ ml: '35px' }} value="Refurbished" control={<Radio />} label="Refurbished" />
                 </RadioGroup>
                 {errors.authenticity && <Typography variant="caption" color="error">{errors.authenticity}</Typography>}
-              </FormControl>
+              </FormControl> */}
 
               {/* BRAND DROPDOWN */}
 
               <FormControl sx={{ m: 1, minWidth: 120 }} error={!!errors.brand}>
 
-                <Autocomplete
+                <TextField
+                  id="brand-field"
+                  
+                  placeholder="brand name"
+                  value={brand}
+                  onChange={(e) => setBrand(e.target.value)}
+                />
+  
+
+                {/* <Autocomplete
                   options={gsmBrandName.map(brand => brand.name)}
                   value={brand}
                   onChange={handleBrandChange}
@@ -332,7 +363,7 @@ const MobileSellDetailsPage = () => {
 
                     />
                   )}
-                />
+                /> */}
                 {/* <InputLabel id="brand-select-label">Brand</InputLabel>
               <Select
                 labelId="brand-select-label"
@@ -340,7 +371,7 @@ const MobileSellDetailsPage = () => {
                 onChange={handleBrand}
                 label="Model"
                 endAdornment={
-                  model ? (
+                  product_name ? (
                     <InputAdornment position='end'>
                       <IconButton onClick={clearBrand} sx={{ mr: '18px' }}>
                         <CancelIcon />
@@ -369,15 +400,15 @@ const MobileSellDetailsPage = () => {
 
               {/* MODEL DROPDOWN */}
 
-              <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.model}>
-                {/* <InputLabel id="model-select-label">Model</InputLabel>
+              <FormControl sx={{ m: 1, minWidth: 120, mb: 8 }} disabled={!brand} error={!!errors.product_name}>
+                {/* <InputLabel id="product_name-select-label">Model</InputLabel>
               <Select
-                labelId="model-select-label"
-                value={model}
+                labelId="product_name-select-label"
+                value={product_name}
                 onChange={handleModel}
                 label="Model"
                 endAdornment={
-                  model ? (
+                  product_name ? (
                     <InputAdornment position='end'>
                       <IconButton onClick={clearModel} sx={{ mr: '18px' }}>
                         <CancelIcon />
@@ -400,9 +431,9 @@ const MobileSellDetailsPage = () => {
                   </MenuItem>
                 ))}
               </Select> */}
-                <Autocomplete
-                  options={gsmModelName.map(model => model)}
-                  value={model}
+                {/* <Autocomplete
+                  options={gsmModelName.map(product_name => product_name)}
+                  value={product_name}
                   onChange={handleModel}
                   disabled={!brand}
                   //sx={{height:'250px'}}
@@ -411,28 +442,35 @@ const MobileSellDetailsPage = () => {
                       {...params}
                       label="Model"
                       variant="outlined"
-                      error={!!errors.model}
+                      error={!!errors.product_name}
 
                     />
                   )}
+                /> */}
+                <TextField
+                  id="model-field"
+
+                  placeholder="model name"
+                  value={product_name}
+                  onChange={(e) => setModel(e.target.value)}
                 />
-                {errors.model && <Typography variant="caption" color="error">{errors.model}</Typography>}
+                {errors.product_name && <Typography variant="caption" color="error">{errors.product_name}</Typography>}
               </FormControl>
 
               {/* DESCRIPTION field */}
               <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
                 Description
               </Typography>
-              <FormControl sx={{ mb: 6 }} error={!!errors.description}>
+              <FormControl sx={{ mb: 6 }} error={!!errors.product_description}>
                 <TextField
-                  id="description-field"
+                  id="product_description-field"
                   multiline
                   rows={4}
                   placeholder="More details= more interested buyers"
-                  value={description}
+                  value={product_description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
-                {errors.description && <Typography variant="caption" color="error">{errors.description}</Typography>}
+                {errors.product_description && <Typography variant="caption" color="error">{errors.product_description}</Typography>}
               </FormControl>
 
               {/* PRICE field */}
@@ -448,6 +486,22 @@ const MobileSellDetailsPage = () => {
                   placeholder="Pick a good price"
                   value={price}
                   onChange={(e) => setPrice(e.target.value)}
+                />
+                {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
+              </FormControl>
+
+              {/* STOCK field */}
+              <Typography variant="caption" sx={{ mb: 0.5, textAlign: 'start' }}>
+                Stock
+              </Typography>
+              <FormControl sx={{ mb: 4 }} error={!!errors.price}>
+                <TextField
+                  type='number'
+                  inputProps={{ min: 1, step: "1", max: 5000 }}
+                  id="stock-field"
+                  // placeholder="Pick a good price"
+                  value={stock}
+                  onChange={(e) => setStock(e.target.value)}
                 />
                 {errors.price && <Typography variant="caption" color="error">{errors.price}</Typography>}
               </FormControl>
@@ -497,7 +551,7 @@ const MobileSellDetailsPage = () => {
               <Button variant="contained" sx={{ mt: 3 }} onClick={handleSubmit} disabled={loading}>
                 {loading ? 'Uploading...' : 'Submit'}
               </Button>
-              
+
             </DialogContent>
           </Box>
         </Box>

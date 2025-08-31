@@ -11,18 +11,19 @@ const CategorySelection = ({ open, handleClose, handleCategorySelect, selectedCa
   const isMobile = useMediaQuery('(max-width:600px)');
 
   const handleSubcategory = (subCategory) => {
-    if (selectedCategory === 'Computers') {
-      navigate('/sell/computers', { state: { subCategory } });
-    } else if (selectedCategory === 'Electronics') {
-      navigate('/sell/electronics', { state: { subCategory } });
-    } else if (selectedCategory === 'Vehicles') {
-      navigate('/sell/vehicles', { state: { subCategory } });
-    }
-    if (subCategory === 'Mobile Phones') {
-      setShowMobileDialog(true);
-    } else if (subCategory === 'Mobile Phone Accessories') {
-      setShowMobileAccessoriesDialog(true);
-    }
+    // if (selectedCategory === 'Computers') {
+    //   navigate('/sell/computers', { state: { subCategory } });
+    // } else if (selectedCategory === 'Electronics') {
+    //   navigate('/sell/electronics', { state: { subCategory } });
+    // } else if (selectedCategory === 'Vehicles') {
+    //   navigate('/sell/vehicles', { state: { subCategory } });
+    // }
+    // if (subCategory === 'Mobile Phones') {
+    //   setShowMobileDialog(true);
+    // } else if (subCategory === 'Mobile Phone Accessories') {
+    //   setShowMobileAccessoriesDialog(true);
+    // }
+    navigate(`/product-sell/${subCategory.name}`, { state: { subCategoryId:subCategory.id, subCategoryName: subCategory.name } });
   };
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const CategorySelection = ({ open, handleClose, handleCategorySelect, selectedCa
   const handleCloseMobileDialog = () => {
     setShowMobileDialog(false);
   };
+  const selectedCategoryObj = items?.find(cat => cat.name === selectedCategory);
 
   return (
     <>
@@ -51,13 +53,13 @@ const CategorySelection = ({ open, handleClose, handleCategorySelect, selectedCa
                 Select a category
               </Typography>
               <List sx={{ height: '100%', width: isMobile ? '100%' : '350px', borderRight: isMobile ? 'none' : '1px solid', borderColor: 'rgb(0, 7, 20)' }}>
-                {Object.keys(items).map((category, index) => (
-                  <React.Fragment key={category}>
+                {items?.map((category, index) => (
+                  <React.Fragment key={category.name}>
                     <ListItemButton
-                      onClick={() => handleCategorySelect(category)}
+                      onClick={() => handleCategorySelect(category.name)}
                       sx={{
                         width: '100%',
-                        backgroundColor: selectedCategory === category ? 'rgb(0, 7, 20)' : 'white',
+                        backgroundColor: selectedCategory === category.name ? 'rgb(0, 7, 20)' : 'white',
                         '&:hover': {
                           backgroundColor: 'rgb(227, 242, 247)',
                           color: 'darkorange',
@@ -66,57 +68,45 @@ const CategorySelection = ({ open, handleClose, handleCategorySelect, selectedCa
                     >
                       <ListItem disablePadding>
                         <ListItemText
-                          primary={category}
+                          primary={category.name}
                           sx={{
-                            color: selectedCategory === category ? 'white' : 'rgb(0, 7, 20)',
-                            '&:hover': {
-                              backgroundColor: 'rgb(227, 242, 247)',
-                              color: 'orange',
-                            },
+                            color: selectedCategory === category.name ? 'white' : 'rgb(0, 7, 20)',
                           }}
                         />
                         <ListItemIcon>
                           <ArrowForwardIosOutlinedIcon
                             sx={{
-                              color: selectedCategory === category ? 'white' : 'rgb(0, 7, 20)',
-                              '&:hover': {
-                                backgroundColor: 'white',
-                                color: 'darkorange',
-                              },
+                              color: selectedCategory === category.name ? 'white' : 'rgb(0, 7, 20)',
                             }}
                           />
                         </ListItemIcon>
                       </ListItem>
                     </ListItemButton>
-                    {index < Object.keys(items).length - 1 && <Divider sx={{ color: 'rgb(0, 7, 20)' }} />}
+                    {index < items.length - 1 && <Divider />}
                   </React.Fragment>
                 ))}
+
               </List>
             </div>
             <div style={{ height: '100%', width: isMobile ? '100%' : '50%', padding: '0 1rem', marginTop: isMobile ? '1rem' : '0' }}>
-              {selectedCategory ? (
+              {selectedCategoryObj && (
                 <>
                   <Typography variant="h6" sx={{ fontWeight: 'bold', marginTop: '10px', paddingTop: '10px' }}>
                     Select a Sub category
                   </Typography>
                   <List>
-                    {items[selectedCategory].map((subCategory, index) => (
-                      <React.Fragment key={subCategory}>
+                    {selectedCategoryObj.children.map((subCategory, index) => (
+                      <React.Fragment key={subCategory.name}>
                         <ListItemButton onClick={() => handleSubcategory(subCategory)}>
                           <ListItem disablePadding>
-                            <ListItemText primary={subCategory} />
+                            <ListItemText primary={subCategory.name} />
                           </ListItem>
                         </ListItemButton>
-                        {index < items[selectedCategory].length - 1 && <Divider />}
+                        {index < selectedCategoryObj.children.length - 1 && <Divider />}
                       </React.Fragment>
                     ))}
                   </List>
-                </>
-              ) : (
-                <Typography variant="h6" sx={{ marginTop: '0px', paddingTop: '0px' }}>
-
-                </Typography>
-              )}
+                </>)}
             </div>
           </div>
         </DialogContent>

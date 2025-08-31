@@ -8,6 +8,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import { useState, useEffect } from 'react';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import { Typography } from '@mui/material';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
@@ -15,7 +16,22 @@ import { Link as RouterLink } from 'react-router-dom';
 import ArrowBackOutlinedIcon from '@mui/icons-material/ArrowBackOutlined';
 import AllDrawer from './all_sidebar';
 import { useMediaQuery } from '@mui/material';
-const NestedSidebar = ({ open, onClose, category, onMainMenuClick }) => {
+import { customAxios } from '../api/axiosPrivate';
+const NestedSidebar = ({ open, onClose, category, onMainMenuClick, cat_name }) => {
+  const [child_cat, setChild_cat] = useState()
+  const get_child_cat = async () => {
+    try {
+      const res = await customAxios.get(`/category/child-cat/${category}`)
+      const child_cat = res.data;
+
+      setChild_cat(child_cat);
+    } catch (error) {
+      //  console.log("Error gsm product_name: ", error);
+    }
+  }
+  useEffect(() => {
+    get_child_cat()
+  }, [category]);
   const items = {
     Mobiles: ['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
     Computers: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
@@ -69,17 +85,17 @@ const NestedSidebar = ({ open, onClose, category, onMainMenuClick }) => {
         <Divider />
         <ListItem>
           <ListItemText
-            primary={category}
+            primary={cat_name}
             primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
           />
         </ListItem>
-        {items[category]?.map((subCat) => (
-          <ListItem key={subCat} disablePadding>
+        {child_cat?.map((subCat) => (
+          <ListItem key={subCat.name} disablePadding>
             <ListItemButton
               component={RouterLink}
-              to={`/sub-category-item/${category}/${subCat}`}
+              to={`/sub-category-item/${cat_name}/${subCat.name}`}
               onClick={onClose}>
-              <ListItemText primary={subCat} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
+              <ListItemText primary={subCat.name} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
               <ListItemIcon>
                 <ArrowForwardIosOutlinedIcon sx={{ color: 'rgb(0, 7, 20)' }} />
               </ListItemIcon>

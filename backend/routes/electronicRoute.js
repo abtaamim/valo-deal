@@ -2,13 +2,13 @@ const express = require('express');
 const{ electronicController, getAllEletronicsController, getSubcatElectronisController, getAddedElectronic, deleteElectronic, getLatestElectronic}=require('../controllers/electronicController');
 
 const { requireSignIn } = require('../middlewares/authMiddleware');
-const multer = require('multer');
+
 
 
 const router = express.Router();
 
 // Configure multer for file uploads
-
+const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 // Sell product route

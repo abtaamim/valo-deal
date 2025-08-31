@@ -18,6 +18,7 @@ exports.requireSignIn = async (req, res, next) => {
         message: 'Forbidden' + err
       })
       req.user = decoded;
+      console.log(req.user)
       next()
     }
   )
@@ -26,14 +27,9 @@ exports.requireSignIn = async (req, res, next) => {
 
 // Admin access middleware
 exports.isAdmin = async (req, res, next) => {
-  try {
-    const user = await userModel.findById(req.user._id);
-    if (!user || user.role !== 1) {
-      return res.status(401).json({ success: false, message: "Unauthorized Access" });
-    }
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "Error in admin middleware", error: error.message });
+  console.log(req.user?.role)
+  if (req.user?.role !== 'admin') {
+    return res.status(403).json({ message: 'Access denied: Admins only' });
   }
+  next();
 };

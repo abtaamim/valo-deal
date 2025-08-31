@@ -65,7 +65,8 @@ const App = () => {
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/single-item-payment" element={<SingleItemPaymentPage />} />
             <Route path="/sell" element={<Sell />} />
-            <Route path="/sell-mobile" element={<MobileSellDetailsPage />} />
+            <Route path="/product-sell/:cat_name" element={<MobileSellDetailsPage />} />
+            {/* <Route path="/sell-mobile" element={<MobileSellDetailsPage />} /> */}
             <Route path="/sell/mobile-accessories" element={<MobileAccessoriesSellDetailsPage />} />
             <Route path="/sell/computers" element={< ComputerSellPage />} />
             <Route path="/sell/vehicles" element={< VehicleSellPage />} />
