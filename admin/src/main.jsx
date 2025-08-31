@@ -6,6 +6,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import SignIn from './page/auth/signIn.jsx'
 import Home from './page/home.jsx'
 import { AuthProvider } from '../../frontend/src/context/auth.jsx'
+import CreateOffer from './page/createOffer.jsx'
 const router = createBrowserRouter([
   {
     path: '/',
@@ -13,6 +14,7 @@ const router = createBrowserRouter([
     children: [
       { path: '/signIn', element: <SignIn /> },
       { path: '/', element: <Home /> },
+      { path: '/create-offer', element: <CreateOffer /> },
     ],
   }
 ])

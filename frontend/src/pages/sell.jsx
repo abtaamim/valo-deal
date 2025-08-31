@@ -1,13 +1,9 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import { ListItemIcon, ListItemButton, ListItemText, ListItem, List, Divider, Grid, Typography } from '@mui/material';
+import React, { useState, useEffect } from 'react'; // ✅ added useEffect import
+import { Box, Card, CardContent, ListItemIcon, ListItemButton, ListItemText, ListItem, List, Divider, Grid, Typography, Tooltip } from '@mui/material';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import CategorySelection from './categorySelection';
-import { useState } from 'react';
-import { Tooltip } from '@mui/material';
 import { useAuth } from '../context/auth';
+import { customAxios } from '../api/axiosPrivate';
 function customListButton(string, onClick) {
   return (
     <ListItemButton onClick={onClick} sx={{ justifyContent: 'space-between', width: '100%' }}>
@@ -28,15 +24,26 @@ function customListButton(string, onClick) {
 const Sell = () => {
   const [openCategoryDialog, setOpenCategoryDialog] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [auth] = useAuth()
-  const items = {
-    Mobiles: ['Mobile Phones', 'Mobile Phone Accessories', 'Wearables'],
-    Computers: ['Computer Components', 'Data Storage', 'External Components', 'Laptop Accessories', 'Monitor', 'Networking Products'],
-    Electronics: ['Desktop Computers', 'Laptops', 'Computer & Laptop Accessories', 'TVs', 'Cameras', 'ACs & Home Appliances', 'Photocopies', 'Other Electronics'],
-    Vehicles: ['Car', 'Motorbikes', 'Bicycles', 'Auto Parts & Accessories'],
-    'Home & Living': [],
-    "Men's Fashion & Grooming": [],
+  const [items, setItems] = useState([]);
+  const [auth] = useAuth();
+
+  const fetchCategory = async () => {
+    try {
+      const res = await customAxios.get("/category/category-tree");
+      console.log(res.data)
+      setItems(res.data);
+    } catch (error) {
+      console.error("Error fetching category:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchCategory();
+  }, []);
+
+  useEffect(() => {
+    console.log("Updated items:", items);
+  }, [items]);
 
   const handleOpenCategoryDialog = () => {
     setOpenCategoryDialog(true);

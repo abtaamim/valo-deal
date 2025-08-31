@@ -79,12 +79,12 @@ exports.loginController = async (req, res) => {
     }
 
     // Generate Access token
-    const token = await JWT.sign({ _id: user._id }, process.env.JWT_SECRET, {
+    const token = await JWT.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: "300s",
     });
 
     // Generate Refresh token
-    const refreshToken = await JWT.sign({ _id: user._id }, process.env.REFRESH_SECRET, {
+    const refreshToken = await JWT.sign({ _id: user._id, role: user.role }, process.env.REFRESH_SECRET, {
       expiresIn: "7d",
     });
 
@@ -197,8 +197,8 @@ exports.updateProfileController = async (req, res) => {
     res.status(500).send({ success: false, message: "Something went wrong", error });
   }
 };
-const createAccessToken = (_id) => {
-  return JWT.sign({ _id }, process.env.JWT_SECRET, { expiresIn: '300s' })
+const createAccessToken = (_id, role) => {
+  return JWT.sign({ _id,role }, process.env.JWT_SECRET, { expiresIn: '300s' })
 }
 exports.refresh = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
@@ -214,7 +214,7 @@ exports.refresh = async (req, res) => {
       const foundUser = await userModel.findById(decoded?._id)
       if (!foundUser) return res.status(401).json({ message: 'Unauthorized no user found' })
 
-      const accessToken = createAccessToken(foundUser._id)
+      const accessToken = createAccessToken(foundUser._id, foundUser.role)
       res.json({
         accessToken,
         user: {
@@ -223,6 +223,7 @@ exports.refresh = async (req, res) => {
           email: foundUser.email,
           phone: foundUser.phone,
           address: foundUser.address,
+          role:foundUser.role
         },
       })
     })

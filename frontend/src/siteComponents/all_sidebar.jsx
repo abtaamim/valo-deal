@@ -14,20 +14,35 @@ import MenuIcon from '@mui/icons-material/Menu';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
 import { Link as RouterLink } from 'react-router-dom';
 import NestedSidebar from './nested_sidebar';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '../context/auth';
-
+import { customAxios } from '../api/axiosPrivate';
 export default function AllDrawer() {
   const [openMainDrawer, setOpenMainDrawer] = useState(false);
   const [openSubDrawer, setOpenSubDrawer] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
-
+  const [parent_cat, setParent_cat] = useState()
+  const [cat_name, setCat_name] = useState()
   const toggleMainDrawer = (newOpen) => () => {
     setOpenMainDrawer(newOpen);
   };
 
-  const handleCategoryClick = (category) => {
+  const get_parent_cat = async () => {
+    try {
+      const res = await customAxios.get('/category/parent-cat')
+      const parent_cat = res.data;
+
+      setParent_cat(parent_cat);
+    } catch (error) {
+      //  console.log("Error gsm product_name: ", error);
+    }
+  }
+  useEffect(() => {
+    get_parent_cat()
+  }, []);
+  const handleCategoryClick = (category, cat_name) => {
     setSelectedCategory(category);
+    setCat_name(cat_name)
     setOpenSubDrawer(true);
     setOpenMainDrawer(false); // Close the main drawer when opening the sub drawer
   };
@@ -102,11 +117,12 @@ export default function AllDrawer() {
             primaryTypographyProps={{ fontWeight: 'bold', fontSize: 'h6.fontSize' }}
           />
         </ListItem>
-        {['Electronics', 'Computers', 'Mobiles', 'Vehicles'].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton onClick={() => handleCategoryClick(text)}>
+        {/* ['Electronics', 'Computers', 'Mobiles', 'Vehicles'] */}
+        {parent_cat?.map((cat) => (
+          <ListItem key={cat.name} disablePadding>
+            <ListItemButton onClick={() => handleCategoryClick(cat._id, cat.name)}>
               <ListItemText
-                primary={text}
+                primary={cat.name}
                 primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }}
               />
               <ListItemIcon>
@@ -176,6 +192,7 @@ export default function AllDrawer() {
         onClose={handleSubDrawerClose}
         category={selectedCategory}
         onMainMenuClick={handleMainMenuClick}
+        cat_name={cat_name}
       />
     </div>
   );

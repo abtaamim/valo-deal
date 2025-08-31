@@ -14,6 +14,10 @@ const searchRoutes = require('./routes/searchRoute.js')
 const showDetails = require('./routes/showDetails.js')
 const soldItems = require('./routes/soldItemRoute.js')
 const sendMail = require('./routes/sendmail.js')
+const offerRoute = require('./routes/adminRoutes/offerRoute.js')
+const productRoute = require('./routes/productRoute.js')
+const categoryRoute = require('./routes/categoryRoutes.js')
+const orderRoute = require('./routes/orderRoute.js')
 const cors = require('cors');
 const path = require('path');
 const cookieParser = require('cookie-parser')
@@ -82,6 +86,11 @@ app.use("/search", searchRoutes);
 app.use("/details", showDetails);
 app.use("/order", soldItems);
 app.use("/send", sendMail)
+app.use("/offer", offerRoute)
+app.use("/product", productRoute)
+app.use("/category",categoryRoute)
+app.use("/order", orderRoute)
+
 app.get("/", (req, res) => {
   res.send("<h1>Welcome to ecommerce app</h1>");
 });

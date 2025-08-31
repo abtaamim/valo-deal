@@ -1,5 +1,6 @@
 const express = require('express');
-const{ computerController, getAllComputersController, getSubcatComputersController, getAddedComputer, deleteComputer, getLatestComputer}=require('../controllers/computerController');
+const { computerController, getAllComputersController, getSubcatComputersController, getAddedComputer, deleteComputer, getLatestComputer } = require('../controllers/computerController');
+
 
 const { requireSignIn } = require('../middlewares/authMiddleware');
 const paginatedResults = require('../middlewares/paginationMiddleware');
