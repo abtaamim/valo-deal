@@ -1,14 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { Outlet } from 'react-router-dom'
-function App() {
-  return (
-    <>
-      <Outlet />
-    </>
-  )
-}
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../../frontend/src/context/auth";
 
-export default App
+const App = () => {
+  const [auth] = useAuth();
+
+  if (auth === null) {
+    return null; 
+  }
+
+  return auth.loggedIn ? <Outlet /> : <Navigate to="/signIn" />;
+};
+
+export default App;

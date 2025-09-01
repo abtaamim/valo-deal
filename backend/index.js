@@ -75,6 +75,7 @@ app.post('/upload', upload.single('file'), (req, res) => {
 });
 // Routes
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/users", require('./routes/userRoute.js'));  
 app.use("/sell", mobileRoutes); // "/api/v1/sell"
 app.use("/sell", computerRoutes); // 
 app.use("/sell", electronicRoutes)
