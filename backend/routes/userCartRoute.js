@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/fetchitems', requireSignIn, getCartItems);
 router.delete('/clear', requireSignIn, deleteWholeCart );
 // router.post('/:itemType/:itemId',requireSignIn, addToCart);
-router.delete('/:itemId',requireSignIn, removeFromCart);
+router.delete('/:productId',requireSignIn, removeFromCart);
 router.post('/:productId', requireSignIn, addToCart);
 router.get('/size', requireSignIn, getCartSize);
 

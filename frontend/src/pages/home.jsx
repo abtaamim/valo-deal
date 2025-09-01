@@ -32,7 +32,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import "../siteComponents/styles.css";
-
+import { customAxios } from "../api/axiosPrivate";
 import image1 from "../assests/h1.jpg";
 import image2 from "../assests/h2.jpg";
 import image3 from "../assests/h3.jpg";
@@ -307,9 +307,9 @@ const ListingCard = ({
       <CardMedia
         component="img"
         height="240"
-        image={item.imgUrl[1]}
+        image={item.img_urls[1]}
         alt={`${item.brand} ${item.model}`}
-        src={item.imgUrl}
+        src={item.img_urls}
         sx={{
           transition: "transform 0.8s ease-in-out", // Longer duration for smoothness
           "&:hover": {
@@ -341,7 +341,7 @@ const ListingCard = ({
         {item.authenticity ? `Authenticity: ${item.authenticity}` : ""}
       </Typography>
       <Typography variant="body2" color="#7e7e7e" noWrap>
-        Description: {item.description}
+        Description: {item.product_description}
       </Typography>
       <Typography variant="body2" color="#b1afac">
         {formatDistanceToNow(new Date(item.createdAt), { addSuffix: true })}
@@ -349,7 +349,7 @@ const ListingCard = ({
       <ListItemButton
         sx={{ padding: "0", mt: "10px", height: "32px", color: "#bebebe" }}
       >
-        Seller : {sellerName}
+        Seller : {item.seller_id.name}
       </ListItemButton>
     </CardContent>
     <CardActions
@@ -406,28 +406,42 @@ const HomePage = () => {
 
   const [openModal, setOpenModal] = useState(false);
 
+  // const fetchItems = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const [
+  //       mobilesResponse,
+  //       computersResponse,
+  //       electronicResponse,
+  //       vehicleResponse,
+  //     ] = await Promise.all([
+  //       axios.get("https://valo-deal-backend.vercel.app/sell/latest-mobiles"),
+  //       axios.get("https://valo-deal-backend.vercel.app/sell/latest-computers"),
+  //       axios.get(
+  //         "https://valo-deal-backend.vercel.app/sell/latest-electronics"
+  //       ),
+  //       axios.get("https://valo-deal-backend.vercel.app/sell/latest-vehicles"),
+  //     ]);
+  //     setItems({
+  //       mobiles: mobilesResponse.data.latestMobile,
+  //       computers: computersResponse.data.latestComputer,
+  //       electronics: electronicResponse.data.latestElectronic,
+  //       vehicles: vehicleResponse.data.latestVehicle,
+  //     });
+  //   } catch (error) {
+  //     console.error("Error fetching items:", error);
+  //     toast.error("Failed to fetch items. Please try again later.", {
+  //       position: "bottom-right",
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchItems = async () => {
     try {
       setLoading(true);
-      const [
-        mobilesResponse,
-        computersResponse,
-        electronicResponse,
-        vehicleResponse,
-      ] = await Promise.all([
-        axios.get("https://valo-deal-backend.vercel.app/sell/latest-mobiles"),
-        axios.get("https://valo-deal-backend.vercel.app/sell/latest-computers"),
-        axios.get(
-          "https://valo-deal-backend.vercel.app/sell/latest-electronics"
-        ),
-        axios.get("https://valo-deal-backend.vercel.app/sell/latest-vehicles"),
-      ]);
-      setItems({
-        mobiles: mobilesResponse.data.latestMobile,
-        computers: computersResponse.data.latestComputer,
-        electronics: electronicResponse.data.latestElectronic,
-        vehicles: vehicleResponse.data.latestVehicle,
-      });
+      const res = await customAxios.get('/product/active')
+      setAllItems(res.data)
     } catch (error) {
       console.error("Error fetching items:", error);
       toast.error("Failed to fetch items. Please try again later.", {
@@ -437,20 +451,35 @@ const HomePage = () => {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     fetchItems();
     updateCartSize();
   }, [auth]);
 
-  const handleViewDetails = async (itemId, itemType) => {
+  // const handleViewDetails = async (itemId, itemType) => {
+  //   try {
+  //     await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
+  //     setLoadingProduct(itemId);
+
+  //     setTimeout(() => {
+  //       navigate(`/details/${itemType}/${itemId}`);
+  //       setLoadingProduct(null);
+  //     }, 1500);
+  //   } catch (error) {
+  //     console.error("Error viewing details:", error);
+  //     toast.error("Failed to load details. Please try again.", {
+  //       position: "bottom-right",
+  //     });
+  //   }
+  // };
+  const handleViewDetails = async (itemId) => {
     try {
-      await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
+      // await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
       setLoadingProduct(itemId);
 
       setTimeout(() => {
-        navigate(`/details/${itemType}/${itemId}`);
+        navigate(`/details/${itemId}`);
         setLoadingProduct(null);
       }, 1500);
     } catch (error) {
@@ -460,77 +489,24 @@ const HomePage = () => {
       });
     }
   };
-
-  const handleAddToCart = async (itemId, itemType) => {
+  const handleAddToCart = async (itemId) => {
     try {
-      const item = allItems.find((item) => item._id === itemId);
-
-      if (item && item.sellerId === auth.user?._id) {
-        toast.error("You cannot add your own product to the cart.", {
-          position: "bottom-right",
-        });
-        return;
-      }
-
-      await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
+      const res = await axiosPrivate.post(`/cart/${itemId}`);
       await updateCartSize();
-      //toast.success("Item added to the cart!", { position: "bottom-right" });
       toast.success(
         <div onClick={() => navigate("/cart")}>
           Item added to the cart! Click here to view your cart.
         </div>,
-        { position: "bottom-right", autoClose: false } // Prevent auto close to allow interaction
+        { position: "bottom-right", autoClose: false }
       );
+
     } catch (error) {
-      if (auth.user) {
-        toast.error("Failed to add item to cart. Please try again.", {
-          position: "bottom-right",
-        });
-      } else {
-        toast.error("Sign in to add to cart.", { position: "bottom-right" });
-      }
+      toast.error(`${error.response.data.message}`, { position: "bottom-right" });
       console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
 
-  useEffect(() => {
-    const combinedItems = [
-      ...(items.mobiles || []),
-      ...(items.computers || []),
-      ...(items.electronics || []),
-      ...(items.vehicles || []),
-    ];
-    setAllItems(combinedItems);
-  }, [items]);
 
-  const fetchSellerInfo = async () => {
-    try {
-      const sellerIds = new Set(allItems.map((item) => item.sellerId));
-      const sellerPromises = Array.from(sellerIds).map((sellerId) =>
-        axios.get(
-          `https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${sellerId}`
-        )
-      );
-      const sellerResponses = await Promise.all(sellerPromises);
-      const newSellerMap = new Map();
-      sellerResponses.forEach((response) => {
-        const sellerData = response.data.seller;
-        newSellerMap.set(sellerData.sellerId, sellerData);
-      });
-      setSellerMap(newSellerMap);
-    } catch (error) {
-      console.error("Error fetching seller info:", error);
-      toast.error("Failed to fetch seller information.", {
-        position: "bottom-right",
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (allItems.length > 0) {
-      fetchSellerInfo();
-    }
-  }, [allItems]);
 
   const handleSortChange = (event) => {
     const selectedSortOrder = event.target.value;
@@ -702,9 +678,9 @@ const HomePage = () => {
                   <ListingCard
                     item={item}
                     isLoading={loadingProduct === item._id}
-                    onAddToCart={() => handleAddToCart(item._id, item.itemType)}
+                    onAddToCart={() => handleAddToCart(item._id)}
                     onViewDetails={() =>
-                      handleViewDetails(item._id, item.itemType)
+                      handleViewDetails(item._id)
                     }
                     sellerName={sellerMap.get(item.sellerId)?.name || ""}
                   />
