@@ -17,7 +17,7 @@ const CartPage = () => {
   const { updateCartSize } = useCart();
   const navigate = useNavigate();
   const axiosPrivate = useAxiosPrivate();
-  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [selectedItemId, setSelectedItemId] = useState();
   const [open, setOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
@@ -52,7 +52,7 @@ const formatPrice = (price) => {
       }
       const response = await axiosPrivate.get("/cart/fetchitems");
       setCartItems(response.data.cartItems);
-      setItemGotSold(response.data.itemGotSoldFlag);
+      // setItemGotSold(response.data.itemGotSoldFlag);
     } catch (error) {
       console.error("Error fetching items:", error);
     } finally {
@@ -64,11 +64,11 @@ const formatPrice = (price) => {
     fetchItems();
   }, [auth]);
 
-  useEffect(() => {
-    if (itemGotSold) {
-      toast.error("Some items from your cart were bought by other users T_T");
-    }
-  }, [itemGotSold]);
+  // useEffect(() => {
+  //   if (itemGotSold) {
+  //     toast.error("Some items from your cart were bought by other users T_T");
+  //   }
+  // }, [itemGotSold]);
 
   const handleDelete = async (itemId) => {
     try {

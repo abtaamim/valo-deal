@@ -20,11 +20,11 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 import { useAuth } from "../context/auth";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
-
+import { customAxios } from "../api/axiosPrivate";
 const ShowDetailsPage = () => {
   const [item, setItem] = useState({});
   const [selectedColor, setSelectedColor] = useState("");
-  const { itemType, itemId } = useParams();
+  const { itemId } = useParams();
   const { auth } = useAuth();
   const axiosPrivate = useAxiosPrivate();
   const [sellerInfo, setSellerInfo] = useState({});
@@ -33,27 +33,27 @@ const ShowDetailsPage = () => {
   const location = useLocation();
   const { prevUrl } = location.state || '';
   const fetchItem = async () => {
-    const res = await axiosPrivate.get(`/details/${itemType}/${itemId}`);
+    const res = await customAxios.get(`/product/${itemId}`);
     setItem(res.data);
   };
 
   useEffect(() => {
     fetchItem();
   //  console.log(prevUrl);
-  }, [itemId, itemType]);
+  }, [itemId]);
 
   useEffect(() => {
     const fetchSellerInfo = async () => {
       if (item.sellerId) {
         const res = await axios.get(
-          `https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${item.sellerId}`
+          `https://valo-deal-backend.vercel.app/api/v1/auth/seller-info/${item.seller_id.id}`
         );
         setSellerInfo(res.data.seller);
       }
     };
     fetchSellerInfo();
 
-  }, [item.sellerId]);
+  }, [item.seller_id?.id]);
 
   const handleNavigate = () => {
     navigate("/seller-info", {
@@ -73,15 +73,22 @@ const ShowDetailsPage = () => {
 
   };
 
-  const handleAddToCart = async () => {
-    try {
-      await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
-      await updateCartSize();
-      toast.success("Item added to the cart!");
-    } catch (error) {
-      console.error("Error adding item to cart:", error);
-    }
-  };
+   const handleAddToCart = async (itemId) => {
+     try {
+       const res = await axiosPrivate.post(`/cart/${itemId}`);
+       await updateCartSize();
+       toast.success(
+         <div onClick={() => navigate("/cart")}>
+           Item added to the cart! Click here to view your cart.
+         </div>,
+         { position: "bottom-right", autoClose: false }
+       );
+ 
+     } catch (error) {
+       toast.error(`${error.response.data.message}`, { position: "bottom-right" });
+       console.error(`Error adding to cart ${itemType}:`, error);
+     }
+   };
 
   const handleColorChange = (event) => {
     setSelectedColor(event.target.value);
@@ -118,7 +125,7 @@ const ShowDetailsPage = () => {
             justifyContent: "center",
           }}
         >
-          {item.imgUrl && item.imgUrl.length > 0 && (
+          {item.img_urls && item.img_urls.length > 0 && (
             <Box
               sx={{
                 width: "100%",
@@ -138,7 +145,7 @@ const ShowDetailsPage = () => {
                 dynamicHeight={false}
                 sx={{ width: "100%", height: "100%" }}
               >
-                {item.imgUrl.map((url, index) => (
+                {item.img_urls.map((url, index) => (
                   <div
                     key={index}
                     style={{
@@ -191,12 +198,12 @@ const ShowDetailsPage = () => {
             </Typography>
           )}
           <Typography variant="body2" sx={{ mt: "10px", fontSize: { xs: "0.9rem", sm: "1.2rem" } }}>
-            Description: {item.description}
+            Description: {item.product_description}
           </Typography>
           <Button onClick={handleNavigate} sx={{ paddingLeft: "0", textTransform: "none", color: "brown" }}>
             <Person2OutlinedIcon sx={{ color: "brown" }} />
             <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-              Seller: {sellerInfo.name}
+              Seller: {item.seller_id?.name}
             </Typography>
           </Button>
 
@@ -230,7 +237,7 @@ const ShowDetailsPage = () => {
                   //width: { xs: "100%", sm: "48%", md: '100%' },
 
                 }}
-                onClick={handleAddToCart}
+                onClick={()=>{handleAddToCart(item._id)}}
               >
                 Add to Cart
               </Button>

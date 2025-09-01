@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.post('/create', requireSignIn,upload.none(), createProduct);
 router.get('/active', getActiveProducts);
-router.get('/product/:id', getProductById);
+router.get('/:id', getProductById);
 router.put('/update/:id', requireSignIn, updateProduct);
 router.delete('/delete/:id', requireSignIn, softDeleteProduct);
 router.get('/my-products', requireSignIn, getSellerProducts);

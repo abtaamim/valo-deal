@@ -197,7 +197,7 @@ const removeFromCart = async (req, res) => {
   try {
     const userId = req.user._id;
     const productId = req.params.productId;
-
+    console.log(productId)
     const deletedItem = await Cart.findOneAndDelete({ user_id: userId, product_id: productId });
 
     if (!deletedItem) {

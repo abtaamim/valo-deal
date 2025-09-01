@@ -76,7 +76,7 @@ const App = () => {
             <Route path="/recently-viewed" element={<RecentlyViewedItemPage />} />
             <Route path='/previous-orders' element={<PreviousOrders />} />
             <Route path="/previous-sold" element={<PreviousSold />} />
-            <Route path='/details/:itemType/:itemId' element={<ShowDetailsPage />} />
+            <Route path='/details/:itemId' element={<ShowDetailsPage />} />
             <Route path="/seller-info" element={<SellerInfo />} />
             <Route path="/about" element={<About />} />
            <Route path="/contact" element={<Contact />} />

@@ -26,7 +26,7 @@ const CustomDialog=(props)=>{
         </DialogTitle>
         <DialogActions>
           <Button variant='outlined' sx={{ borderColor: 'blue', color: 'blue', mb: '15px' }} onClick={handleClose}>Cancel</Button>
-          <Button variant='outlined' sx={{ color: 'red', borderColor: 'red', mb: '15px' }} onClick={() => handleDelete(selectedItemId, selectedItemType)} autoFocus>
+          <Button variant='outlined' sx={{ color: 'red', borderColor: 'red', mb: '15px' }} onClick={() => handleDelete(selectedItemId)} autoFocus>
             Remove
           </Button>
         </DialogActions>

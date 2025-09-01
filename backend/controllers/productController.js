@@ -52,7 +52,8 @@ const getProductById = async (req, res) => {
   try {
     const product = await Product.findOne({
       _id: req.params.id,
-      deleted_at: null
+      deleted_at: null,
+      product_status: 'approved'
     }).populate('category_id').populate('seller_id', 'name email');
 
     if (!product) return res.status(404).json({ message: 'Product not found' });

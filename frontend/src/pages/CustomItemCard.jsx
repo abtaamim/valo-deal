@@ -42,7 +42,7 @@ const ListingCard = (props) => {
 
   return (
     <Grid container spacing={10} sx={{ justifyContent: 'flex-start' }}>
-      {items.map((item) => (
+      {items?.map((item) => (
         <Grid item key={item._id} xs={12} sm={6} lg={4} xl={3}>
           <Card
             sx={{
@@ -71,7 +71,7 @@ const ListingCard = (props) => {
                   height: '100%',
                   objectFit: 'cover',
                 }}
-                image={item.imgUrl[0]}
+                image={item.img_urls[0]}
                 alt={`${item.brand} ${item.model}`}
               />
               <Box
@@ -130,7 +130,7 @@ const ListingCard = (props) => {
                     color: 'navy',
                   }}
                 >
-                  {item.description}
+                  {item.product_description}
                 </Typography>
               </CardContent>
 
