@@ -82,15 +82,51 @@ const formatPrice = (price) => {
     }
   };
 
-  const handleBuyNow = () => {
-    navigate("/payment");
-  };
+  // const handleBuyNow = () => {
+  //   navigate("/payment");
+  // };
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
   };
 
   const totalSum = cartItems.reduce((acc, item) => acc + item.price, 0);
+  const handleBuyNow = async () => {
+    try {
+      if (cartItems.length === 0) {
+        toast.error("Your cart is empty!");
+        return;
+      }
+
+      // Format order payload
+      const orderPayload = {
+        items: cartItems.map((item) => ({
+          product_id: item._id,        // _id = productId
+          seller_id: item.seller_id,
+          quantity: item.quantity || 1,
+          price_per_unit: item.price,
+        })),
+        total_amount: totalSum,
+        payment_method: "cod", // later you can allow user to select
+        shipping_address: auth?.user?.address || "Dhaka, Bangladesh",
+      };
+
+      const response = await axiosPrivate.post("/order/create", orderPayload);
+
+      toast.success(" Order placed successfully!");
+      await axiosPrivate.delete("/cart/clear")
+      // clear cart in frontend + backend
+      setCartItems([]);
+      await updateCartSize();
+
+      // redirect to order details page
+      // navigate(`/orders/${response.data.orderId}`);
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast.error(" Failed to place order. Try again.");
+    }
+  };
+
 
   return (
     <>

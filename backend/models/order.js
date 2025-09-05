@@ -5,7 +5,7 @@ const orderSchema = new mongoose.Schema(
   {
     buyer_id: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     order_tracker_id: { type: mongoose.Schema.Types.ObjectId, ref: "OrderTracker", unique: true, required: true },
-    total_amount: { type: mongoose.Decimal128, required: true },
+    total_amount: { type: Number, required: true },
     payment_method: { type: String, enum: PAYMENT_METHOD, required: true },
     shipping_address: { type: String },
   },

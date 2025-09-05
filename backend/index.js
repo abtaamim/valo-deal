@@ -85,7 +85,7 @@ app.use("/cart", cartRoutes);
 app.use("/recentlyViewed", recentlyViewedRoutes)
 app.use("/search", searchRoutes);
 app.use("/details", showDetails);
-app.use("/order", soldItems);
+
 app.use("/send", sendMail)
 app.use("/offer", offerRoute)
 app.use("/product", productRoute)

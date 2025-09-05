@@ -1,7 +1,7 @@
 
 const USER_ROLE = ['user', 'business', 'admin'];
 const PRODUCT_CONDITION = ['new', 'used', 'refubrished'];
-const PRODUCT_STATUS = ['pending', 'approved', 'rejected', 'suspended'];
+const PRODUCT_STATUS = ['pending', 'approved', 'rejected', 'suspended', 'stock_out'];
 const ORDER_STATUS = ['pending', 'paid', 'shipped', 'delivered', 'cancelled', 'returned', 'failed'];
 const DELIVERY_STATUS = ['pending', 'shipped', 'out_for_delivery', 'delivered', 'cancelled', 'return'];
 const STOCK_UPDATE_TYPE = ['restock', 'sale', 'return', 'adjustment'];
