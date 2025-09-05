@@ -41,7 +41,8 @@ import PrivateRoute from "./components/Routes/Private";
 import ForgotPassword from "./pages/Auth/ForgotPassword";
 import { PostDetails } from './siteComponents/PostDetails';
 import { Toaster } from 'react-hot-toast';
-
+import SellerOrdersPage from './pages/sellerOrdersPage';
+import BuyerOrdersPage from './pages/buyerOrder';
 const App = () => {
 
 
@@ -74,8 +75,8 @@ const App = () => {
             <Route path="/sub-category-item/:category/:subCat" element={<ShowSubCatItem />} />
             <Route path="/added-items" element={<AddedItemList />} />
             <Route path="/recently-viewed" element={<RecentlyViewedItemPage />} />
-            <Route path='/previous-orders' element={<PreviousOrders />} />
-            <Route path="/previous-sold" element={<PreviousSold />} />
+            <Route path='/previous-orders' element={<BuyerOrdersPage />} />
+            <Route path="/previous-sold" element={<SellerOrdersPage />} />
             <Route path='/details/:itemId' element={<ShowDetailsPage />} />
             <Route path="/seller-info" element={<SellerInfo />} />
             <Route path="/about" element={<About />} />

@@ -1,6 +1,7 @@
 const Order = require("../models/order");
 const OrderItem = require("../models/orderItem");
 const OrderTracker = require("../models/orderTracker");
+const Product = require("../models/product")
 const mongoose = require("mongoose");
 
 /**
@@ -11,14 +12,36 @@ const createOrder = async (req, res) => {
   session.startTransaction();
 
   try {
-    const { buyer_id, items, total_amount, payment_method, shipping_address } = req.body;
-
+    const { items, total_amount, payment_method, shipping_address } = req.body;
+    const buyer_id = req.user._id
     // Create tracker first
     const tracker = await OrderTracker.create(
       [{ order_status: "pending" }],
       { session }
     );
+    for (const item of items) {
+      const prod = await Product.findById(item.product_id).session(session);
+      if (!prod) throw new Error(`Product not found: ${item.product_id}`);
 
+      const remain_prod = prod.stock - item.quantity;
+
+      if (remain_prod < 0) {
+        throw new Error(`Insufficient stock for product ${prod._id}`);
+      } else if (remain_prod === 0) {
+        await prod.updateOne(
+          { stock: 0, product_status: "stock_out" },
+          { session }
+        );
+      } else {
+        await prod.updateOne(
+          { stock: remain_prod },
+          { session }
+        );
+      }
+    }
+
+
+    console.log("trckId: " + tracker[0]._id)
     // Create order
     const order = await Order.create(
       [{
@@ -63,13 +86,48 @@ const createOrder = async (req, res) => {
 /**
  * Get all orders for a buyer
  */
+// helper function to sync tracker with item statuses
+const syncOrderStatus = async (trackerId) => {
+  const order = await Order.findOne({ order_tracker_id: trackerId });
+  if (!order) return null;
+
+  const order_items = await OrderItem.find({ order_id: order._id });
+
+  if (order_items.length === 0) return null;
+
+  const firstStatus = order_items[0].delivery_status;
+
+  const allSame = order_items.every(
+    (item) => item.delivery_status === firstStatus
+  );
+  console.log(firstStatus)
+  if (!allSame) {
+    console.log("null")
+    return null; // mixed statuses → don't update
+  }
+
+  return await OrderTracker.findByIdAndUpdate(
+    trackerId,
+    { order_status: firstStatus,  updated_at: new Date() },
+    { new: true }
+  );
+};
+
 const getOrdersByBuyer = async (req, res) => {
   try {
-    const { buyerId } = req.params;
-    const orders = await Order.find({ buyer_id: buyerId })
+    const buyer_id = req.user._id
+    const all_orders = await Order.find({ buyer_id: buyer_id })
+    for (const order of all_orders) {
+      await syncOrderStatus(order.order_tracker_id);
+    }
+    const orders = await Order.find({ buyer_id: buyer_id })
       .populate("order_tracker_id")
       .lean();
-
+    for (const order of orders) {
+      order.items = await OrderItem.find({ order_id: order._id })
+        .populate("product_id")
+        .lean();
+    }
     res.status(200).json(orders);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -124,16 +182,14 @@ const updateDeliveryStatus = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { trackerId } = req.params;
-    const { order_status, note } = req.body;
+    // const { note } = req.body;
 
-    const updatedTracker = await OrderTracker.findByIdAndUpdate(
-      trackerId,
-      { order_status, note, updated_at: new Date() },
-      { new: true }
-    );
+    const updatedTracker = await syncOrderStatus(trackerId);
 
     if (!updatedTracker) {
-      return res.status(404).json({ message: "Order tracker not found" });
+      return res.status(400).json({
+        message: "Order tracker not updated (items have different statuses or not found)",
+      });
     }
 
     res.status(200).json(updatedTracker);
@@ -142,4 +198,36 @@ const updateOrderStatus = async (req, res) => {
   }
 };
 
-module.exports = {createOrder, getOrderDetails, getOrdersByBuyer, updateDeliveryStatus, updateOrderStatus}
+
+
+const getOrdersBySeller = async (req, res) => {
+  try {
+    const seller_id = req.user._id
+
+    const orderItems = await OrderItem.find({ seller_id: seller_id }).lean();
+
+    if (orderItems.length === 0) {
+      return res.status(200).json([]);
+    }
+
+    const orderIds = [...new Set(orderItems.map(item => item.order_id.toString()))];
+
+
+    const orders = await Order.find({ _id: { $in: orderIds } })
+      .populate("order_tracker_id")
+      .lean();
+
+
+    const ordersWithItems = orders.map(order => {
+      const items = orderItems.filter(item => item.order_id.toString() === order._id.toString());
+      return { ...order, items };
+    });
+
+    res.status(200).json(ordersWithItems);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+module.exports = { createOrder, getOrderDetails, getOrdersByBuyer, updateDeliveryStatus, updateOrderStatus, getOrdersBySeller }
