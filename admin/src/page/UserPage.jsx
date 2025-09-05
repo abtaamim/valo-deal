@@ -11,7 +11,7 @@ const UserPage = () => {
   // Fetch users
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:8080/api/v1/users", {
+      const res = await axios.get("https://valo-deal-backend.vercel.app/api/v1/users", {
         withCredentials: true,
       });
       setUsers(res.data);
@@ -31,7 +31,7 @@ const UserPage = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
     try {
-      await axios.delete(`http://localhost:8080/api/v1/users/${id}`, {
+      await axios.delete(`https://valo-deal-backend.vercel.app/api/v1/users/${id}`, {
         withCredentials: true,
       });
       setUsers(users.filter((user) => user._id !== id));
@@ -56,7 +56,7 @@ const UserPage = () => {
   const handleSave = async (id) => {
     try {
       const res = await axios.put(
-        `http://localhost:8080/api/v1/users/${id}`,
+        `https://valo-deal-backend.vercel.app/api/v1/users/${id}`,
         formData,
         { withCredentials: true }
       );
@@ -108,8 +108,8 @@ const UserPage = () => {
                     editingUser === user._id
                       ? "#ccffcc" // ✅ Light green highlight
                       : index % 2 === 0
-                      ? "#f9f9f9"
-                      : "white",
+                        ? "#f9f9f9"
+                        : "white",
                   textAlign: "center",
                   transition: "all 0.3s ease",
                 }}
