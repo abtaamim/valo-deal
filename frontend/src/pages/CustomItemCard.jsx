@@ -15,13 +15,13 @@ const ListingCard = (props) => {
   const handleRecentlyView = async (itemType, itemId) => {
     setLoading(itemId); // Start loading when item is clicked
     try {
-      await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
+      // await axiosPrivate.post(`/recentlyViewed/${itemType}/${itemId}`);
     } catch (e) {
       console.error(`Error viewing item:`, e);
     } finally {
       setLoading(null);
       //console.log("path", location.pathname)
-      navigate(`/details/${itemType}/${itemId}`, { state: { prevUrl: location.pathname } });
+      navigate(`/details/${itemId}`, { state: { prevUrl: location.pathname } });
     }
   };
 
@@ -142,7 +142,7 @@ const ListingCard = (props) => {
                   <IconButton
                     onClick={(e) => {
                       e.stopPropagation();
-                      handleClickOpen(item._id, item.itemType);
+                      handleClickOpen(item._id);
                     }}
                     sx={{
 
