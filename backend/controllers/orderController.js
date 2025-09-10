@@ -186,6 +186,9 @@ const createOrder = async (req, res) => {
 
     res.status(201).json({
       message: "Order created successfully",
+      order: order[0],            
+      items: orderItemsData,          
+      trackerId: tracker[0]._id,
       orderId: order[0]._id
     });
   } catch (error) {
