@@ -46,6 +46,7 @@ const router = createBrowserRouter([
           { path: 'products', element: <ProductPage /> },
           { path: 'orders', element: <OrderPage /> },
           { path: '/create-offer', element: <CreateOffer /> },
+          
         ]
       },
       
