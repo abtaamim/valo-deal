@@ -43,6 +43,7 @@ import { PostDetails } from './siteComponents/PostDetails';
 import { Toaster } from 'react-hot-toast';
 import SellerOrdersPage from './pages/sellerOrdersPage';
 import BuyerOrdersPage from './pages/buyerOrder';
+import OfferProductPage from './pages/offerProductPage';
 const App = () => {
 
 
@@ -78,6 +79,7 @@ const App = () => {
             <Route path='/previous-orders' element={<BuyerOrdersPage />} />
             <Route path="/previous-sold" element={<SellerOrdersPage />} />
             <Route path='/details/:itemId' element={<ShowDetailsPage />} />
+            <Route path='/offer-product/:offer_id' element={<OfferProductPage />} />
             <Route path="/seller-info" element={<SellerInfo />} />
             <Route path="/about" element={<About />} />
            <Route path="/contact" element={<Contact />} />

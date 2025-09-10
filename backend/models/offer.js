@@ -21,6 +21,7 @@ const offerSchema = new mongoose.Schema({
     type: [String], // array of URLs or image paths
     required: true
   },
+  discount:{type:Number,required: true},
   links: {
     type: [String], // array of URLs
     // required: true

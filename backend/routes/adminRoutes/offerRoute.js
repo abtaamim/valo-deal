@@ -7,10 +7,10 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 router.post("/create-offer", requireSignIn, isAdmin, upload.none(), createOffer)
 
-router.get("/active-offers", requireSignIn, isAdmin, getActiveOffers);
+router.get("/active-offers", getActiveOffers);
 
 
-router.get("/offer/:id", requireSignIn, isAdmin, getOfferById);
+router.get("/:id", getOfferById);
 
 router.get("/inactive-offers", requireSignIn, isAdmin, getInactiveOffers);
 

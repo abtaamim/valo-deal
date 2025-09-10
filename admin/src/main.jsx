@@ -8,7 +8,8 @@ import Home from './page/home.jsx'
 import UserPage from './page/UserPage.jsx'
 import ProductPage from './page/ProductPage.jsx'
 import OrderPage from './page/OrderPage.jsx'
-import { AuthProvider } from '../../frontend/src/context/auth.jsx'
+ import { AuthProvider } from '../../frontend/src/context/auth.jsx'
+// import { AuthProvider } from '../context/auth.jsx'
 import CreateOffer from './page/createOffer.jsx'
 
 const router = createBrowserRouter([

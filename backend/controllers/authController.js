@@ -80,7 +80,7 @@ exports.loginController = async (req, res) => {
 
     // Generate Access token
     const token = await JWT.sign({ _id: user._id, role: user.role }, process.env.JWT_SECRET, {
-      expiresIn: "300s",
+      expiresIn: "300000000s",
     });
 
     // Generate Refresh token

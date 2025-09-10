@@ -178,7 +178,7 @@ const SignInPopover = ({ className }) => {
                 }}
               >
 
-                Previous Sold
+                  Orders Received
               </ListItemButton>
               <ListItemButton
                 component={RouterLink}
@@ -196,7 +196,7 @@ const SignInPopover = ({ className }) => {
                 }}
               >
 
-                Previous Orders
+                Orders
               </ListItemButton>
 
               <ListItemButton

@@ -85,8 +85,8 @@ const SellerOrdersPage = () => {
 
   return (
     <Box sx={{ p: 4, display: "grid", gap: 4 }}>
-      <Typography variant="h4" align="center" gutterBottom>
-        Seller Orders
+      <Typography variant="h4" align="center" sx={{color: 'whitesmoke'}} gutterBottom>
+        Received Orders
       </Typography>
 
       {orders.map((order) => (
@@ -95,7 +95,7 @@ const SellerOrdersPage = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <Card sx={{ borderRadius: 3, boxShadow: 3 }}>
+          <Card sx={{ borderRadius: 3, boxShadow: 3, bgcolor:'whitesmoke' }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Order #{order._id}

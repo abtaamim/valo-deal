@@ -1,28 +1,26 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { useState, useEffect, useContext, createContext } from "react";
+import axios from "axios";
 
 const AuthContext = createContext();
-
-export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState(null); // null = loading state
+const AuthProvider = ({ children }) => {
+  const [auth, setAuth] = useState({
+    user: null,
+    token: "",
+    loggedIn: false
+  });
+  //axios.defaults.headers.common["Authorization"] = auth?.token;
 
   useEffect(() => {
-    const stored = localStorage.getItem("auth");
-    if (stored) {
-      setAuth(JSON.parse(stored));
-    } else {
-      setAuth({ user: null, token: null, loggedIn: false });
+    const data = localStorage.getItem("auth");
+    if (data) {
+      const parseData = JSON.parse(data);
+      setAuth({
+        ...auth,
+        user: parseData.user,
+        token: parseData.token,
+      });
     }
   }, []);
-
-  useEffect(() => {
-    if (auth !== null) {
-      localStorage.setItem("auth", JSON.stringify(auth));
-    }
-  }, [auth]);
-
-  if (auth === null) {
-    return null; // prevent redirect flicker
-  }
 
   return (
     <AuthContext.Provider value={[auth, setAuth]}>
@@ -31,4 +29,7 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => useContext(AuthContext);
+// custom hook
+const useAuth = () => useContext(AuthContext);
+
+export { useAuth, AuthProvider };

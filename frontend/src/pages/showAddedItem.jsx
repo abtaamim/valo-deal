@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Typography, Grid, CircularProgress } from '@mui/material';
-import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
+import { Box, Grid, CircularProgress, Typography } from '@mui/material';
+import { DeleteOutlineOutlined } from '@mui/icons-material';
 import { useAuth } from '../context/auth';
 import { useCart } from '../context/CartContext';
-import CustomDialog from './CustomDialog';
-import ListingCard from './CustomItemCard';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSearch } from "../context/SearchContext";
+import { Toaster, toast } from 'sonner';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-
+import ListingCard from './CustomItemCard';
 const AddedItemList = () => {
-  const [items, setItems] = useState({ mobiles: [], computers: [], electronics: [], vehicles: [] });
+  const [items, setItems] = useState();
   const [auth] = useAuth();
   const { updateCartSize } = useCart();
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -18,136 +19,106 @@ const AddedItemList = () => {
   const [loading, setLoading] = useState(true); // Loading state
   const axiosPrivate = useAxiosPrivate();
 
-  const handleClickOpen = (itemId, itemType) => {
-    setOpen(true);
-    setSelectedItemId(itemId);
-    setSelectedItemType(itemType);
+  const [showLoading, setShowLoading] = useState(false);
 
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setSelectedItemId(null);
-    setSelectedItemType(null);
-  };
 
   const fetchItems = async () => {
     try {
-      setLoading(true); // Set loading before fetching
-      const mobilesResponse = await axiosPrivate.get('/sell/mobiles');
-      const computersResponse = await axiosPrivate.get('/sell/added-computers');
-      const electronicResponse = await axiosPrivate.get('/sell/added-electronics');
-      const vehicleResponse = await axiosPrivate.get('/sell/added-vehicles');
-      setItems({
-        mobiles: mobilesResponse.data.mobiles || [],
-        computers: computersResponse?.data.computers || [],
-        electronics: electronicResponse?.data.electronics || [],
-        vehicles: vehicleResponse?.data.vehicles || []
-      });
+      setShowLoading(true);
+      setLoading(true); 
+      const res = await axiosPrivate.get('/product/my-products');
+      setItems(res.data);
+      
     } catch (error) {
       console.error('Error fetching items:', error);
     } finally {
-      setLoading(false); // Set loading to false after fetching
+      
+        setLoading(false);
+        setTimeout(() => setShowLoading(false), 300);
     }
   };
 
   useEffect(() => {
-    updateCartSize();
+
     fetchItems();
   }, [auth]);
 
   const [allItems, setAllItems] = useState([]);
   useEffect(() => {
-    setAllItems([...items.mobiles, ...items.computers, ...items.electronics, ...items.vehicles]);
-  }, [items]);
+    fetchItems
+   }, []);
 
-  const handleDelete = async (itemId, itemType) => {
+  const handleDelete = async (itemId) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+
     try {
-      await axiosPrivate.delete(`/sell/${itemType}/${itemId}`);
+      await axiosPrivate.delete(`/product/delete/${itemId}`);
 
-      fetchItems(); 
-      handleClose(); 
+      fetchItems();
 
+      toast.success("Item deleted successfully"); 
     } catch (error) {
-      console.error(`Error deleting ${itemType}:`, error);
+      console.error(error);
+
+      toast.error(
+        error?.response?.data?.message || "Failed to delete the item"
+      );
     }
   };
+
   
 
-  const itemCount = allItems.length;
 
   return (
+    <>
     <Box sx={{ p: 2 }}>
-      <Typography
-        variant="h4"
-        gutterBottom
-        sx={{
-          textAlign: 'center',
-          color: '#ff8300',
-          fontSize: '1.5rem',
-          fontWeight: 'bold',
-        }}
-      >
-        My Added Items
-      </Typography>
-
-
-{loading ? (
-  <Box
-    sx={{
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      height: '70vh', 
-    }}
-  >
-    <CircularProgress sx={{ color: '#ff8300' }} /> 
-  </Box>
-) : itemCount === 0 ? (
-  <Typography
-    variant="h6"
-    sx={{
-      textAlign: 'center',
-      color: 'lightgreen',
-      fontSize: '1.2rem',
-      fontWeight: 'bold',
-      animation: 'fadeIn 2s ease-in-out',
-    }}
-  >
-    You have no added items
-  </Typography>
-) : (
-  <>
-    <Typography
-      variant="h6"
-      sx={{
-        textAlign: 'center',
-        color: 'lightgreen',
-        fontSize: '1.2rem',
-        fontWeight: 'bold',
-      }}
-    >
-      You have added {itemCount} item{itemCount > 1 ? 's' : ''}
-    </Typography>
-    <ListingCard
-      items={allItems}
-      handleClickOpen={handleClickOpen}
-      button={<DeleteOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
-    />
-  </>
-)}
-
-
-      <CustomDialog
-        handleClose={handleClose}
-        selectedItemId={selectedItemId}
-
-        handleDelete={(itemId, itemType) => handleDelete(itemId, itemType)}
-        dialog_title="Delete this item from your list"
-        open={open}
-        selectedItemType={selectedItemType}
-      />
+      {showLoading && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            zIndex: 9999,
+          }}
+        >
+          <CircularProgress sx={{ color: "#ff8c00", size: 50 }} />
+        </Box>
+      )}
+      {!loading && !showLoading && (
+        <Box>
+          {items?.length === 0 ? (
+            <Typography
+              variant="h6"
+              sx={{
+                textAlign: 'center',
+                color: '#ff8c00',
+                animation: 'fadeIn 1s ease-in-out',
+              }}
+            >
+              You have not added any product
+            </Typography>
+          ) : (
+            null
+          )}
+          <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+            <ListingCard
+              items={items}
+              button={<DeleteOutlineOutlined sx={{ color: 'red' }} />}
+              handleClickOpen={(itemId) => handleDelete(itemId)}
+              my_added = {true}
+            />
+          </Grid>
+        </Box>
+      )}
+      <Toaster richColors />
     </Box>
+    </>
   );
 };
 
