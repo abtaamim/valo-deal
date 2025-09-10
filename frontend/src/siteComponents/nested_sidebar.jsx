@@ -93,7 +93,7 @@ const NestedSidebar = ({ open, onClose, category, onMainMenuClick, cat_name }) =
           <ListItem key={subCat.name} disablePadding>
             <ListItemButton
               component={RouterLink}
-              to={`/sub-category-item/${cat_name}/${subCat.name}`}
+              to={`/sub-category-item/${subCat._id}`}
               onClick={onClose}>
               <ListItemText primary={subCat.name} primaryTypographyProps={{ color: 'rgb(0, 7, 20)', fontSize: 'h7.fontSize' }} />
               <ListItemIcon>

@@ -73,7 +73,8 @@ const App = () => {
             <Route path="/sell/computers" element={< ComputerSellPage />} />
             <Route path="/sell/vehicles" element={< VehicleSellPage />} />
             <Route path="/sell/electronics" element={< ElectronicsSellPage />} />
-            <Route path="/sub-category-item/:category/:subCat" element={<ShowSubCatItem />} />
+            {/* <Route path="/sub-category-item/:category/:subCat" element={<ShowSubCatItem />} /> */}
+            <Route path="/sub-category-item/:category_id" element={<ShowSubCatItem />} />
             <Route path="/added-items" element={<AddedItemList />} />
             <Route path="/recently-viewed" element={<RecentlyViewedItemPage />} />
             <Route path='/previous-orders' element={<BuyerOrdersPage />} />

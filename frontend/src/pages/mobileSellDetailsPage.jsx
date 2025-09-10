@@ -238,6 +238,7 @@ const MobileSellDetailsPage = () => {
           //    console.log('Product uploaded successfully');
           setAlertMessage('Product uploaded successfully');
           setSubmissionSuccess(true);
+          navigate("/added-items");
         } else {
           toast.error(res.data.message);
         }
@@ -253,15 +254,15 @@ const MobileSellDetailsPage = () => {
   };
 
 
-  useEffect(() => {
-    if (submissionSuccess) {
-      const timer = setTimeout(() => {
-        navigate("/added-items");
-      }, 2000);
+  // useEffect(() => {
+  //   if (submissionSuccess) {
+  //     const timer = setTimeout(() => {
+  //       navigate("/added-items");
+  //     }, 2000);
 
-      return () => clearTimeout(timer);
-    }
-  }, [submissionSuccess, navigate]);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [submissionSuccess, navigate]);
 
   // const brands_models = {
   //   samsung: ["Galaxy S23 Ultra", "Galaxy S23+", "Galaxy A54 5G", "Galaxy Z Fold 4", "Galaxy Z Flip 4"],

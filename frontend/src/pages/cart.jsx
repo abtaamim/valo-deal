@@ -119,8 +119,51 @@ const formatPrice = (price) => {
       setCartItems([]);
       await updateCartSize();
 
+      const { order, items } = response.data;
+      const itemsHtml = items.map(
+        (item) => `
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;">${item.product_name || "Product"}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${item.quantity}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${item.price_per_unit}</td>
+          <td style="padding: 8px; border: 1px solid #ddd;">${item.price_per_unit * item.quantity}</td>
+        </tr>
+      `
+      ).join("");
+      await axiosPrivate.post("/send/mail", {
+        to: auth.user.email,
+        subject: "Your order has been placed successfully",
+        mailBody: `
+        <div style="font-family: Arial, sans-serif; color: #333;">
+          <h2 style="color: #4CAF50;">Order Confirmation</h2>
+          <p>Hi ${auth.user.name || "Customer"},</p>
+          <p>Your order <b>#${order._id}</b> has been placed successfully.</p>
+
+          <h3>Order Details</h3>
+          <table style="border-collapse: collapse; width: 100%; margin-top: 10px;">
+            <thead>
+              <tr style="background-color: #f2f2f2;">
+                <th style="padding: 8px; border: 1px solid #ddd;">Item</th>
+                <th style="padding: 8px; border: 1px solid #ddd;">Quantity</th>
+                <th style="padding: 8px; border: 1px solid #ddd;">Unit Price</th>
+                <th style="padding: 8px; border: 1px solid #ddd;">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHtml}
+            </tbody>
+          </table>
+
+          <p style="font-size: 16px; margin-top: 20px;">
+            <strong>Total Amount:</strong> <span style="color: #4CAF50;">${order.total_amount}</span>
+          </p>
+          <p><strong>Payment Method:</strong> ${order.payment_method}</p>
+          <p><strong>Shipping Address:</strong> ${order.shipping_address}</p>
+        </div>
+      `,
+      });
       // redirect to order details page
-      // navigate(`/orders/${response.data.orderId}`);
+       navigate('/previous-orders');
     } catch (error) {
       const message =
         error?.response?.data?.message || "Something went wrong. Please try again.";
