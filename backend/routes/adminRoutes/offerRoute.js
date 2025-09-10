@@ -10,10 +10,8 @@ router.post("/create-offer", requireSignIn, isAdmin, upload.none(), createOffer)
 router.get("/active-offers", getActiveOffers);
 
 
-router.get("/:id", getOfferById);
-
 router.get("/inactive-offers", requireSignIn, isAdmin, getInactiveOffers);
-
+router.get("/:id", getOfferById);
 router.put("/update-offer/:id", requireSignIn, isAdmin, updateOffer);
 
 router.delete("/delete-offer/:id", requireSignIn, isAdmin, softDeleteOffer);
