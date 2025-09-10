@@ -122,8 +122,12 @@ const formatPrice = (price) => {
       // redirect to order details page
       // navigate(`/orders/${response.data.orderId}`);
     } catch (error) {
-      console.error("Error creating order:", error);
-      toast.error(" Failed to place order. Try again.");
+      const message =
+        error?.response?.data?.message || "Something went wrong. Please try again.";
+
+      toast.error(message);
+      fetchItems()
+      console.error("Order creation failed:", message);
     }
   };
 

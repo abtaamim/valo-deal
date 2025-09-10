@@ -3,7 +3,9 @@ const OrderItem = require("../models/orderItem");
 const OrderTracker = require("../models/orderTracker");
 const Product = require("../models/product")
 const mongoose = require("mongoose");
-
+const Cart = require("../models/cart");
+const Offer = require("../models/offer")
+const ProductCategory = require("../models/productCategory")
 /**
  * Create a new order with items & tracker
  */
@@ -105,7 +107,8 @@ const createOrder = async (req, res) => {
 
       const remain_prod = prod.stock - item.quantity;
       if (remain_prod < 0) {
-        throw new Error(`Insufficient stock for product ${prod._id}`);
+        const deletedItem = await Cart.findOneAndDelete({ user_id: buyer_id, product_id: prod._id });
+        throw new Error(`Sorry! The product "${prod.product_name}" was bought by someone else and is no longer available in the quantity you wanted.`);
       } else if (remain_prod === 0) {
         await prod.updateOne(
           { stock: 0, product_status: "stock_out" },
@@ -114,15 +117,28 @@ const createOrder = async (req, res) => {
       } else {
         await prod.updateOne({ stock: remain_prod }, { session });
       }
-
-      // 🔹 check active offer
-      const offer = await Offer.findOne({
-        category_ids: prod.category_id, // adjust if offer.category_ids is an array of ObjectIds
+      const prod_cat = await ProductCategory.findById(prod.category_id).session(session);
+      
+      console.log("prod:" + prod.category_id )
+      console.log("parent_cat:" + prod_cat.parent_id)
+      console.log(new Date())
+      let offer = await Offer.findOne({
+        category_ids: { $in: [prod.category_id.toString()] }, 
         starting_at: { $lte: new Date() },
         ending_at: { $gte: new Date() },
         deleted_at: null
       }).session(session);
 
+      
+      if (!offer && prod_cat) {
+        offer = await Offer.findOne({
+          category_ids: { $in: [prod_cat.parent_id.toString()] }, 
+          starting_at: { $lte: new Date() },
+          ending_at: { $gte: new Date() },
+          deleted_at: null
+        }).session(session);
+      }
+      console.log("offer: ", offer);
       let finalPrice = prod.price;
       if (offer) {
         finalPrice = prod.price - (prod.price * offer.discount) / 100;

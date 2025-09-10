@@ -42,7 +42,7 @@ import image6 from "../assests/pc.png";
 import image7 from "../assests/car.jpg";
 import image8 from "../assests/camera.png";
 import offerImage from "../assests/offer.jpg";
-
+import { format } from "date-fns";
 
 const getTodayDate = () => {
   const today = new Date();
@@ -189,7 +189,10 @@ const CategorySection = () => {
       <Grid container spacing={2}>
         {offers?.map((offer, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <Link to={`/offer-product/${offer._id}`} style={{ textDecoration: "none" }}>
+            <Link
+              to={`/offer-product/${offer._id}`}
+              style={{ textDecoration: "none" }}
+            >
               <Card
                 sx={{
                   height: "100%",
@@ -207,12 +210,6 @@ const CategorySection = () => {
                     transform: "scale(1.08) rotateY(6deg) rotateX(4deg)",
                     boxShadow: "0 20px 50px rgba(0, 0, 0, 0.4)",
                   },
-                  "&:hover .imageOverlay": {
-                    opacity: 0.5,
-                  },
-                  "&:hover .title": {
-                    textShadow: "0px 0px 8px rgba(255, 255, 255, 0.8)",
-                  },
                 }}
               >
                 <Box sx={{ position: "relative", overflow: "hidden" }}>
@@ -229,8 +226,8 @@ const CategorySection = () => {
                     }}
                   />
 
+                  {/* Always-visible overlay */}
                   <Box
-                    className="imageOverlay"
                     sx={{
                       position: "absolute",
                       top: 0,
@@ -238,30 +235,60 @@ const CategorySection = () => {
                       width: "100%",
                       height: "100%",
                       background:
-                        "linear-gradient(to bottom, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.8))",
-                      opacity: 0,
-                      transition: "opacity 0.5s ease-in-out",
-                    }}
-                  ></Box>
-                  <Typography
-                    variant="h6"
-                    className="title"
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      left: 8,
-                      backgroundColor: "rgba(0, 0, 0, 0.4)",
-                      color: "white",
-                      padding: "6px 12px",
-                      borderRadius: "8px",
-                      fontWeight: "bold",
-                      textTransform: "uppercase",
-                      letterSpacing: "1.2px",
-                      transition: "text-shadow 0.5s ease-in-out",
+                        "linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.8))",
+                      display: "flex",
+                      flexDirection: "column",
+                      justifyContent: "flex-end",
+                      p: 2,
                     }}
                   >
-                    {offer.title}
-                  </Typography>
+                    {/* Discount Badge */}
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 12,
+                        right: 12,
+                        backgroundColor: "secondary.main",
+                        color: "white",
+                        px: 2,
+                        py: 1,
+                        borderRadius: "12px",
+                        fontWeight: "bold",
+                        fontSize: "0.85rem",
+                        textTransform: "uppercase",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.3)",
+                      }}
+                    >
+                      {offer.discount}% OFF
+                    </Box>
+
+                    {/* Title */}
+                    <Typography
+                      variant="h6"
+                      sx={{
+                        color: "white",
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                        textShadow: "2px 2px 6px rgba(0,0,0,0.8)",
+                        mb: 1,
+                      }}
+                    >
+                      {offer.title}
+                    </Typography>
+
+                    {/* Start Date */}
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "rgba(255, 255, 255, 0.9)",
+                        fontWeight: 500,
+                        textShadow: "1px 1px 4px rgba(0,0,0,0.7)",
+                        fontSize: "0.85rem",
+                      }}
+                    >
+                      Starts: {format(new Date(offer.starting_at), "PPP p")}
+                    </Typography>
+                  </Box>
                 </Box>
               </Card>
             </Link>
@@ -269,6 +296,7 @@ const CategorySection = () => {
         ))}
       </Grid>
     </Box>
+
   );
 };
 

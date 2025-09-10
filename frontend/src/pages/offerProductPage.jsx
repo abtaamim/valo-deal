@@ -6,7 +6,8 @@ import { AddShoppingCartOutlined } from "@mui/icons-material";
 import { useCart } from '../context/CartContext';
 import { Toaster, toast } from 'sonner';
 import useAxiosPrivate from '../hooks/useAxiosPrivate';
-import { Grid } from "@mui/material";
+import { Grid, Typography, Box, Card, CardMedia, CardContent, Chip } from "@mui/material";
+import { format } from "date-fns";
 export default function OfferProductPage() {
   const { offer_id } = useParams();
   const [offer, setOffer] = useState(null);
@@ -29,6 +30,7 @@ export default function OfferProductPage() {
   }, [offer_id]);
 
   useEffect(() => {
+    
     const fetchProducts = async () => {
       if (!offer) return;
       try {
@@ -43,8 +45,14 @@ export default function OfferProductPage() {
         console.error("Error fetching products:", err);
       }
     };
+    if (
+      new Date(offer?.starting_at) < new Date() &&
+      new Date(offer?.ending_at) > new Date()
+    ) {
+      fetchProducts();
+    }
 
-    fetchProducts();
+    
   }, [offer]);
 
   const handleCart = async (itemId) => {
@@ -65,8 +73,50 @@ export default function OfferProductPage() {
   };
   return (
     <>
-      <Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-        <ListingCard
+      <Card sx={{ borderRadius: 3, overflow: "hidden", mb: 4, boxShadow: 3 }}>
+        <CardMedia
+          component="img"
+          height="300"
+          image={offer?.img_urls[0]}
+          alt={offer?.title}
+        />
+        <CardContent sx={{ textAlign: "center", backgroundColor: "rgba(0,0,0,0.05)" }}>
+          <Typography variant="h4" sx={{ fontWeight: "bold", mb: 1 }}>
+            {offer?.title}
+          </Typography>
+          <Chip
+            label={`${offer?.discount}% OFF`}
+            color="secondary"
+            sx={{ fontWeight: "bold", fontSize: "1rem", mb: 1 }}
+          />
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            {offer?.description}
+          </Typography>
+          {offer?.starting_at && offer?.ending_at && (
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              Starts: {format(new Date(offer?.starting_at), "PPP p")} |
+              Ends: {format(new Date(offer?.ending_at), "PPP p")}
+            </Typography>
+          )}
+
+        </CardContent>
+      </Card>
+      {new Date(offer?.starting_at) < new Date() &&
+        new Date(offer?.ending_at) > new Date() ? (<Grid container spacing={2} sx={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+          <Typography
+            variant="h6"
+            sx={{
+              width: "100%",
+              textAlign: "center",
+              color: "violet",
+              fontWeight: "bold",
+              textShadow: "1px 1px 6px rgba(0,0,0,0.2)",
+              my: 2,
+            }}
+          >
+            {products.length} products found
+          </Typography>
+          <ListingCard
           items={products}
           handleClickOpen={(itemId) => handleCart(itemId)}
           button={
@@ -74,7 +124,32 @@ export default function OfferProductPage() {
           }
           offer_per={offer?.discount}
         />
-      </Grid>
+      </Grid>) :
+        <Box
+          sx={{
+            height: "60vh", // occupy enough vertical space
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            textAlign: "center",
+            backgroundColor: "rgba(0,0,0,0.05)", // subtle background
+            borderRadius: 2,
+            p: 4,
+          }}
+        >
+          <Typography
+            variant="h5"
+            sx={{
+              color: "violet",
+              fontWeight: "bold",
+              textShadow: "1px 1px 6px rgba(0,0,0,0.2)",
+            }}
+          >
+            This offer has not started yet!
+          </Typography>
+        </Box>
+      }
+      
       <Toaster richColors />
     </>
   )

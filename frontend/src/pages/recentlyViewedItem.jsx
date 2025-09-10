@@ -200,9 +200,9 @@ const RecentlyViewedItemPage = () => {
 
       {/* Recently Viewed Section */}
       <Box sx={{ p: 2 }}>
-        <Typography variant="h4" gutterBottom sx={{ color: 'rgb(227, 227, 227)' }}>
+        {/* <Typography variant="h4" gutterBottom sx={{ color: 'rgb(227, 227, 227)' }}>
           recentlyViewed
-        </Typography>
+        </Typography> */}
 
         <ListingCard items={recentlyViewedItems} handleClickOpen={handleClickOpen}
           button={<RemoveShoppingCartOutlinedIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
