@@ -22,6 +22,15 @@ const Home = () => {
         <h2 className="text-xl font-bold mb-6">Admin Panel</h2>
 
         <button
+          onClick={() => navigate("/")}
+          className={`text-left px-4 py-2 rounded mt-2 transition ${
+            isActive("/dashboard") ? "bg-blue-600" : "hover:bg-gray-700"
+          }`}
+        >
+          Dashboard
+        </button>
+
+        <button
           onClick={() => navigate("/users")}
           className={`text-left px-4 py-2 rounded mt-2 transition ${
             isActive("/users") ? "bg-blue-600" : "hover:bg-gray-700"

@@ -12,6 +12,8 @@ import OrderPage from './page/OrderPage.jsx'
 // import { AuthProvider } from '../context/auth.jsx'
 import CreateOffer from './page/createOffer.jsx'
 
+import Dashboard from "./page/Dashboard.jsx";
+
 const router = createBrowserRouter([
   // {
   //   path: '/',
@@ -31,7 +33,7 @@ const router = createBrowserRouter([
   //   ],
   // },
   { path: '/signIn', element: <SignIn /> },
-  { path: '/create-offer', element: <CreateOffer /> },
+  
   {
     path: '/',
     element: <App />,
@@ -39,9 +41,11 @@ const router = createBrowserRouter([
       {
         path: '/', element: <Home />,
         children: [
+          { path: "/", element: <Dashboard /> },
           { path: 'users', element: <UserPage /> },
           { path: 'products', element: <ProductPage /> },
           { path: 'orders', element: <OrderPage /> },
+          { path: '/create-offer', element: <CreateOffer /> },
         ]
       },
       
