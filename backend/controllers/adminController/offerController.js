@@ -9,7 +9,7 @@ const createOffer = async (req, res) => {
       description,
       category_ids,
       img_urls,
-      links,
+      discount,
       starting_at,
       ending_at
     } = req.body;
@@ -19,11 +19,11 @@ const createOffer = async (req, res) => {
       description,
       category_ids,
       img_urls,
-      links,
+      discount,
       starting_at,
       ending_at
     });
-
+    console.log(req.user.role)
     const savedOffer = await newOffer.save();
     res.status(201).json(savedOffer);
   } catch (err) {

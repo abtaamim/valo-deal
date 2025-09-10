@@ -1,6 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../../frontend/src/context/auth";
-
+// import { useAuth } from "../context/auth";
 const App = () => {
   const [auth] = useAuth();
 

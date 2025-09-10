@@ -104,9 +104,9 @@ const formatPrice = (price) => {
           product_id: item._id,        // _id = productId
           seller_id: item.seller_id,
           quantity: item.quantity || 1,
-          price_per_unit: item.price,
+          // price_per_unit: item.price,
         })),
-        total_amount: totalSum,
+        // total_amount: totalSum,
         payment_method: "cod", // later you can allow user to select
         shipping_address: auth?.user?.address || "Dhaka, Bangladesh",
       };

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import {
   Box,
   Button,
@@ -11,34 +10,32 @@ import {
   Select,
   InputLabel,
   FormControl,
-  CircularProgress
+  CircularProgress,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Checkbox,
+  FormGroup,
 } from "@mui/material";
 import { AddPhotoAlternate } from "@mui/icons-material";
-import useAxiosPrivate from '../../../frontend/src/hooks/useAxiosPrivate'
+import useAxiosPrivate from "../../../frontend/src/hooks/useAxiosPrivate";
 import { customAxios } from "../../../frontend/src/api/axiosPrivate";
+
 export default function CreateOffer() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [parentCategory, setParentCategory] = useState("");
-  const [childCategory, setChildCategory] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [children, setChildren] = useState([]);
+  const [parentCategories, setParentCategories] = useState([]);
+  const [childCategories, setChildCategories] = useState([]);
   const [images, setImages] = useState([]);
-  const [links, setLinks] = useState("");
+  // const [links, setLinks] = useState("");
   const [startingAt, setStartingAt] = useState("");
   const [endingAt, setEndingAt] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [mode, setMode] = useState("parent"); // "parent" | "child"
+  const [discount, setDiscount] = useState(0);
   const axiosPrivate = useAxiosPrivate();
   const [parent_cat, setParent_cat] = useState([]);
-  const [child_cat, setChild_cat] = useState([]);
-  
-  // // Fetch categories (static for demo)
-  // useEffect(() => {
-  //   setCategories([
-  //     { id: "1", name: "Electronics", children: [{ id: "101", name: "Mobiles" }, { id: "102", name: "Laptops" }] },
-  //     { id: "2", name: "Fashion", children: [{ id: "201", name: "Men" }, { id: "202", name: "Women" }] }
-  //   ]);
-  // }, []);
+  const [child_cat, setChild_cat] = useState({}); // children grouped by parent
 
   // Fetch parent categories
   const get_parent_cat = async () => {
@@ -54,25 +51,33 @@ export default function CreateOffer() {
     get_parent_cat();
   }, []);
 
-  // Fetch child categories by parentId
-  const get_child_cat = async (parentId) => {
-    try {
-      const res = await customAxios.get(`/category/child-cat/${parentId}`);
-      setChild_cat(res.data);
-    } catch (error) {
-      console.error("Error fetching child categories:", error);
+  // Handle parent selection (multiple)
+  const handleParentChange = async (e) => {
+    const selected = e.target.value; // array of parent IDs
+    setParentCategories(selected);
+
+    let newChildCat = {};
+    for (const parentId of selected) {
+      try {
+        const res = await customAxios.get(`/category/child-cat/${parentId}`);
+        newChildCat[parentId] = res.data;
+      } catch (err) {
+        console.error("Error fetching children:", err);
+      }
     }
+    setChild_cat(newChildCat);
+    setChildCategories([]); // reset children when parent changes
   };
 
-  // Handle parent selection
-  const handleParentChange = (e) => {
-    const parentId = e.target.value;
-    setParentCategory(parentId);
-    setChildCategory(""); // reset child category
-    get_child_cat(parentId); // fetch children for selected parent
+  // Handle child checkbox selection
+  const handleChildChange = (childId) => {
+    setChildCategories((prev) =>
+      prev.includes(childId)
+        ? prev.filter((id) => id !== childId)
+        : [...prev, childId]
+    );
   };
 
-  // ✅ Cloudinary Upload Function
   async function handleFormData(file) {
     setUploading(true);
     const formData = new FormData();
@@ -80,9 +85,8 @@ export default function CreateOffer() {
 
     try {
       const res = await axiosPrivate.post("/upload", formData);
-
       const data = res.data;
-      setImages((prev) => [...prev, data.secure_url]); // store Cloudinary URL
+      setImages((prev) => [...prev, data.secure_url]);
       setUploading(false);
       return data.secure_url;
     } catch (error) {
@@ -90,7 +94,11 @@ export default function CreateOffer() {
       setUploading(false);
     }
   }
-
+  const getMinDateTime = () => {
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - now.getTimezoneOffset()); // fix timezone offset
+    return now.toISOString().slice(0, 16);
+  };
   const handleImageChange = async (e) => {
     const files = Array.from(e.target.files);
     for (const file of files) {
@@ -98,18 +106,29 @@ export default function CreateOffer() {
     }
   };
 
+  // Submit offer
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let category_ids = [];
+
+      if (mode === "parent") {
+        category_ids = parentCategories; 
+      } else {
+        category_ids = childCategories; 
+      }
+
+
       const payload = {
         title,
         description,
-        category_ids: [parentCategory, childCategory],
+        category_ids,
         img_urls: images,
-        links,
+        discount,
         starting_at: startingAt,
         ending_at: endingAt,
       };
+
       await axiosPrivate.post("/offer/create-offer", payload);
       alert("Offer created successfully!");
     } catch (error) {
@@ -121,7 +140,9 @@ export default function CreateOffer() {
     <Box display="flex" justifyContent="center" mt={4}>
       <Card sx={{ width: 600, borderRadius: 3, boxShadow: 3 }}>
         <CardContent>
-          <Typography variant="h5" mb={2}>Create Offer</Typography>
+          <Typography variant="h5" mb={2}>
+            Create Offer
+          </Typography>
 
           <form onSubmit={handleSubmit}>
             <TextField
@@ -142,13 +163,40 @@ export default function CreateOffer() {
               onChange={(e) => setDescription(e.target.value)}
             />
 
-            {/* Parent Category */}
+            {/* Mode Selection */}
+            <FormControl component="fieldset" margin="normal">
+              <Typography variant="subtitle1">Select Mode:</Typography>
+              <RadioGroup
+                row
+                value={mode}
+                onChange={(e) => setMode(e.target.value)}
+              >
+                <FormControlLabel
+                  value="parent"
+                  control={<Radio />}
+                  label="Parent Only"
+                />
+                <FormControlLabel
+                  value="child"
+                  control={<Radio />}
+                  label="Child Categories"
+                />
+              </RadioGroup>
+            </FormControl>
+
+            {/* Parent Category (Multiple) */}
             <FormControl fullWidth margin="normal">
-              <InputLabel>Parent Category</InputLabel>
+              <InputLabel>Parent Categories</InputLabel>
               <Select
-                value={parentCategory}
+                multiple
+                value={parentCategories}
                 onChange={handleParentChange}
-                label="Parent Category"
+                renderValue={(selected) =>
+                  parent_cat
+                    .filter((cat) => selected.includes(cat._id))
+                    .map((cat) => cat.name)
+                    .join(", ")
+                }
               >
                 {parent_cat?.map((cat) => (
                   <MenuItem key={cat._id} value={cat._id}>
@@ -158,29 +206,38 @@ export default function CreateOffer() {
               </Select>
             </FormControl>
 
-            {/* Child Category */}
-            <FormControl fullWidth margin="normal">
-              <InputLabel>Child Category</InputLabel>
-              <Select
-                value={childCategory}
-                onChange={(e) => setChildCategory(e.target.value)}
-                disabled={!child_cat?.length}
-                label="Child Category"
-              >
-                {child_cat?.map((child) => (
-                  <MenuItem key={child._id} value={child._id}>
-                    {child.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            {/* Child Category Selection */}
+            {mode === "child" &&
+              parentCategories.map((parentId) => (
+                <Box key={parentId} mt={2}>
+                  <Typography variant="subtitle2">
+                    {parent_cat.find((p) => p._id === parentId)?.name}
+                  </Typography>
+                  <FormGroup>
+                    {child_cat[parentId]?.map((child) => (
+                      <FormControlLabel
+                        key={child._id}
+                        control={
+                          <Checkbox
+                            checked={childCategories.includes(child._id)}
+                            onChange={() => handleChildChange(child._id)}
+                          />
+                        }
+                        label={child.name}
+                      />
+                    ))}
+                  </FormGroup>
+                </Box>
+              ))}
 
             {/* Image Upload */}
             <Box mt={2} mb={2}>
               <Button
                 component="label"
                 variant="outlined"
-                startIcon={uploading ? <CircularProgress size={20} /> : <AddPhotoAlternate />}
+                startIcon={
+                  uploading ? <CircularProgress size={20} /> : <AddPhotoAlternate />
+                }
                 sx={{ mb: 1 }}
               >
                 {uploading ? "Uploading..." : "Upload Images"}
@@ -209,10 +266,23 @@ export default function CreateOffer() {
 
             <TextField
               fullWidth
-              label="Links"
+              label="Discount Percentage"
               margin="normal"
-              value={links}
-              onChange={(e) => setLinks(e.target.value)}
+              value={discount}
+              
+              type='number'
+              inputProps={{ min: 1, step: "1", max: 100 }}
+              onChange={(e) => {
+                let value = parseInt(e.target.value, 10);
+                if (isNaN(value)) {
+                  setDiscount("");
+                  return;
+                }
+                if (value > 100) value = 100;
+                if (value < 1) value = 1;
+
+                setDiscount(value);
+              }}
             />
 
             <TextField
@@ -222,7 +292,16 @@ export default function CreateOffer() {
               margin="normal"
               InputLabelProps={{ shrink: true }}
               value={startingAt}
-              onChange={(e) => setStartingAt(e.target.value)}
+              inputProps={{
+                min: getMinDateTime(), // can't pick past dates
+              }}
+              onChange={(e) => {
+                setStartingAt(e.target.value);
+                // If endingAt is before new startingAt, reset it
+                if (endingAt && e.target.value > endingAt) {
+                  setEndingAt("");
+                }
+              }}
             />
 
             <TextField
@@ -232,6 +311,9 @@ export default function CreateOffer() {
               margin="normal"
               InputLabelProps={{ shrink: true }}
               value={endingAt}
+              inputProps={{
+                min: startingAt || getMinDateTime(), // must be >= startingAt
+              }}
               onChange={(e) => setEndingAt(e.target.value)}
             />
 

@@ -27,7 +27,8 @@ exports.requireSignIn = async (req, res, next) => {
 
 // Admin access middleware
 exports.isAdmin = async (req, res, next) => {
-  console.log(req.user?.role)
+  console.log("email: " + req.user?._id)
+  console.log("role: "+ req.user?.role)
   if (req.user?.role !== 'admin') {
     return res.status(403).json({ message: 'Access denied: Admins only' });
   }

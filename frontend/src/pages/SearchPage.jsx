@@ -40,47 +40,24 @@ const SearchPage = () => {
     fetchResults();
   }, [keyword, setValues]);
 
-  const [allreadyincart, setAllreadyincart] = useState(0);
 
-  const handleCart = async (itemId, itemType) => {
+const handleCart = async (itemId) => {
     try {
-      if (auth.user) {
-        await axiosPrivate.post(`/cart/${itemType}/${itemId}`);
-        updateCartSize();
-        toast.success('Item added to your cart successfully');
-      } else {
-        navigate('/login');
-      }
-    } catch (error) {
-      setAllreadyincart(1);
-      console.error(`Error adding to cart ${itemType}:`, error);
-      toast.error('This item is already in your cart');
-    }
-  };
-
-  const [sellerMap, setSellerMap] = useState(new Map());
-  const fetchSellerInfo = async () => {
-    try {
-      const sellerIds = new Set(values.results.map((item) => item.sellerId));
-      const sellerPromises = Array.from(sellerIds).map((sellerId) =>
-        axiosPrivate.get(`/api/v1/auth/seller-info/${sellerId}`)
+      const res = await axiosPrivate.post(`/cart/${itemId}`);
+      await updateCartSize();
+      toast.success(
+        <div onClick={() => navigate("/cart")}>
+          Item added to the cart! Click here to view your cart.
+        </div>,
+        { position: "bottom-right", autoClose: false }
       );
-      const sellerResponses = await Promise.all(sellerPromises);
-      const newSellerMap = new Map();
-      sellerResponses.forEach((response) => {
-        const sellerData = response.data.seller;
-        newSellerMap.set(sellerData.sellerId, sellerData);
-      });
-      setSellerMap(newSellerMap);
+
     } catch (error) {
-      console.error('Error fetching seller info:', error);
+      toast.error(`${error.response.data.message}`, { position: "bottom-right" });
+      console.error(`Error adding to cart ${itemType}:`, error);
     }
   };
-
-  useEffect(() => {
-    fetchSellerInfo();
-
-  }, [auth]);
+ 
 
   return (
     <>
@@ -133,7 +110,7 @@ const SearchPage = () => {
               <ListingCard
                 items={values.results}
                 button={<AddShoppingCartSharpIcon sx={{ color: 'rgb(0, 6, 12)' }} />}
-                handleClickOpen={(itemId, itemType) => handleCart(itemId, itemType)}
+                handleClickOpen={(itemId) => handleCart(itemId)}
               />
             </Grid>
           </Box>

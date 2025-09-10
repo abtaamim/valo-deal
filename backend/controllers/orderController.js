@@ -7,24 +7,103 @@ const mongoose = require("mongoose");
 /**
  * Create a new order with items & tracker
  */
+// const createOrder = async (req, res) => {
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
+//   try {
+//     const { items, total_amount, payment_method, shipping_address } = req.body;
+//     const buyer_id = req.user._id
+//     // Create tracker first
+//     const tracker = await OrderTracker.create(
+//       [{ order_status: "pending" }],
+//       { session }
+//     );
+//     for (const item of items) {
+//       const prod = await Product.findById(item.product_id).session(session);
+//       if (!prod) throw new Error(`Product not found: ${item.product_id}`);
+
+//       const remain_prod = prod.stock - item.quantity;
+
+//       if (remain_prod < 0) {
+//         throw new Error(`Insufficient stock for product ${prod._id}`);
+//       } else if (remain_prod === 0) {
+//         await prod.updateOne(
+//           { stock: 0, product_status: "stock_out" },
+//           { session }
+//         );
+//       } else {
+//         await prod.updateOne(
+//           { stock: remain_prod },
+//           { session }
+//         );
+//       }
+//     }
+
+
+//     console.log("trckId: " + tracker[0]._id)
+//     // Create order
+//     const order = await Order.create(
+//       [{
+//         buyer_id,
+//         order_tracker_id: tracker[0]._id,
+//         total_amount,
+//         payment_method,
+//         shipping_address
+//       }],
+//       { session }
+//     );
+
+//     // Link tracker to order
+//     await OrderTracker.updateOne(
+//       { _id: tracker[0]._id },
+//       { order_id: order[0]._id },
+//       { session }
+//     );
+
+//     // Create order items
+//     const orderItemsData = items.map(item => ({
+//       order_id: order[0]._id,
+//       product_id: item.product_id,
+//       seller_id: item.seller_id,
+//       quantity: item.quantity,
+//       price_per_unit: item.price_per_unit
+//     }));
+
+//     await OrderItem.insertMany(orderItemsData, { session });
+
+//     await session.commitTransaction();
+//     session.endSession();
+
+//     res.status(201).json({ message: "Order created successfully", orderId: order[0]._id });
+//   } catch (error) {
+//     await session.abortTransaction();
+//     session.endSession();
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 const createOrder = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
   try {
-    const { items, total_amount, payment_method, shipping_address } = req.body;
-    const buyer_id = req.user._id
+    const { items, payment_method, shipping_address } = req.body;
+    const buyer_id = req.user._id;
+
     // Create tracker first
     const tracker = await OrderTracker.create(
       [{ order_status: "pending" }],
       { session }
     );
+
+    let totalAmount = 0;
+    const orderItemsData = [];
+
     for (const item of items) {
       const prod = await Product.findById(item.product_id).session(session);
       if (!prod) throw new Error(`Product not found: ${item.product_id}`);
 
       const remain_prod = prod.stock - item.quantity;
-
       if (remain_prod < 0) {
         throw new Error(`Insufficient stock for product ${prod._id}`);
       } else if (remain_prod === 0) {
@@ -33,21 +112,40 @@ const createOrder = async (req, res) => {
           { session }
         );
       } else {
-        await prod.updateOne(
-          { stock: remain_prod },
-          { session }
-        );
+        await prod.updateOne({ stock: remain_prod }, { session });
       }
+
+      // 🔹 check active offer
+      const offer = await Offer.findOne({
+        category_ids: prod.category_id, // adjust if offer.category_ids is an array of ObjectIds
+        starting_at: { $lte: new Date() },
+        ending_at: { $gte: new Date() },
+        deleted_at: null
+      }).session(session);
+
+      let finalPrice = prod.price;
+      if (offer) {
+        finalPrice = prod.price - (prod.price * offer.discount) / 100;
+      }
+
+      // build order item
+      orderItemsData.push({
+        order_id: null, // will assign after order is created
+        product_id: prod._id,
+        seller_id: prod.seller_id,
+        quantity: item.quantity,
+        price_per_unit: finalPrice
+      });
+
+      totalAmount += finalPrice * item.quantity;
     }
 
-
-    console.log("trckId: " + tracker[0]._id)
     // Create order
     const order = await Order.create(
       [{
         buyer_id,
         order_tracker_id: tracker[0]._id,
-        total_amount,
+        total_amount: totalAmount,
         payment_method,
         shipping_address
       }],
@@ -61,21 +159,19 @@ const createOrder = async (req, res) => {
       { session }
     );
 
-    // Create order items
-    const orderItemsData = items.map(item => ({
-      order_id: order[0]._id,
-      product_id: item.product_id,
-      seller_id: item.seller_id,
-      quantity: item.quantity,
-      price_per_unit: item.price_per_unit
-    }));
-
+    // Add orderId to items and insert
+    orderItemsData.forEach(item => {
+      item.order_id = order[0]._id;
+    });
     await OrderItem.insertMany(orderItemsData, { session });
 
     await session.commitTransaction();
     session.endSession();
 
-    res.status(201).json({ message: "Order created successfully", orderId: order[0]._id });
+    res.status(201).json({
+      message: "Order created successfully",
+      orderId: order[0]._id
+    });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();

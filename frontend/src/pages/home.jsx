@@ -43,6 +43,7 @@ import image7 from "../assests/car.jpg";
 import image8 from "../assests/camera.png";
 import offerImage from "../assests/offer.jpg";
 
+
 const getTodayDate = () => {
   const today = new Date();
   const yyyy = today.getFullYear();
@@ -167,12 +168,28 @@ const formatPrice = (price) => {
 };
 
 const CategorySection = () => {
+  const [offers, setOffer] = useState();
+  const fetchOffers = async () => {
+    try {
+      // setLoading(true);
+      const res = await customAxios.get("/offer/active-offers");
+      setOffer(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOffers();
+  }, []);
   return (
     <Box sx={{ p: 2 }}>
       <Grid container spacing={2}>
-        {categories.map((category, index) => (
+        {offers?.map((offer, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
-            <Link to={category.link} style={{ textDecoration: "none" }}>
+            <Link to={`/offer-product/${offer._id}`} style={{ textDecoration: "none" }}>
               <Card
                 sx={{
                   height: "100%",
@@ -202,8 +219,8 @@ const CategorySection = () => {
                   <CardMedia
                     component="img"
                     height="300"
-                    image={category.image}
-                    alt={category.title}
+                    image={offer.img_urls[0]}
+                    alt={offer.title}
                     sx={{
                       transition: "transform 0.6s ease-in-out",
                       "&:hover": {
@@ -243,7 +260,7 @@ const CategorySection = () => {
                       transition: "text-shadow 0.5s ease-in-out",
                     }}
                   >
-                    {category.title}
+                    {offer.title}
                   </Typography>
                 </Box>
               </Card>
